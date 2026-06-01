@@ -7,6 +7,7 @@ export default function Login({ onLogin }) {
   const [senha, setSenha] = useState('')
   const [erro, setErro] = useState('')
   const [loading, setLoading] = useState(false)
+  const [mostrarSenha, setMostrarSenha] = useState(false)
 
   const entrar = async () => {
     if (!nome) { setErro('Escolhe o teu nome primeiro!'); return }
@@ -63,13 +64,29 @@ export default function Login({ onLogin }) {
           {NOMES_AMIGOS.map(n => <option key={n} value={n}>{n}</option>)}
         </select>
 
-        <input
-          type="password"
-          placeholder="Palavra-passe"
-          value={senha}
-          onChange={e => setSenha(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && entrar()}
-        />
+        <div style={{ position: 'relative' }}>
+          <input
+            type={mostrarSenha ? 'text' : 'password'}
+            placeholder="Palavra-passe"
+            value={senha}
+            onChange={e => setSenha(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && entrar()}
+            style={{ paddingRight: 44 }}
+          />
+          <button
+            type="button"
+            onClick={() => setMostrarSenha(!mostrarSenha)}
+            style={{
+              position: 'absolute', right: 0, top: 0, height: '100%',
+              width: 42, background: 'transparent', border: 'none',
+              cursor: 'pointer', color: '#666', fontSize: 18,
+              display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}
+            aria-label={mostrarSenha ? 'Esconder palavra-passe' : 'Mostrar palavra-passe'}
+          >
+            {mostrarSenha ? '🙈' : '👁️'}
+          </button>
+        </div>
 
         {erro && <div className="alert alert-error">{erro}</div>}
 
