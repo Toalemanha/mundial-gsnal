@@ -17,7 +17,6 @@ export default function Apostas({ jogador, isAdmin }) {
   const [p2, setP2] = useState('')
   const [campeao, setCampeao] = useState('')
   const [marcador, setMarcador] = useState('')
-  const [confirmacao, setConfirmacao] = useState(null) // { tipo, dados, mensagem }
   const { toast, showToast } = useToast()
   const agora = new Date()
   const bloqFinal = agora >= LIMITE_FASE_FINAL && !isAdmin
@@ -55,9 +54,9 @@ export default function Apostas({ jogador, isAdmin }) {
   const dia = CALENDARIO[diaIdx]
 
   // ── Guardar com confirmação ───────────────────────────────
-  function pedirConfirmacaoJogos() {
-    const jogosParaMostrar = []
+  async function guardarJogosDia() {
     let temVazio = false
+    const jogosParaSalvar = []
 
     for (const j of dia.jogos) {
       const prazo = prazoJogo(j.id)
@@ -65,70 +64,33 @@ export default function Apostas({ jogador, isAdmin }) {
       const c = scores[j.id]?.casa
       const f = scores[j.id]?.fora
       if (c === undefined || c === null || f === undefined || f === null) { temVazio = true; break }
-      jogosParaMostrar.push({ ...j, sc: c, sf: f })
+      jogosParaSalvar.push({ jogador: jogadorSel, id_jogo: j.id, casa: Number(c), fora: Number(f) })
     }
 
     if (temVazio) { showToast('❌ Mete um resultado válido, pá!'); return }
-    if (jogosParaMostrar.length === 0) { showToast('ℹ️ Não há jogos para guardar.'); return }
+    if (jogosParaSalvar.length === 0) { showToast('ℹ️ Não há jogos para guardar.'); return }
 
-    setConfirmacao({
-      tipo: 'jogos',
-      linhas: jogosParaMostrar.map(j => `${j.casa} ${j.sc} — ${j.sf} ${j.fora}`),
-    })
+    for (const row of jogosParaSalvar) {
+      await supabase.from('palpites').upsert(row, { onConflict: 'jogador,id_jogo' })
+    }
+    showToast(`✅ Jogos de ${dia.data} guardados!`)
   }
 
-  function pedirConfirmacaoGrupo() {
+  async function guardarGrupo() {
     if (!p1 && !p2) { showToast('❌ Escolhe pelo menos um lugar!'); return }
-    setConfirmacao({
-      tipo: 'grupo',
-      linhas: [
-        p1 ? `🥇 1.º: ${p1}` : '🥇 1.º: —',
-        p2 ? `🥈 2.º: ${p2}` : '🥈 2.º: —',
-      ],
-    })
+    await supabase.from('palpites_grupos').upsert(
+      { jogador: jogadorSel, grupo, primeiro: p1 || null, segundo: p2 || null },
+      { onConflict: 'jogador,grupo' }
+    )
+    showToast(`✅ ${grupo} guardado!`)
   }
 
-  function pedirConfirmacaoFinal() {
-    setConfirmacao({
-      tipo: 'final',
-      linhas: [
-        `🏆 Campeão: ${campeao || '—'}`,
-        `⚽ Marcador: ${marcador || '—'}`,
-      ],
-    })
-  }
-
-  async function confirmarGuardar() {
-    const tipo = confirmacao.tipo
-    setConfirmacao(null)
-
-    if (tipo === 'jogos') {
-      const jogosParaSalvar = dia.jogos
-        .filter(j => { const p = prazoJogo(j.id); return !(p && agora >= p && !isAdmin) })
-        .filter(j => scores[j.id]?.casa !== null && scores[j.id]?.fora !== null)
-        .map(j => ({ jogador: jogadorSel, id_jogo: j.id, casa: Number(scores[j.id].casa), fora: Number(scores[j.id].fora) }))
-
-      for (const row of jogosParaSalvar) {
-        await supabase.from('palpites').upsert(row, { onConflict: 'jogador,id_jogo' })
-      }
-      showToast(`✅ Jogos de ${dia.data} guardados!`)
-    }
-
-    if (tipo === 'grupo') {
-      await supabase.from('palpites_grupos').upsert(
-        { jogador: jogadorSel, grupo, primeiro: p1 || null, segundo: p2 || null },
-        { onConflict: 'jogador,grupo' }
-      )
-      showToast(`✅ ${grupo} guardado!`)
-    }
-
-    if (tipo === 'final') {
-      await supabase.from('jogadores').upsert(
-        { nome: jogadorSel, campeao: campeao || null, marcador: marcador || null },
-        { onConflict: 'nome' }
-      )
-      showToast('✅ Fase final guardada!')
-    }
+  async function guardarFaseFinal() {
+    await supabase.from('jogadores').upsert(
+      { nome: jogadorSel, campeao: campeao || null, marcador: marcador || null },
+      { onConflict: 'nome' }
+    )
+    showToast('✅ Fase final guardada!')
   }
 
   // ── Calcular minutos até ao próximo prazo ─────────────────
@@ -162,29 +124,6 @@ export default function Apostas({ jogador, isAdmin }) {
         <button className={`submenu-btn ${subMenu === 'grupos' ? 'active' : ''}`} onClick={() => setSubMenu('grupos')}>Vencedores</button>
       </div>
 
-      {/* ── MODAL DE CONFIRMAÇÃO ── */}
-      {confirmacao && (
-        <div style={{
-          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          zIndex: 100, padding: 20
-        }}>
-          <div style={{ background: '#111', border: '1px solid #2a2a2a', borderRadius: 12, padding: 24, width: '100%', maxWidth: 340 }}>
-            <h4 style={{ fontFamily: 'Oswald,sans-serif', textAlign: 'center', color: 'var(--gold)', marginBottom: 16, letterSpacing: 1 }}>
-              Confirmar aposta?
-            </h4>
-            {confirmacao.linhas.map((linha, i) => (
-              <p key={i} style={{ textAlign: 'center', fontFamily: 'Barlow Condensed,sans-serif', fontSize: 16, color: '#eee', margin: '6px 0' }}>
-                {linha}
-              </p>
-            ))}
-            <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-              <button className="btn" style={{ flex: 1 }} onClick={() => setConfirmacao(null)}>Cancelar</button>
-              <button className="btn btn-primary" style={{ flex: 1 }} onClick={confirmarGuardar}>Confirmar ✓</button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ── JOGOS ── */}
       {subMenu === 'jogos' && (
@@ -232,7 +171,7 @@ export default function Apostas({ jogador, isAdmin }) {
           })}
 
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <button className="btn btn-sm" style={{ width: 120 }} onClick={pedirConfirmacaoJogos}>Guardar</button>
+            <button className="btn btn-sm" style={{ width: 120 }} onClick={guardarJogosDia}>Guardar</button>
           </div>
         </div>
       )}
@@ -253,7 +192,7 @@ export default function Apostas({ jogador, isAdmin }) {
               value={marcador} onChange={e => setMarcador(e.target.value)} disabled={bloqFinal}
             />
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button className="btn btn-sm" style={{ width: 120 }} onClick={pedirConfirmacaoFinal} disabled={bloqFinal}>Guardar</button>
+              <button className="btn btn-sm" style={{ width: 120 }} onClick={guardarFaseFinal} disabled={bloqFinal}>Guardar</button>
             </div>
           </div>
 
@@ -276,7 +215,7 @@ export default function Apostas({ jogador, isAdmin }) {
               {EQUIPAS_POR_GRUPO[grupo].map(eq => <option key={eq} value={eq}>{eq}</option>)}
             </select>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button className="btn btn-sm" style={{ width: 120 }} onClick={pedirConfirmacaoGrupo} disabled={bloqGrupos}>Guardar</button>
+              <button className="btn btn-sm" style={{ width: 120 }} onClick={guardarGrupo} disabled={bloqGrupos}>Guardar</button>
             </div>
           </div>
         </div>
@@ -286,3 +225,4 @@ export default function Apostas({ jogador, isAdmin }) {
     </div>
   )
 }
+
