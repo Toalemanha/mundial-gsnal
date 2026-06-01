@@ -192,21 +192,6 @@ export default function Classificacao() {
           })}
 
           <hr style={{ margin: '14px 0' }} />
-
-          {/* Apostas em falta (jogos ainda abertos) */}
-          <p style={{ fontSize: 12, color: '#555', textAlign: 'center', marginBottom: 10, fontFamily: 'Barlow Condensed,sans-serif', letterSpacing: 1, textTransform: 'uppercase' }}>
-            Apostas em falta (jogos ainda abertos)
-          </p>
-          {NOMES_AMIGOS.map(nome => {
-            const { faltam } = statsJogador(nome)
-            return (
-              <div key={nome} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 0', borderTop: '1px solid #1a1a1a', fontSize: 13 }}>
-                <span style={{ fontFamily: 'Oswald,sans-serif', color: '#eee' }}>{nome}</span>
-                <span style={{ color: faltam > 0 ? '#ff6b4a' : '#00C853', fontFamily: 'Barlow Condensed,sans-serif' }}>
-                  {faltam > 0 ? `⚠️ ${faltam} em falta` : '✅ Em dia'}
-                </span>
-              </div>
-            )
           })}
         </div>
       )}
