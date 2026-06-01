@@ -101,8 +101,6 @@ export default function Classificacao() {
           const cor = i < 3 ? cores[i] : '#2a2a2a'
           const campAp = podeRevelar ? (j.campeao || '—') : '🔒'
           const marcAp = podeRevelar ? (j.marcador || '—') : '🔒'
-          const { faltam } = statsJogador(j.nome)
-
           return (
             <div
               key={j.nome}
@@ -118,11 +116,6 @@ export default function Classificacao() {
               <div style={{ flex: 1, minWidth: 0, padding: '0 8px' }}>
                 <div className="rank-name" style={{ padding: 0 }}>{j.nome}</div>
                 <div className="rank-pts-sub">{campAp} · {marcAp}</div>
-                {faltam > 0 && (
-                  <div style={{ fontSize: 10, color: '#ff6b4a', marginTop: 2, fontFamily: 'Barlow Condensed,sans-serif' }}>
-                    ⚠️ {faltam} aposta{faltam > 1 ? 's' : ''} em falta
-                  </div>
-                )}
               </div>
               <div>
                 <div className="rank-pts-num">
