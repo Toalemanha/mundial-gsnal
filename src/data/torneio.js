@@ -95,3 +95,42 @@ export function indiceDiaHoje() {
   }
   return CALENDARIO.length - 1
 }
+
+// ── Fase a eliminar ───────────────────────────────────────────────────────────
+// As equipas ficam em branco — o admin preenche à medida que se apuram
+
+export const FASES_ELIMINACAO = ['quartos', 'meias', 'terceiro', 'final']
+
+export const JOGOS_ELIMINACAO = {
+  quartos: [
+    { id: 'QF1', label: 'Quarto 1' },
+    { id: 'QF2', label: 'Quarto 2' },
+    { id: 'QF3', label: 'Quarto 3' },
+    { id: 'QF4', label: 'Quarto 4' },
+  ],
+  meias: [
+    { id: 'SF1', label: 'Meia-final 1' },
+    { id: 'SF2', label: 'Meia-final 2' },
+  ],
+  terceiro: [
+    { id: 'TP1', label: '3.º Lugar' },
+  ],
+  final: [
+    { id: 'FN1', label: 'Final' },
+  ],
+}
+
+export const LABEL_FASE = {
+  quartos: '⚔️ Quartos de Final',
+  meias: '🔥 Meias-Finais',
+  terceiro: '🥉 3.º Lugar',
+  final: '🏆 Final',
+}
+
+// Prazos da fase a eliminar — o admin pode ajustar estas datas
+export const PRAZOS_ELIMINACAO = {
+  quartos:  new Date("2026-07-03T11:59:00+01:00"),
+  meias:    new Date("2026-07-08T11:59:00+01:00"),
+  terceiro: new Date("2026-07-11T11:59:00+01:00"),
+  final:    new Date("2026-07-11T11:59:00+01:00"),
+}
