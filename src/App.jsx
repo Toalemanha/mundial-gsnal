@@ -47,18 +47,19 @@ export default function App() {
       </button>
 
       {/* ── Barra de ação ── */}
-      <div className="nav-row" style={{ marginBottom: 8 }}>
-        <div style={{ flex: 1, fontSize: 'clamp(11px,2.5vw,13px)', color: '#888' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+        <div style={{ width: 42, fontSize: 'clamp(11px,2.5vw,13px)', color: '#888', flexShrink: 0 }}>
           👤 <strong style={{ color: '#eee' }}>{jogador}</strong>
           {isAdmin && <span style={{ color: 'var(--gold)' }}> ★</span>}
         </div>
-        <button className="btn" style={{ width: 'auto', padding: '0 14px', flex: 'none' }} onClick={irParaApostas}>
+        <button className="btn btn-primary" style={{ flex: 1, fontSize: 'clamp(12px,3vw,14px)' }} onClick={irParaApostas}>
           ⚽ Apostar hoje
         </button>
         <button
           className="btn btn-icon"
           onClick={() => setMenuAberto(!menuAberto)}
           aria-label="Menu"
+          style={{ flexShrink: 0 }}
         >
           {menuAberto ? '✕' : '☰'}
         </button>
