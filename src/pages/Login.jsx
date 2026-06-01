@@ -49,6 +49,12 @@ export default function Login({ onLogin }) {
       <div className="logo-container" style={{ marginTop: 32 }}>
         <div className="logo-sub">Mundial GSNAL <span style={{ color: 'var(--gold)' }}>26</span></div>
         <div className="logo-title">⚽ GSNAL 26</div>
+        <img
+          src="/logo.png"
+          alt="Logo Mundial GSNAL"
+          style={{ width: '60%', maxWidth: 200, margin: '12px auto 0', display: 'block', borderRadius: 8 }}
+          onError={e => { e.target.style.display = 'none' }}
+        />
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 8 }}>
