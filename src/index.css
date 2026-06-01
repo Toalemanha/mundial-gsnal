@@ -85,6 +85,9 @@ h1, h2, h3 {
   width: 42px;
   flex-shrink: 0;
   font-size: 18px;
+  overflow: visible;
+  text-overflow: clip;
+  padding: 0;
 }
 
 /* ── Inputs ──────────────────────────────────────────── */
