@@ -2,7 +2,9 @@ import { useState } from 'react'
 import Login from './pages/Login.jsx'
 import Classificacao from './pages/Classificacao.jsx'
 import Apostas from './pages/Apostas.jsx'
+import ApostasEliminacao from './pages/ApostasEliminacao.jsx'
 import PalpitesDeTodos from './pages/PalpitesDeTodos.jsx'
+import PalpitesDeTodosEliminacao from './pages/PalpitesDeTodosEliminacao.jsx'
 import Admin from './pages/Admin.jsx'
 import { indiceDiaHoje } from './data/torneio.js'
 
@@ -68,21 +70,34 @@ export default function App() {
       {/* ── Menu dropdown ── */}
       {menuAberto && (
         <div className="card" style={{ marginBottom: 12 }}>
+          <p style={{ fontSize: 11, color: '#444', textTransform: 'uppercase', letterSpacing: 2, fontFamily: 'Barlow Condensed,sans-serif', marginBottom: 6, paddingLeft: 14 }}>
+            Apostas
+          </p>
           {[
-            { icon: '🏆', label: 'Classificação', id: 'classificacao' },
-            { icon: '🎯', label: 'As minhas apostas', id: 'apostas' },
-            { icon: '👥', label: 'Palpites de todos', id: 'todos' },
-            ...(isAdmin ? [{ icon: '⚙️', label: 'Admin', id: 'admin' }] : []),
+            { icon: '🎯', label: 'Fase de grupos', id: 'apostas' },
+            { icon: '🏟️', label: 'Fase a eliminar', id: 'eliminacao' },
           ].map(item => (
-            <button
-              key={item.id}
-              className="btn"
-              style={{ marginBottom: 6, textAlign: 'left', paddingLeft: 14 }}
-              onClick={() => { setPagina(item.id); setMenuAberto(false) }}
-            >
+            <button key={item.id} className="btn" style={{ marginBottom: 6, textAlign: 'left', paddingLeft: 14 }}
+              onClick={() => { setPagina(item.id); setMenuAberto(false) }}>
               {item.icon}  {item.label}
             </button>
           ))}
+
+          <p style={{ fontSize: 11, color: '#444', textTransform: 'uppercase', letterSpacing: 2, fontFamily: 'Barlow Condensed,sans-serif', margin: '10px 0 6px', paddingLeft: 14 }}>
+            Ver
+          </p>
+          {[
+            { icon: '🏆', label: 'Classificação', id: 'classificacao' },
+            { icon: '👥', label: 'Palpites — Grupos', id: 'todos' },
+            { icon: '👥', label: 'Palpites — Eliminat.', id: 'todos-elim' },
+            ...(isAdmin ? [{ icon: '⚙️', label: 'Admin', id: 'admin' }] : []),
+          ].map(item => (
+            <button key={item.id} className="btn" style={{ marginBottom: 6, textAlign: 'left', paddingLeft: 14 }}
+              onClick={() => { setPagina(item.id); setMenuAberto(false) }}>
+              {item.icon}  {item.label}
+            </button>
+          ))}
+
           <hr />
           <button className="btn" style={{ textAlign: 'left', paddingLeft: 14 }} onClick={sair}>
             ↩  Sair
@@ -93,7 +108,9 @@ export default function App() {
       {/* ── Páginas ── */}
       {pagina === 'classificacao' && <Classificacao />}
       {pagina === 'apostas'       && <Apostas jogador={jogador} isAdmin={isAdmin} />}
+      {pagina === 'eliminacao'    && <ApostasEliminacao jogador={jogador} isAdmin={isAdmin} />}
       {pagina === 'todos'         && <PalpitesDeTodos jogador={jogador} isAdmin={isAdmin} />}
+      {pagina === 'todos-elim'    && <PalpitesDeTodosEliminacao jogador={jogador} isAdmin={isAdmin} />}
       {pagina === 'admin'         && isAdmin && <Admin />}
     </div>
   )
