@@ -78,13 +78,7 @@ export default function Classificacao() {
     // Para exibir: % de jogos apostados vs encerrados
     const totalApostas = Object.keys(apostasJ).length
     const totalEncerrados = jogosEncerrados.length
-    const faltam = todosJogos.filter(j => {
-      const p = prazoJogo(j.id)
-      const aberto = !p || agora < p
-      return aberto && !apostasJ[j.id]
-    }).length
-
-    return { totalApostas, totalEncerrados, faltam }
+    return { totalApostas, totalEncerrados }
   }
 
   const cores = ['#FFD700', '#FF69B4', '#8B4513']
@@ -191,8 +185,7 @@ export default function Classificacao() {
             )
           })}
 
-          <hr style={{ margin: '14px 0' }} />
-          })}
+
         </div>
       )}
     </div>
