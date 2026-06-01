@@ -68,10 +68,12 @@ export function prazoJogo(idJogo) {
       if (j.id === idJogo) {
         const partes = dia.data.split(", ")[1].split("/")
         const d = parseInt(partes[0]), m = parseInt(partes[1])
-        // Prazo: 1 minuto antes da hora do jogo
-        const [h, min] = j.hora.split(":").map(Number)
-        const dt = new Date(2026, m - 1, d, h, min - 1, 0)
-        return dt
+        // Prazo: 23:59 do dia ANTERIOR ao jogo
+        const dtJogo = new Date(2026, m - 1, d)
+        const dtPrazo = new Date(dtJogo)
+        dtPrazo.setDate(dtPrazo.getDate() - 1)
+        dtPrazo.setHours(23, 59, 0, 0)
+        return dtPrazo
       }
     }
   }
@@ -79,12 +81,17 @@ export function prazoJogo(idJogo) {
 }
 
 export function indiceDiaHoje() {
+  // Devolve o índice do próximo dia com jogos
+  // Ex: se hoje é dia 14, devolve o índice do dia 15 (o próximo)
   const hoje = new Date()
+  hoje.setHours(0, 0, 0, 0)
   for (let i = 0; i < CALENDARIO.length; i++) {
     const partes = CALENDARIO[i].data.split(", ")[1].split("/")
     const d = parseInt(partes[0]), m = parseInt(partes[1])
     const dataDia = new Date(2026, m - 1, d)
-    if (hoje <= dataDia) return i
+    dataDia.setHours(0, 0, 0, 0)
+    // Se a data do dia ainda não passou (é hoje ou no futuro)
+    if (dataDia >= hoje) return i
   }
   return CALENDARIO.length - 1
 }
