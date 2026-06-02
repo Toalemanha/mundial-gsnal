@@ -163,7 +163,7 @@ export default function Apostas({ jogador, isAdmin }) {
         </div>
       )}
 
-      {/* ── JOGOS ── */
+      {/* ── JOGOS ── */}
       {subMenu === 'jogos' && (
         <div>
           {alerta && <div className="alert alert-warning" style={{ marginBottom: 10 }}>{alerta}</div>}
