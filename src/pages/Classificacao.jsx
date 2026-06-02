@@ -170,9 +170,7 @@ export default function Classificacao() {
               <div key={nome} style={{ marginBottom: 10 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: 13 }}>
                   <span style={{ fontFamily: 'Oswald,sans-serif', color: '#eee' }}>{nome}</span>
-                  <span style={{ color: '#666', fontFamily: 'Barlow Condensed,sans-serif' }}>
-                    {feitas}/{jogosEncerrados.length} apostas · <span style={{ color: 'var(--gold)', fontFamily: 'VT323,monospace', fontSize: 16 }}>{pts} pts</span>
-                  </span>
+                  <span style={{ color: 'var(--gold)', fontFamily: 'VT323,monospace', fontSize: 16 }}>{pts} pts</span>
                 </div>
                 <div style={{ background: '#0a0a0a', borderRadius: 4, height: 6, overflow: 'hidden' }}>
                   <div style={{
