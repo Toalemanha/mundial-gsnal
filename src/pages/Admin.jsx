@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase.js'
-import { JOGOS_FASE_GRUPOS, EQUIPAS_POR_GRUPO, TODAS_EQUIPAS, NOMES_AMIGOS, FASES_ELIMINACAO, JOGOS_ELIMINACAO, LABEL_FASE } from '../data/torneio.js'
+import { JOGOS_FASE_GRUPOS, EQUIPAS_POR_GRUPO, TODAS_EQUIPAS, NOMES_AMIGOS, FASES_ELIMINACAO, JOGOS_ELIMINACAO, LABEL_FASE, CALENDARIO, prazoJogo } from '../data/torneio.js'
 import { Toast, useToast } from '../components/Toast.jsx'
 
 export default function Admin() {
@@ -13,18 +13,23 @@ export default function Admin() {
   // Eliminatórias
   const [equipasElim, setEquipasElim] = useState({})    // { id_jogo: { casa, fora } }
   const [resultadosElim, setResultadosElim] = useState({})
+  const [palpites, setPalpites] = useState({})
+  const [palpitesGrupos, setPalpitesGrupos] = useState({})
+  const [jogosEncerrados, setJogosEncerrados] = useState([])
   const { toast, showToast } = useToast()
 
   useEffect(() => { carregarResultados() }, [])
 
   async function carregarResultados() {
     try {
-      const [{ data: res }, { data: gr }, { data: geral }, { data: eq }, { data: resElim }] = await Promise.all([
+      const [{ data: res }, { data: gr }, { data: geral }, { data: eq }, { data: resElim }, { data: palp }, { data: grps }] = await Promise.all([
         supabase.from('resultados').select('id_jogo, casa, fora'),
         supabase.from('resultados_grupos').select('grupo, primeiro, segundo'),
         supabase.from('config').select('campeao_real, marcador_real').eq('id', 1).single(),
         supabase.from('equipas_eliminacao').select('id_jogo, casa, fora'),
         supabase.from('resultados_eliminacao').select('id_jogo, casa, fora'),
+        supabase.from('palpites').select('jogador, id_jogo, casa, fora'),
+        supabase.from('palpites_grupos').select('jogador, grupo, primeiro, segundo'),
       ])
 
       const m = {}
@@ -44,6 +49,24 @@ export default function Admin() {
       const re2 = {}
       if (resElim) resElim.forEach(r => { re2[r.id_jogo] = { casa: r.casa, fora: r.fora } })
       setResultadosElim(re2)
+      const mp = {}
+      if (palp) palp.forEach(r => {
+        if (!mp[r.jogador]) mp[r.jogador] = {}
+        mp[r.jogador][r.id_jogo] = { casa: r.casa, fora: r.fora }
+      })
+      setPalpites(mp)
+
+      const mg = {}
+      if (grps) grps.forEach(r => {
+        if (!mg[r.jogador]) mg[r.jogador] = {}
+        mg[r.jogador][r.grupo] = { primeiro: r.primeiro, segundo: r.segundo }
+      })
+      setPalpitesGrupos(mg)
+
+      const agora = new Date()
+      const todosJogos = CALENDARIO.flatMap(d => d.jogos)
+      setJogosEncerrados(todosJogos.filter(j => { const p = prazoJogo(j.id); return p && agora >= p }))
+
     } catch {}
   }
 
@@ -153,9 +176,9 @@ export default function Admin() {
       <h2 style={{ marginBottom: 12 }}>⚙️ Gestão do torneio</h2>
 
       <div className="submenu">
-        {['resultados', 'eliminacao', 'senhas'].map(s => (
+        {['resultados', 'eliminacao', 'stats', 'senhas'].map(s => (
           <button key={s} className={`submenu-btn ${subMenu === s ? 'active' : ''}`} onClick={() => setSubMenu(s)}>
-            {s === 'resultados' ? 'Grupos' : s === 'eliminacao' ? 'Eliminat.' : 'Senhas'}
+            {s === 'resultados' ? 'Grupos' : s === 'eliminacao' ? 'Eliminat.' : s === 'stats' ? 'Stats' : 'Senhas'}
           </button>
         ))}
       </div>
@@ -262,6 +285,67 @@ export default function Admin() {
           <button className="btn btn-primary" style={{ marginTop: 16 }} onClick={calcularPontos}>
             🔄 Guardar e recalcular tabela
           </button>
+        </div>
+      )}
+
+      {/* ── ESTATÍSTICAS ── */}
+      {subMenu === 'stats' && (
+        <div>
+          <h4 style={{ color: 'var(--gold)', textAlign: 'center', marginBottom: 14, fontFamily: 'Oswald,sans-serif', letterSpacing: 1 }}>
+            📊 Apostas feitas
+          </h4>
+          <p style={{ fontSize: 12, color: '#555', textAlign: 'center', marginBottom: 12, fontFamily: 'Barlow Condensed,sans-serif', letterSpacing: 1, textTransform: 'uppercase' }}>
+            {jogosEncerrados.length} jogos encerrados
+          </p>
+          <div className="card">
+            {NOMES_AMIGOS.map(nome => {
+              const apostasJ = palpites[nome] || {}
+              const feitas = jogosEncerrados.filter(j => apostasJ[j.id] !== undefined).length
+              const pct = jogosEncerrados.length > 0 ? Math.round((feitas / jogosEncerrados.length) * 100) : 0
+              const corBarra = pct >= 80 ? '#00C853' : pct >= 50 ? '#FFD700' : '#FF3D00'
+              const pts = 0
+
+              return (
+                <div key={nome} style={{ marginBottom: 12 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: 13 }}>
+                    <span style={{ fontFamily: 'Oswald,sans-serif', color: '#eee' }}>{nome}</span>
+                    <span style={{ color: '#666', fontFamily: 'Barlow Condensed,sans-serif' }}>
+                      {feitas}/{jogosEncerrados.length}
+                      <span style={{ color: 'var(--gold)', fontFamily: 'VT323,monospace', fontSize: 16, marginLeft: 8 }}>
+                        {feitas > 0 ? `${pct}%` : '0%'}
+                      </span>
+                    </span>
+                  </div>
+                  <div style={{ background: '#0a0a0a', borderRadius: 4, height: 6, overflow: 'hidden' }}>
+                    <div style={{ width: `${pct}%`, height: '100%', borderRadius: 4, background: corBarra, transition: 'width 0.6s ease' }} />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          <h4 style={{ color: 'var(--gold)', textAlign: 'center', margin: '16px 0 10px', fontFamily: 'Oswald,sans-serif', letterSpacing: 1 }}>
+            📋 Em dia vs em falta
+          </h4>
+          <div className="card">
+            {NOMES_AMIGOS.map(nome => {
+              const apostasJ = palpites[nome] || {}
+              const agora = new Date()
+              const todosJogos = CALENDARIO.flatMap(d => d.jogos)
+              const faltam = todosJogos.filter(j => {
+                const p = prazoJogo(j.id)
+                return (!p || agora < p) && !apostasJ[j.id]
+              }).length
+              return (
+                <div key={nome} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderTop: '1px solid #1a1a1a', fontSize: 13 }}>
+                  <span style={{ fontFamily: 'Oswald,sans-serif', color: '#eee' }}>{nome}</span>
+                  <span style={{ color: faltam > 0 ? '#ff6b4a' : '#00C853', fontFamily: 'Barlow Condensed,sans-serif' }}>
+                    {faltam > 0 ? `⚠️ ${faltam} em falta` : '✅ Em dia'}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
         </div>
       )}
 
