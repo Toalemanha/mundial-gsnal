@@ -2,9 +2,7 @@ import { useState } from 'react'
 import Login from './pages/Login.jsx'
 import Classificacao from './pages/Classificacao.jsx'
 import Apostas from './pages/Apostas.jsx'
-import ApostasEliminacao from './pages/ApostasEliminacao.jsx'
 import PalpitesDeTodos from './pages/PalpitesDeTodos.jsx'
-import PalpitesDeTodosEliminacao from './pages/PalpitesDeTodosEliminacao.jsx'
 import Admin from './pages/Admin.jsx'
 import { indiceDiaHoje } from './data/torneio.js'
 
@@ -39,7 +37,6 @@ export default function App() {
 
   return (
     <div>
-      {/* ── Header ── */}
       <button
         className="btn"
         style={{ fontFamily: 'VT323,monospace', fontSize: 'clamp(28px,8vw,40px)', color: 'var(--gold)', background: '#000', border: '1px solid #2a2a2a', height: 'auto', padding: '6px 0', marginBottom: 8, letterSpacing: 1 }}
@@ -48,9 +45,8 @@ export default function App() {
         MUNDIAL GSNAL 26
       </button>
 
-      {/* ── Barra de ação ── */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-        <div style={{ width: 42, fontSize: 'clamp(11px,2.5vw,13px)', color: '#888', flexShrink: 0 }}>
+        <div style={{ fontSize: 'clamp(11px,2.5vw,13px)', color: '#888', flexShrink: 0 }}>
           👤 <strong style={{ color: '#eee' }}>{jogador}</strong>
           {isAdmin && <span style={{ color: 'var(--gold)' }}> ★</span>}
         </div>
@@ -67,7 +63,6 @@ export default function App() {
         </button>
       </div>
 
-      {/* ── Menu dropdown ── */}
       {menuAberto && (
         <div className="card" style={{ marginBottom: 12 }}>
           <p style={{ fontSize: 11, color: '#444', textTransform: 'uppercase', letterSpacing: 2, fontFamily: 'Barlow Condensed,sans-serif', marginBottom: 6, paddingLeft: 14 }}>
@@ -105,13 +100,24 @@ export default function App() {
         </div>
       )}
 
-      {/* ── Páginas ── */}
       {pagina === 'classificacao' && <Classificacao />}
       {pagina === 'apostas'       && <Apostas jogador={jogador} isAdmin={isAdmin} />}
-      {pagina === 'eliminacao'    && <ApostasEliminacao jogador={jogador} isAdmin={isAdmin} />}
+      {pagina === 'eliminacao'    && <PlaceholderEliminacao />}
       {pagina === 'todos'         && <PalpitesDeTodos jogador={jogador} isAdmin={isAdmin} />}
-      {pagina === 'todos-elim'    && <PalpitesDeTodosEliminacao jogador={jogador} isAdmin={isAdmin} />}
+      {pagina === 'todos-elim'    && <PlaceholderEliminacao />}
       {pagina === 'admin'         && isAdmin && <Admin />}
+    </div>
+  )
+}
+
+function PlaceholderEliminacao() {
+  return (
+    <div className="card" style={{ textAlign: 'center', padding: 32 }}>
+      <div style={{ fontSize: 40, marginBottom: 12 }}>🏟️</div>
+      <h3 style={{ fontFamily: 'Oswald,sans-serif', color: 'var(--gold)', marginBottom: 8 }}>Fase a Eliminar</h3>
+      <p style={{ color: '#666', fontSize: 14, fontFamily: 'Barlow Condensed,sans-serif', lineHeight: 1.6 }}>
+        Em breve disponível.<br />As apostas abrirão após a fase de grupos.
+      </p>
     </div>
   )
 }
