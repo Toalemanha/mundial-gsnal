@@ -109,21 +109,19 @@ export default function Apostas({ jogador, isAdmin }) {
         .filter(j => { const p = prazoJogo(j.id); return !(p && agora >= p && !isAdmin) })
         .filter(j => scores[j.id]?.casa !== null && scores[j.id]?.fora !== null)
         .map(j => ({ jogador: jogadorSel, id_jogo: j.id, casa: Number(scores[j.id].casa), fora: Number(scores[j.id].fora) }))
-      for (const row of rows) await supabase.from('palpites').upsert(row, { onConflict: 'jogador,id_jogo' })
+      for (const row of rows) {
+        await supabase.from('palpites').delete().eq('jogador', row.jogador).eq('id_jogo', row.id_jogo)
+        await supabase.from('palpites').insert(row)
+      }
       showToast(`✅ Jogos de ${dia.data} guardados!`)
     }
     if (tipo === 'grupo') {
-      await supabase.from('palpites_grupos').upsert(
-        { jogador: jogadorSel, grupo, primeiro: p1 || null, segundo: p2 || null },
-        { onConflict: 'jogador,grupo' }
-      )
+      await supabase.from('palpites_grupos').delete().eq('jogador', jogadorSel).eq('grupo', grupo)
+      await supabase.from('palpites_grupos').insert({ jogador: jogadorSel, grupo, primeiro: p1 || null, segundo: p2 || null })
       showToast(`✅ ${grupo} guardado!`)
     }
     if (tipo === 'final') {
-      await supabase.from('jogadores').upsert(
-        { nome: jogadorSel, campeao: campeao || null, marcador: marcador || null },
-        { onConflict: 'nome' }
-      )
+      await supabase.from('jogadores').update({ campeao: campeao || null, marcador: marcador || null }).eq('nome', jogadorSel)
       showToast('✅ Fase final guardada!')
     }
   }
