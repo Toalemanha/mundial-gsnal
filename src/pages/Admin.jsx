@@ -67,12 +67,12 @@ export default function Admin() {
       })
       setPalpites(mp)
 
-      const mg = {}
+      const mgGrps = {}
       if (grps) grps.forEach(r => {
-        if (!mg[r.jogador]) mg[r.jogador] = {}
-        mg[r.jogador][r.grupo] = { primeiro: r.primeiro, segundo: r.segundo }
+        if (!mgGrps[r.jogador]) mgGrps[r.jogador] = {}
+        mgGrps[r.jogador][r.grupo] = { primeiro: r.primeiro, segundo: r.segundo }
       })
-      setPalpitesGrupos(mg)
+      setPalpitesGrupos(mgGrps)
 
       const agora = new Date()
       const todosJogos = CALENDARIO.flatMap(d => d.jogos)
@@ -178,7 +178,7 @@ export default function Admin() {
     let conta = 0
     for (const [nome, senha] of Object.entries(senhas)) {
       if (senha?.trim()) {
-        await supabase.from('jogadores').update({ senha: senha.trim() }).eq('nome', nome)
+        await supabase.from('jogadores').upsert({ nome, senha: senha.trim() }, { onConflict: 'nome' })
         conta++
       }
     }
