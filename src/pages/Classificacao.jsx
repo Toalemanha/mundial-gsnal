@@ -7,7 +7,16 @@ export default function Classificacao() {
   const [loading, setLoading] = useState(true)
   const podeRevelar = new Date() >= LIMITE_REVELACAO
 
-  useEffect(() => { carregarDados() }, [])
+  useEffect(() => {
+    carregarDados()
+
+    const canal = supabase
+      .channel('classificacao')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores' }, () => carregarDados())
+      .subscribe()
+
+    return () => supabase.removeChannel(canal)
+  }, [])
 
   async function carregarDados() {
     try {
@@ -32,13 +41,11 @@ export default function Classificacao() {
   return (
     <div>
       <h2 style={{ marginBottom: 16 }}>🏆 Classificação</h2>
-
       <div className="card">
         {dados.map((j, i) => {
           const cor = i < 3 ? cores[i] : '#2a2a2a'
           const campAp = podeRevelar ? (j.campeao || '—') : '🔒'
           const marcAp = podeRevelar ? (j.marcador || '—') : '🔒'
-
           return (
             <div key={j.nome} className="rank-card" style={{ borderLeftColor: cor }}>
               <div className="rank-icon" style={{ fontSize: i < 3 ? 20 : 14 }}>
@@ -56,7 +63,6 @@ export default function Classificacao() {
             </div>
           )
         })}
-
         <div className="premios-row">
           {[
             { emoji: '🥇', valor: '100€', cor: '#FFD700', lugar: '1.º lugar' },
@@ -70,7 +76,6 @@ export default function Classificacao() {
             </div>
           ))}
         </div>
-
         <p style={{ textAlign: 'center', fontSize: 11, color: '#555', padding: '10px 8px 4px', lineHeight: 1.5 }}>
           Em caso de empate, ganha quem tiver o melhor marcador.<br />Em novo empate, a equipa que foi mais longe no torneio.
         </p>
