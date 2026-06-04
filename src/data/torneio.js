@@ -5,7 +5,7 @@ export const NOMES_AMIGOS = ["André", "Filipe", "Paulo", "Tiago", "Hugo", "Raul
 export const SENHA_ADMIN = "gsnal2026"
 
 export const SENHAS_DEFAULT = {
-  "André": "1111", "Filipe": "2222", "Paulo": "3333", "Tiago": "4444",
+  "André": "AndreApostas", "Filipe": "Conadatuaprima", "Paulo": "RabosEMamas69", "Tiago": "4444",
   "Hugo": "5555", "Raul": "6666", "Tó": "7777", "Ricardo": "8888"
 }
 
