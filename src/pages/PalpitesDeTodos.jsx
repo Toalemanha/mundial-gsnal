@@ -9,17 +9,7 @@ export default function PalpitesDeTodos({ jogador, isAdmin }) {
   const [loading, setLoading] = useState(true)
   const agora = new Date()
 
-  useEffect(() => {
-    carregarPalpites()
-
-    const canal = supabase
-      .channel('palpites-todos')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'palpites' }, () => carregarPalpites())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'resultados' }, () => carregarPalpites())
-      .subscribe()
-
-    return () => supabase.removeChannel(canal)
-  }, [])
+  useEffect(() => { carregarPalpites() }, []), [])
 
   async function carregarPalpites() {
     try {
