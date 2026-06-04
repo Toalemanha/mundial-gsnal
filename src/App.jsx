@@ -1,15 +1,15 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Login from './pages/Login.jsx'
 import Classificacao from './pages/Classificacao.jsx'
 import Apostas from './pages/Apostas.jsx'
 import PalpitesDeTodos from './pages/PalpitesDeTodos.jsx'
 import Admin from './pages/Admin.jsx'
-import { indiceDiaHoje } from './data/torneio.js'
 
 export default function App() {
-  const [autenticado, setAutenticado] = useState(false)
-  const [jogador, setJogador] = useState('')
-  const [isAdmin, setIsAdmin] = useState(false)
+  // Restaura sessão do localStorage ao carregar
+  const [autenticado, setAutenticado] = useState(() => !!localStorage.getItem('gsnal_jogador'))
+  const [jogador, setJogador] = useState(() => localStorage.getItem('gsnal_jogador') || '')
+  const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem('gsnal_admin') === 'true')
   const [pagina, setPagina] = useState('classificacao')
   const [menuAberto, setMenuAberto] = useState(false)
 
@@ -18,6 +18,8 @@ export default function App() {
     setIsAdmin(admin)
     setAutenticado(true)
     setPagina('classificacao')
+    localStorage.setItem('gsnal_jogador', nome)
+    localStorage.setItem('gsnal_admin', admin ? 'true' : 'false')
   }
 
   function sair() {
@@ -26,6 +28,8 @@ export default function App() {
     setIsAdmin(false)
     setPagina('classificacao')
     setMenuAberto(false)
+    localStorage.removeItem('gsnal_jogador')
+    localStorage.removeItem('gsnal_admin')
   }
 
   function irParaApostas() {
