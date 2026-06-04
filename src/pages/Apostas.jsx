@@ -38,23 +38,33 @@ export default function Apostas({ jogador, isAdmin }) {
 
   async function carregarApostas() {
     try {
-      const [{ data: jogosData }, { data: gruposData }, { data: jData }] = await Promise.all([
+      const [{ data: jogosData, error: e1 }, { data: gruposData, error: e2 }, { data: jData }] = await Promise.all([
         supabase.from('palpites').select('id_jogo, casa, fora').eq('jogador', jogadorSel),
         supabase.from('palpites_grupos').select('grupo, primeiro, segundo').eq('jogador', jogadorSel),
         supabase.from('jogadores').select('campeao, marcador').eq('nome', jogadorSel).single(),
       ])
 
       const jogosMap = {}
-      if (jogosData) jogosData.forEach(j => { jogosMap[j.id_jogo] = { casa: j.casa, fora: j.fora } })
+      if (jogosData) jogosData.forEach(j => {
+        // Garante que os valores são números ou null, nunca undefined
+        jogosMap[j.id_jogo] = {
+          casa: j.casa !== null && j.casa !== undefined ? Number(j.casa) : null,
+          fora: j.fora !== null && j.fora !== undefined ? Number(j.fora) : null,
+        }
+      })
 
       const gruposMap = {}
-      if (gruposData) gruposData.forEach(g => { gruposMap[g.grupo] = { primeiro: g.primeiro, segundo: g.segundo } })
+      if (gruposData) gruposData.forEach(g => {
+        gruposMap[g.grupo] = { primeiro: g.primeiro, segundo: g.segundo }
+      })
 
       setApostas({ jogos: jogosMap, grupos: gruposMap })
       setCampeao(jData?.campeao || '')
       setMarcador(jData?.marcador || '')
       setScores(jogosMap)
-    } catch {}
+    } catch (err) {
+      console.error('Erro ao carregar apostas:', err)
+    }
   }
 
   useEffect(() => {
