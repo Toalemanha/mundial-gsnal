@@ -7,16 +7,7 @@ export default function Classificacao() {
   const [loading, setLoading] = useState(true)
   const podeRevelar = new Date() >= LIMITE_REVELACAO
 
-  useEffect(() => {
-    carregarDados()
-
-    const canal = supabase
-      .channel('classificacao')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores' }, () => carregarDados())
-      .subscribe()
-
-    return () => supabase.removeChannel(canal)
-  }, [])
+  useEffect(() => { carregarDados() }, []), [])
 
   async function carregarDados() {
     try {
