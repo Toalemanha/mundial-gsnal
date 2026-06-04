@@ -18,18 +18,7 @@ export default function Admin() {
   const [jogosEncerrados, setJogosEncerrados] = useState([])
   const { toast, showToast } = useToast()
 
-  useEffect(() => {
-    carregarResultados()
-
-    const canal = supabase
-      .channel('admin-resultados')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'resultados' }, () => carregarResultados())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'resultados_grupos' }, () => carregarResultados())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores' }, () => carregarResultados())
-      .subscribe()
-
-    return () => supabase.removeChannel(canal)
-  }, [])
+  useEffect(() => { carregarResultados() }, []), [])
 
   async function carregarResultados() {
     try {
