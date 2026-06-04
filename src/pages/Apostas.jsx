@@ -23,18 +23,7 @@ export default function Apostas({ jogador, isAdmin }) {
   const bloqFinal = agora >= LIMITE_FASE_FINAL && !isAdmin
   const bloqGrupos = agora >= LIMITE_GRUPOS && !isAdmin
 
-  useEffect(() => {
-    carregarApostas()
-
-    const canal = supabase
-      .channel('apostas-' + jogadorSel)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'palpites', filter: `jogador=eq.${jogadorSel}` }, () => carregarApostas())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'palpites_grupos', filter: `jogador=eq.${jogadorSel}` }, () => carregarApostas())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores', filter: `nome=eq.${jogadorSel}` }, () => carregarApostas())
-      .subscribe()
-
-    return () => supabase.removeChannel(canal)
-  }, [jogadorSel])
+  useEffect(() => { carregarApostas() }, [jogadorSel])
 
   async function carregarApostas() {
     try {
