@@ -178,7 +178,7 @@ export default function Admin() {
     let conta = 0
     for (const [nome, senha] of Object.entries(senhas)) {
       if (senha?.trim()) {
-        await supabase.from('jogadores').upsert({ nome, senha: senha.trim() }, { onConflict: 'nome' })
+        await supabase.from('jogadores').update({ senha: senha.trim() }).eq('nome', nome)
         conta++
       }
     }
