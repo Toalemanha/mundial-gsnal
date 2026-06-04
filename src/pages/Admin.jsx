@@ -161,9 +161,14 @@ export default function Admin() {
       else if ((p.casa > p.fora && r.casa > r.fora) || (p.casa < p.fora && r.casa < r.fora) || (p.casa === p.fora && r.casa === r.fora)) pontos[p.jogador] += 1
     }
 
-    // Guardar pontos
+    // Guardar pontos — usa update para não apagar a senha guardada
     for (const [nome, pts] of Object.entries(pontos)) {
-      await supabase.from('jogadores').upsert({ nome, pontos: pts }, { onConflict: 'nome' })
+      const { count } = await supabase.from('jogadores').select('nome', { count: 'exact', head: true }).eq('nome', nome)
+      if (count > 0) {
+        await supabase.from('jogadores').update({ pontos: pts }).eq('nome', nome)
+      } else {
+        await supabase.from('jogadores').insert({ nome, pontos: pts })
+      }
     }
 
     showToast('✅ Tabela atualizada com sucesso!')
