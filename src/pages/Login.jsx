@@ -14,28 +14,31 @@ export default function Login({ onLogin }) {
     setLoading(true)
     setErro('')
 
+    // Admin entra com qualquer nome
+    if (senha === SENHA_ADMIN) {
+      onLogin(nome, true)
+      setLoading(false)
+      return
+    }
+
     try {
-      // Busca a senha no Supabase (ou usa a default se ainda não foi alterada)
       const { data } = await supabase
         .from('jogadores')
         .select('senha')
         .eq('nome', nome)
         .single()
 
-      const senhaCorreta = data?.senha || SENHAS_DEFAULT[nome]
+      // Supabase tem prioridade; fallback para SENHAS_DEFAULT
+      const senhaCorreta = (data?.senha && data.senha.trim()) ? data.senha.trim() : SENHAS_DEFAULT[nome]
 
-      if (senha === SENHA_ADMIN) {
-        onLogin(nome, true)
-      } else if (senha === senhaCorreta) {
+      if (senha === senhaCorreta) {
         onLogin(nome, false)
       } else {
         setErro('PIN incorreto. Tenta novamente.')
       }
     } catch {
-      // Fallback para senhas default se o Supabase não estiver configurado
-      if (senha === SENHA_ADMIN) {
-        onLogin(nome, true)
-      } else if (senha === SENHAS_DEFAULT[nome]) {
+      // Sem Supabase, usa senhas do código
+      if (senha === SENHAS_DEFAULT[nome]) {
         onLogin(nome, false)
       } else {
         setErro('PIN incorreto. Tenta novamente.')
