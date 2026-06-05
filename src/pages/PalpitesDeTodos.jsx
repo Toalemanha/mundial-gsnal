@@ -36,7 +36,6 @@ export default function PalpitesDeTodos({ jogador, isAdmin }) {
 
   const dia = CALENDARIO[diaIdx]
 
-  // Verifica se um jogo está a decorrer agora (entre hora de início e +2h)
   function jogoADecorrer(j) {
     const partes = dia.data.split(", ")[1].split("/")
     const d = parseInt(partes[0]), m = parseInt(partes[1])
@@ -46,7 +45,6 @@ export default function PalpitesDeTodos({ jogador, isAdmin }) {
     return agora >= inicio && agora <= fim
   }
 
-  // Calcula pontos que um palpite daria face ao resultado real
   function pontosAposta(idJogo, palpite) {
     const r = resultados[idJogo]
     if (!r || r.casa === null || r.fora === null) return null
@@ -80,14 +78,12 @@ export default function PalpitesDeTodos({ jogador, isAdmin }) {
             borderColor: aDecorrer ? 'rgba(255,215,0,0.4)' : '#1e1e1e',
             boxShadow: aDecorrer ? '0 0 12px rgba(255,215,0,0.08)' : 'none',
           }}>
-            {/* Cabeçalho do jogo */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 8 }}>
               <p style={{ fontSize: 11, letterSpacing: 2, color: aDecorrer ? 'var(--gold)' : '#555', textTransform: 'uppercase', margin: 0 }}>
                 {aDecorrer ? '🟢 A DECORRER' : `⏱ ${j.hora} Lisboa`}
               </p>
             </div>
 
-            {/* Resultado real (se existir) */}
             {resReal && resReal.casa !== null && (
               <div style={{ textAlign: 'center', marginBottom: 6 }}>
                 <span style={{ fontFamily: 'VT323,monospace', fontSize: 28, color: 'var(--green)', letterSpacing: 3 }}>
@@ -117,7 +113,6 @@ export default function PalpitesDeTodos({ jogador, isAdmin }) {
               const vf = podeVer ? p.fora : '🔒'
               const destaque = amigo === jogador ? 'var(--gold)' : '#ccc'
               const pts = podeVer ? pontosAposta(j.id, p) : null
-
               const corPts = pts === 3 ? '#00C853' : pts === 1 ? 'var(--gold)' : pts === 0 ? '#FF3D00' : null
 
               return (
