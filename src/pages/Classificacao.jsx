@@ -7,7 +7,7 @@ export default function Classificacao() {
   const [loading, setLoading] = useState(true)
   const podeRevelar = new Date() >= LIMITE_REVELACAO
 
-  useEffect(() => { carregarDados() }, []), [])
+  useEffect(() => { carregarDados() }, [])
 
   async function carregarDados() {
     try {
