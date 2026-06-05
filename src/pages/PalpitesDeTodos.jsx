@@ -9,7 +9,7 @@ export default function PalpitesDeTodos({ jogador, isAdmin }) {
   const [loading, setLoading] = useState(true)
   const agora = new Date()
 
-  useEffect(() => { carregarPalpites() }, []), [])
+  useEffect(() => { carregarPalpites() }, [])
 
   async function carregarPalpites() {
     try {
