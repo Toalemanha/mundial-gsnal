@@ -18,7 +18,7 @@ export default function Admin() {
   const [jogosEncerrados, setJogosEncerrados] = useState([])
   const { toast, showToast } = useToast()
 
-  useEffect(() => { carregarResultados() }, []), [])
+  useEffect(() => { carregarResultados() }, [])
 
   async function carregarResultados() {
     try {
