@@ -1,4 +1,17 @@
 export default function Regras() {
+  const agora = new Date()
+
+  // Prazos como objetos Date para comparar
+  const prazosDatas = {
+    'Campeão e Marcador': new Date("2026-06-11T18:00:00+01:00"),
+    'Vencedores dos grupos': new Date("2026-06-18T12:00:00+01:00"),
+    'Jogos (cada jogo)': null, // variável
+    'Quartos de final': new Date("2026-07-03T11:59:00+01:00"),
+    'Meias-finais': new Date("2026-07-08T11:59:00+01:00"),
+    '3.º lugar e Final': new Date("2026-07-11T11:59:00+01:00"),
+    'Revelação na tabela': new Date("2026-06-26T00:00:00+01:00"),
+  }
+
   const regras = [
     { pts: '3', desc: 'Resultado exato de um jogo' },
     { pts: '1', desc: 'Vencedor ou empate correto' },
@@ -12,7 +25,7 @@ export default function Regras() {
   const prazos = [
     { label: 'Campeão e Marcador', data: '11 jun · 18:00' },
     { label: 'Vencedores dos grupos', data: '18 jun · 12:00' },
-    { label: 'Jogos (cada jogo)', data: '23:59 do dia anterior' },
+    { label: 'Jogos (cada jogo)', data: '22:30 do dia anterior' },
     { label: 'Quartos de final', data: '3 jul · 11:59' },
     { label: 'Meias-finais', data: '8 jul · 11:59' },
     { label: '3.º lugar e Final', data: '11 jul · 11:59' },
@@ -20,7 +33,7 @@ export default function Regras() {
   ]
 
   const premios = [
-    { pos: '🥇', lugar: '1.º lugar', valor: '80€', cor: '#FFD700' },
+    { pos: '🥇', lugar: '1.º lugar', valor: '100€', cor: '#FFD700' },
     { pos: '🥈', lugar: '2.º lugar', valor: '40€', cor: '#FF69B4' },
     { pos: '🥉', lugar: '3.º lugar', valor: '20€', cor: '#CD7F32' },
   ]
@@ -50,12 +63,18 @@ export default function Regras() {
         <h4 style={{ fontFamily: 'Oswald,sans-serif', color: 'var(--gold)', letterSpacing: 1, marginBottom: 14, textAlign: 'center' }}>
           ⏱ Prazos limite
         </h4>
-        {prazos.map((p, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '7px 0', borderTop: i > 0 ? '1px solid #1a1a1a' : 'none' }}>
-            <span style={{ fontSize: 14, color: '#ccc', fontFamily: 'Barlow Condensed,sans-serif' }}>{p.label}</span>
-            <span style={{ fontSize: 13, color: '#888', fontFamily: 'Barlow Condensed,sans-serif', flexShrink: 0, marginLeft: 12, textAlign: 'right' }}>{p.data}</span>
-          </div>
-        ))}
+        {prazos.map((p, i) => {
+          const dt = prazosDatas[p.label]
+          const passou = dt && agora > dt
+          return (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '7px 0', borderTop: i > 0 ? '1px solid #1a1a1a' : 'none', opacity: passou ? 0.35 : 1 }}>
+              <span style={{ fontSize: 14, color: passou ? '#555' : '#ccc', fontFamily: 'Barlow Condensed,sans-serif', textDecoration: passou ? 'line-through' : 'none' }}>
+                {passou ? '✓ ' : ''}{p.label}
+              </span>
+              <span style={{ fontSize: 13, color: passou ? '#444' : '#888', fontFamily: 'Barlow Condensed,sans-serif', flexShrink: 0, marginLeft: 12, textAlign: 'right' }}>{p.data}</span>
+            </div>
+          )
+        })}
       </div>
 
       {/* Prémios */}
