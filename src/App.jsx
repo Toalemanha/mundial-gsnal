@@ -4,6 +4,7 @@ import Classificacao from './pages/Classificacao.jsx'
 import Apostas from './pages/Apostas.jsx'
 import PalpitesDeTodos from './pages/PalpitesDeTodos.jsx'
 import Admin from './pages/Admin.jsx'
+import Regras from './pages/Regras.jsx'
 
 export default function App() {
   // Restaura sessão do localStorage ao carregar
@@ -87,6 +88,7 @@ export default function App() {
           </p>
           {[
             { icon: '🏆', label: 'Classificação', id: 'classificacao' },
+            { icon: '📋', label: 'Regras', id: 'regras' },
             { icon: '👥', label: 'Palpites — Grupos', id: 'todos' },
             { icon: '👥', label: 'Palpites — Eliminat.', id: 'todos-elim' },
             ...(isAdmin ? [{ icon: '⚙️', label: 'Admin', id: 'admin' }] : []),
@@ -110,6 +112,7 @@ export default function App() {
       {pagina === 'todos'         && <PalpitesDeTodos jogador={jogador} isAdmin={isAdmin} />}
       {pagina === 'todos-elim'    && <PlaceholderEliminacao />}
       {pagina === 'admin'         && isAdmin && <Admin />}
+      {pagina === 'regras'        && <Regras />}
     </div>
   )
 }
