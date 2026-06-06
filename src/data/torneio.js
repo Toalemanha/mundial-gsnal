@@ -1,6 +1,6 @@
 // ── Dados do torneio ──────────────────────────────────────────────────────────
 
-export const NOMES_AMIGOS = ["André", "Filipe", "Paulo", "Tiago", "Hugo", "Raul", "Tó", "Ricardo"]
+export const NOMES_AMIGOS = ["André", "Filipe", "Paulo", "Tiago", "Hugo", "Tó", "Ricardo"]
 
 export const SENHA_ADMIN = "gsnal2026"
 
