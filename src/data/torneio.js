@@ -1,12 +1,12 @@
 // ── Dados do torneio ──────────────────────────────────────────────────────────
 
-export const NOMES_AMIGOS = ["André", "Filipe", "Paulo", "Tiago", "Hugo", "Tó", "Ricardo"]
+export const NOMES_AMIGOS = ["André", "Filipe", "Paulo", "Tiago", "Hugo", "Raul", "Tó", "Ricardo"]
 
 export const SENHA_ADMIN = "gsnal2026"
 
 export const SENHAS_DEFAULT = {
   "André": "1111", "Filipe": "2222", "Paulo": "3333", "Tiago": "4444",
-  "Hugo": "5555", "Tó": "7777", "Ricardo": "8888"
+  "Hugo": "5555", "Raul": "6666", "Tó": "7777", "Ricardo": "8888"
 }
 
 export const EQUIPAS_POR_GRUPO = {
@@ -68,11 +68,11 @@ export function prazoJogo(idJogo) {
       if (j.id === idJogo) {
         const partes = dia.data.split(", ")[1].split("/")
         const d = parseInt(partes[0]), m = parseInt(partes[1])
-        // Prazo: 23:59 do dia ANTERIOR ao jogo
+        // Prazo: 22:30 do dia anterior ao jogo
         const dtJogo = new Date(2026, m - 1, d)
         const dtPrazo = new Date(dtJogo)
         dtPrazo.setDate(dtPrazo.getDate() - 1)
-        dtPrazo.setHours(23, 59, 0, 0)
+        dtPrazo.setHours(22, 30, 0, 0)
         return dtPrazo
       }
     }
