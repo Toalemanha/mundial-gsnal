@@ -99,9 +99,19 @@ export function indiceDiaHoje() {
 // ── Fase a eliminar ───────────────────────────────────────────────────────────
 // As equipas ficam em branco — o admin preenche à medida que se apuram
 
-export const FASES_ELIMINACAO = ['quartos', 'meias', 'terceiro', 'final']
+export const FASES_ELIMINACAO = ['oitavos', 'quartos', 'meias', 'terceiro', 'final']
 
 export const JOGOS_ELIMINACAO = {
+  oitavos: [
+    { id: 'R16_1', label: 'Oitavo 1' },
+    { id: 'R16_2', label: 'Oitavo 2' },
+    { id: 'R16_3', label: 'Oitavo 3' },
+    { id: 'R16_4', label: 'Oitavo 4' },
+    { id: 'R16_5', label: 'Oitavo 5' },
+    { id: 'R16_6', label: 'Oitavo 6' },
+    { id: 'R16_7', label: 'Oitavo 7' },
+    { id: 'R16_8', label: 'Oitavo 8' },
+  ],
   quartos: [
     { id: 'QF1', label: 'Quarto 1' },
     { id: 'QF2', label: 'Quarto 2' },
@@ -121,16 +131,18 @@ export const JOGOS_ELIMINACAO = {
 }
 
 export const LABEL_FASE = {
-  quartos: '⚔️ Quartos de Final',
-  meias: '🔥 Meias-Finais',
+  oitavos:  '🎯 Oitavos de Final',
+  quartos:  '💥 Quartos de Final',
+  meias:    '🔥 Meias-Finais',
   terceiro: '🥉 3.º Lugar',
-  final: '🏆 Final',
+  final:    '🏆 Final',
 }
 
-// Prazos da fase a eliminar — o admin pode ajustar estas datas
+// Prazos: 22:30 do dia anterior ao primeiro jogo de cada fase
 export const PRAZOS_ELIMINACAO = {
-  quartos:  new Date("2026-07-03T11:59:00+01:00"),
-  meias:    new Date("2026-07-08T11:59:00+01:00"),
-  terceiro: new Date("2026-07-11T11:59:00+01:00"),
-  final:    new Date("2026-07-11T11:59:00+01:00"),
+  oitavos:  new Date("2026-07-03T22:30:00+01:00"),  // 1º jogo: 4 jul
+  quartos:  new Date("2026-07-08T22:30:00+01:00"),  // 1º jogo: 9 jul
+  meias:    new Date("2026-07-13T22:30:00+01:00"),  // 1º jogo: 14 jul
+  terceiro: new Date("2026-07-17T22:30:00+01:00"),  // jogo: 18 jul
+  final:    new Date("2026-07-18T22:30:00+01:00"),  // jogo: 19 jul
 }
