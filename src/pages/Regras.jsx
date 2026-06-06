@@ -5,10 +5,12 @@ export default function Regras() {
   const prazosDatas = {
     'Campeão e Marcador': new Date("2026-06-11T18:00:00+01:00"),
     'Vencedores dos grupos': new Date("2026-06-18T12:00:00+01:00"),
-    'Jogos (cada jogo)': null, // variável
-    'Quartos de final': new Date("2026-07-03T11:59:00+01:00"),
-    'Meias-finais': new Date("2026-07-08T11:59:00+01:00"),
-    '3.º lugar e Final': new Date("2026-07-11T11:59:00+01:00"),
+    'Jogos fase de grupos': null,
+    'Oitavos de final': new Date("2026-07-03T22:30:00+01:00"),
+    'Quartos de final': new Date("2026-07-08T22:30:00+01:00"),
+    'Meias-finais': new Date("2026-07-13T22:30:00+01:00"),
+    '3.º lugar': new Date("2026-07-17T22:30:00+01:00"),
+    'Final': new Date("2026-07-18T22:30:00+01:00"),
     'Revelação na tabela': new Date("2026-06-26T00:00:00+01:00"),
   }
 
@@ -25,15 +27,17 @@ export default function Regras() {
   const prazos = [
     { label: 'Campeão e Marcador', data: '11 jun · 18:00' },
     { label: 'Vencedores dos grupos', data: '18 jun · 12:00' },
-    { label: 'Jogos (cada jogo)', data: '22:30 do dia anterior' },
-    { label: 'Quartos de final', data: '3 jul · 11:59' },
-    { label: 'Meias-finais', data: '8 jul · 11:59' },
-    { label: '3.º lugar e Final', data: '11 jul · 11:59' },
+    { label: 'Jogos fase de grupos', data: '22:30 do dia anterior' },
+    { label: 'Oitavos de final', data: '3 jul · 22:30' },
+    { label: 'Quartos de final', data: '8 jul · 22:30' },
+    { label: 'Meias-finais', data: '13 jul · 22:30' },
+    { label: '3.º lugar', data: '17 jul · 22:30' },
+    { label: 'Final', data: '18 jul · 22:30' },
     { label: 'Revelação na tabela', data: '26 jun · 00:00' },
   ]
 
   const premios = [
-    { pos: '🥇', lugar: '1.º lugar', valor: '80€', cor: '#FFD700' },
+    { pos: '🥇', lugar: '1.º lugar', valor: '100€', cor: '#FFD700' },
     { pos: '🥈', lugar: '2.º lugar', valor: '40€', cor: '#FF69B4' },
     { pos: '🥉', lugar: '3.º lugar', valor: '20€', cor: '#CD7F32' },
   ]
