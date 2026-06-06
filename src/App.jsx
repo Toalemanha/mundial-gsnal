@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Login from './pages/Login.jsx'
 import Classificacao from './pages/Classificacao.jsx'
 import Apostas from './pages/Apostas.jsx'
@@ -6,8 +6,14 @@ import PalpitesDeTodos from './pages/PalpitesDeTodos.jsx'
 import Admin from './pages/Admin.jsx'
 import Regras from './pages/Regras.jsx'
 
+const NAV_ITEMS = [
+  { id: 'classificacao', icon: '🏆', label: 'Tabela' },
+  { id: 'apostas',       icon: '🎯', label: 'Apostar' },
+  { id: 'todos',         icon: '👥', label: 'Palpites' },
+  { id: 'regras',        icon: '📋', label: 'Regras' },
+]
+
 export default function App() {
-  // Restaura sessão do localStorage ao carregar
   const [autenticado, setAutenticado] = useState(() => !!localStorage.getItem('gsnal_jogador'))
   const [jogador, setJogador] = useState(() => localStorage.getItem('gsnal_jogador') || '')
   const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem('gsnal_admin') === 'true')
@@ -33,72 +39,51 @@ export default function App() {
     localStorage.removeItem('gsnal_admin')
   }
 
-  function irParaApostas() {
-    setPagina('apostas')
-    setMenuAberto(false)
-  }
-
   if (!autenticado) return <Login onLogin={onLogin} />
 
   return (
-    <div>
-      <button
-        className="btn"
-        style={{ fontFamily: 'VT323,monospace', fontSize: 'clamp(28px,8vw,40px)', color: 'var(--gold)', background: '#000', border: '1px solid #2a2a2a', height: 'auto', padding: '6px 0', marginBottom: 8, letterSpacing: 1 }}
-        onClick={() => { setPagina('classificacao'); setMenuAberto(false) }}
-      >
-        MUNDIAL GSNAL 26
-      </button>
-
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-        <div style={{ fontSize: 'clamp(11px,2.5vw,13px)', color: '#888', flexShrink: 0 }}>
-          👤 <strong style={{ color: '#eee' }}>{jogador}</strong>
-          {isAdmin && <span style={{ color: 'var(--gold)' }}> ★</span>}
-        </div>
-        <button className="btn btn-primary" style={{ flex: 1, fontSize: 'clamp(12px,3vw,14px)' }} onClick={irParaApostas}>
-          ⚽ Apostar hoje
-        </button>
+    <div style={{ paddingBottom: 72 }}>
+      {/* ── Header ── */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
         <button
-          className="btn btn-icon"
-          onClick={() => setMenuAberto(!menuAberto)}
-          aria-label="Menu"
-          style={{ flexShrink: 0 }}
+          style={{ fontFamily: 'VT323,monospace', fontSize: 'clamp(24px,7vw,36px)', color: 'var(--gold)', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: 1, padding: 0 }}
+          onClick={() => setPagina('classificacao')}
         >
-          {menuAberto ? '✕' : '☰'}
+          MUNDIAL GSNAL 26
         </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ fontSize: 12, color: '#666', fontFamily: 'Barlow Condensed,sans-serif' }}>
+            <strong style={{ color: '#eee' }}>{jogador}</strong>
+            {isAdmin && <span style={{ color: 'var(--gold)' }}> ★</span>}
+          </div>
+          <button
+            className="btn btn-icon"
+            onClick={() => setMenuAberto(!menuAberto)}
+            aria-label="Menu"
+            style={{ flexShrink: 0 }}
+          >
+            {menuAberto ? '✕' : '☰'}
+          </button>
+        </div>
       </div>
 
+      {/* ── Menu dropdown (extra opções) ── */}
       {menuAberto && (
         <div className="card" style={{ marginBottom: 12 }}>
-          <p style={{ fontSize: 11, color: '#444', textTransform: 'uppercase', letterSpacing: 2, fontFamily: 'Barlow Condensed,sans-serif', marginBottom: 6, paddingLeft: 14 }}>
-            Apostas
-          </p>
-          {[
-            { icon: '🎯', label: 'Fase de grupos', id: 'apostas' },
-            { icon: '🏟️', label: 'Fase a eliminar', id: 'eliminacao' },
-          ].map(item => (
-            <button key={item.id} className="btn" style={{ marginBottom: 6, textAlign: 'left', paddingLeft: 14 }}
-              onClick={() => { setPagina(item.id); setMenuAberto(false) }}>
-              {item.icon}  {item.label}
+          <button className="btn" style={{ marginBottom: 6, textAlign: 'left', paddingLeft: 14 }}
+            onClick={() => { setPagina('eliminacao'); setMenuAberto(false) }}>
+            🏟️  Apostas — Fase a eliminar
+          </button>
+          <button className="btn" style={{ marginBottom: 6, textAlign: 'left', paddingLeft: 14 }}
+            onClick={() => { setPagina('todos-elim'); setMenuAberto(false) }}>
+            👥  Palpites — Eliminatórias
+          </button>
+          {isAdmin && (
+            <button className="btn" style={{ marginBottom: 6, textAlign: 'left', paddingLeft: 14 }}
+              onClick={() => { setPagina('admin'); setMenuAberto(false) }}>
+              ⚙️  Admin
             </button>
-          ))}
-
-          <p style={{ fontSize: 11, color: '#444', textTransform: 'uppercase', letterSpacing: 2, fontFamily: 'Barlow Condensed,sans-serif', margin: '10px 0 6px', paddingLeft: 14 }}>
-            Ver
-          </p>
-          {[
-            { icon: '🏆', label: 'Classificação', id: 'classificacao' },
-            { icon: '📋', label: 'Regras', id: 'regras' },
-            { icon: '👥', label: 'Palpites — Grupos', id: 'todos' },
-            { icon: '👥', label: 'Palpites — Eliminat.', id: 'todos-elim' },
-            ...(isAdmin ? [{ icon: '⚙️', label: 'Admin', id: 'admin' }] : []),
-          ].map(item => (
-            <button key={item.id} className="btn" style={{ marginBottom: 6, textAlign: 'left', paddingLeft: 14 }}
-              onClick={() => { setPagina(item.id); setMenuAberto(false) }}>
-              {item.icon}  {item.label}
-            </button>
-          ))}
-
+          )}
           <hr />
           <button className="btn" style={{ textAlign: 'left', paddingLeft: 14 }} onClick={sair}>
             ↩  Sair
@@ -106,6 +91,7 @@ export default function App() {
         </div>
       )}
 
+      {/* ── Páginas ── */}
       {pagina === 'classificacao' && <Classificacao />}
       {pagina === 'apostas'       && <Apostas jogador={jogador} isAdmin={isAdmin} />}
       {pagina === 'eliminacao'    && <PlaceholderEliminacao />}
@@ -113,6 +99,58 @@ export default function App() {
       {pagina === 'todos-elim'    && <PlaceholderEliminacao />}
       {pagina === 'admin'         && isAdmin && <Admin />}
       {pagina === 'regras'        && <Regras />}
+
+      {/* ── Barra de navegação inferior ── */}
+      <nav style={{
+        position: 'fixed', bottom: 0, left: 0, right: 0,
+        background: '#0a0a0a', borderTop: '1px solid #1e1e1e',
+        display: 'flex', zIndex: 50,
+        maxWidth: 480, margin: '0 auto',
+      }}>
+        {NAV_ITEMS.map(item => {
+          const ativo = pagina === item.id
+          return (
+            <button
+              key={item.id}
+              onClick={() => { setPagina(item.id); setMenuAberto(false) }}
+              style={{
+                flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
+                justifyContent: 'center', padding: '10px 0 12px', background: 'none',
+                border: 'none', cursor: 'pointer', gap: 3,
+                borderTop: ativo ? '2px solid var(--gold)' : '2px solid transparent',
+                transition: 'border-color 0.15s',
+              }}
+            >
+              <span style={{ fontSize: 20 }}>{item.icon}</span>
+              <span style={{
+                fontSize: 10, fontFamily: 'Barlow Condensed,sans-serif', letterSpacing: 0.5,
+                color: ativo ? 'var(--gold)' : '#555', textTransform: 'uppercase',
+                transition: 'color 0.15s',
+              }}>
+                {item.label}
+              </span>
+            </button>
+          )
+        })}
+        <button
+          onClick={() => setMenuAberto(!menuAberto)}
+          style={{
+            flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
+            justifyContent: 'center', padding: '10px 0 12px', background: 'none',
+            border: 'none', cursor: 'pointer', gap: 3,
+            borderTop: menuAberto ? '2px solid var(--gold)' : '2px solid transparent',
+            transition: 'border-color 0.15s',
+          }}
+        >
+          <span style={{ fontSize: 20 }}>{menuAberto ? '✕' : '☰'}</span>
+          <span style={{
+            fontSize: 10, fontFamily: 'Barlow Condensed,sans-serif', letterSpacing: 0.5,
+            color: menuAberto ? 'var(--gold)' : '#555', textTransform: 'uppercase',
+          }}>
+            Mais
+          </span>
+        </button>
+      </nav>
     </div>
   )
 }
