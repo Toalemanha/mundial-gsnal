@@ -56,7 +56,7 @@ export default function Classificacao() {
         })}
         <div className="premios-row">
           {[
-            { emoji: '🥇', valor: '100€', cor: '#FFD700', lugar: '1.º lugar' },
+            { emoji: '🥇', valor: '80€', cor: '#FFD700', lugar: '1.º lugar' },
             { emoji: '🥈', valor: '40€', cor: '#FF69B4', lugar: '2.º lugar' },
             { emoji: '🥉', valor: '20€', cor: '#CD7F32', lugar: '3.º lugar' },
           ].map(p => (
