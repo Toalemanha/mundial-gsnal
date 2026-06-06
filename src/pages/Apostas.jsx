@@ -119,15 +119,30 @@ export default function Apostas({ jogador, isAdmin }) {
     }
   }
 
-  // ── Calcular minutos até ao próximo prazo ─────────────────
+  // ── Calcular tempo até ao próximo prazo ──────────────────
+  function formatarTempo(ms) {
+    if (ms <= 0) return null
+    const h = Math.floor(ms / 3600000)
+    const m = Math.floor((ms % 3600000) / 60000)
+    if (h > 48) return null
+    if (h >= 24) return `${Math.floor(h/24)}d ${h%24}h`
+    if (h > 0) return `${h}h ${m}min`
+    return `${m} min`
+  }
+
   function alertaPrazo() {
     for (const j of dia.jogos) {
       const prazo = prazoJogo(j.id)
       if (!prazo) continue
       const diff = prazo - agora
-      if (diff > 0 && diff < 60 * 60 * 1000) { // menos de 1 hora
-        const mins = Math.floor(diff / 60000)
-        return `⚠️ Prazo a fechar em ${mins} min para ${j.casa} vs ${j.fora}`
+      if (diff <= 0) continue
+      const tempo = formatarTempo(diff)
+      if (!tempo) continue
+      if (diff < 60 * 60 * 1000) {
+        return { tipo: 'urgente', msg: `⚠️ Prazo fecha em ${tempo} — ${j.casa} vs ${j.fora}` }
+      }
+      if (diff < 48 * 60 * 60 * 1000) {
+        return { tipo: 'info', msg: `⏱ ${tempo} para fechar apostas — ${j.casa} vs ${j.fora}` }
       }
     }
     return null
@@ -178,7 +193,11 @@ export default function Apostas({ jogador, isAdmin }) {
       {/* ── JOGOS ── */}
       {subMenu === 'jogos' && (
         <div>
-          {alerta && <div className="alert alert-warning" style={{ marginBottom: 10 }}>{alerta}</div>}
+          {alerta && (
+            <div className={`alert ${alerta.tipo === 'urgente' ? 'alert-warning' : 'alert-info'}`} style={{ marginBottom: 10 }}>
+              {alerta.msg}
+            </div>
+          )}
 
           <div className="nav-row">
             <button className="btn btn-icon" onClick={() => setDiaIdx(Math.max(0, diaIdx - 1))}>◀</button>
