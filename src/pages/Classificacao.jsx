@@ -31,7 +31,16 @@ export default function Classificacao() {
 
   return (
     <div>
-      <h2 style={{ marginBottom: 16 }}>🏆 Classificação</h2>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <h2 style={{ margin: 0 }}>🏆 Classificação</h2>
+        <button
+          className="btn btn-sm"
+          style={{ width: 'auto', padding: '0 14px', fontSize: 13, color: '#888' }}
+          onClick={carregarDados}
+        >
+          ↻ Atualizar
+        </button>
+      </div>
       <div className="card">
         {dados.map((j, i) => {
           const cor = i < 3 ? cores[i] : '#2a2a2a'
@@ -56,7 +65,7 @@ export default function Classificacao() {
         })}
         <div className="premios-row">
           {[
-            { emoji: '🥇', valor: '80€', cor: '#FFD700', lugar: '1.º lugar' },
+            { emoji: '🥇', valor: '100€', cor: '#FFD700', lugar: '1.º lugar' },
             { emoji: '🥈', valor: '40€', cor: '#FF69B4', lugar: '2.º lugar' },
             { emoji: '🥉', valor: '20€', cor: '#CD7F32', lugar: '3.º lugar' },
           ].map(p => (
