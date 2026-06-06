@@ -211,13 +211,22 @@ export default function Apostas({ jogador, isAdmin }) {
             const prazo = prazoJogo(j.id)
             const bloqueado = prazo && agora >= prazo && !isAdmin
             const horaCor = bloqueado ? 'var(--red)' : '#555'
+            const temAposta = scores[j.id]?.casa !== null && scores[j.id]?.casa !== undefined
+                           && scores[j.id]?.fora !== null && scores[j.id]?.fora !== undefined
 
             return (
-              <div key={j.id} className="card" style={{ marginBottom: 10 }}>
-                <p style={{ textAlign: 'center', fontSize: 11, color: horaCor, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 8 }}>
-                  ⏱ {j.hora} Lisboa{bloqueado ? '  🔒 ENCERRADO' : ''}
-                  {!bloqueado && isAdmin && prazo && agora >= prazo ? '  🔓 ADMIN' : ''}
-                </p>
+              <div key={j.id} className="card" style={{
+                marginBottom: 10,
+                borderColor: temAposta && !bloqueado ? 'rgba(0,200,83,0.3)' : '#1e1e1e',
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                  <span style={{ fontSize: 11, color: horaCor, letterSpacing: '1.5px', textTransform: 'uppercase' }}>
+                    ⏱ {j.hora} Lisboa{bloqueado ? '  🔒' : ''}{!bloqueado && isAdmin && prazo && agora >= prazo ? '  🔓' : ''}
+                  </span>
+                  <span style={{ fontSize: 11, color: temAposta ? '#00C853' : '#444', fontFamily: 'Barlow Condensed,sans-serif', letterSpacing: 0.5 }}>
+                    {temAposta ? '✓ apostado' : '· por apostar'}
+                  </span>
+                </div>
                 <div className="jogo-row">
                   <div className="team-name left">{j.casa}</div>
                   <input
