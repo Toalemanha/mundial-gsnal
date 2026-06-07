@@ -1,12 +1,12 @@
 // ── Dados do torneio ──────────────────────────────────────────────────────────
 
-export const NOMES_AMIGOS = ["André", "Filipe", "Paulo", "Tiago", "Hugo", "Raul", "Tó", "Ricardo"]
+export const NOMES_AMIGOS = ["André", "Filipe", "Paulo", "Tiago", "Hugo", "Tó", "Ricardo"]
 
 export const SENHA_ADMIN = "gsnal2026"
 
 export const SENHAS_DEFAULT = {
   "André": "1111", "Filipe": "2222", "Paulo": "3333", "Tiago": "4444",
-  "Hugo": "5555", "Raul": "6666", "Tó": "7777", "Ricardo": "8888"
+  "Hugo": "5555", "Tó": "7777", "Ricardo": "8888"
 }
 
 export const EQUIPAS_POR_GRUPO = {
