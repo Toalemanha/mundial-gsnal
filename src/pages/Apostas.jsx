@@ -12,6 +12,7 @@ export default function Apostas({ jogador, isAdmin }) {
   const [grupo, setGrupo] = useState('Grupo A')
   const [jogadorSel, setJogadorSel] = useState(jogador)
   const [apostas, setApostas] = useState({ jogos: {}, grupos: {} })
+  const [apostasCarregadas, setApostasCarregadas] = useState(false)
   const [scores, setScores] = useState({})
   const [p1, setP1] = useState('')
   const [p2, setP2] = useState('')
@@ -51,16 +52,18 @@ export default function Apostas({ jogador, isAdmin }) {
       setCampeao(jData?.campeao || '')
       setMarcador(jData?.marcador || '')
       setScores(jogosMap)
+      setApostasCarregadas(true)
     } catch (err) {
       console.error('Erro ao carregar apostas:', err)
     }
   }
 
   useEffect(() => {
+    if (!apostasCarregadas) return
     const g = apostas.grupos?.[grupo] || {}
     setP1(g.primeiro || '')
     setP2(g.segundo || '')
-  }, [grupo, apostas])
+  }, [grupo, apostas, apostasCarregadas])
 
   const dia = CALENDARIO[diaIdx]
 
