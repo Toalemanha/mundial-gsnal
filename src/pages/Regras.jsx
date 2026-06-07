@@ -37,7 +37,7 @@ export default function Regras() {
   ]
 
   const premios = [
-    { pos: '🥇', lugar: '1.º lugar', valor: '100€', cor: '#FFD700' },
+    { pos: '🥇', lugar: '1.º lugar', valor: '80€', cor: '#FFD700' },
     { pos: '🥈', lugar: '2.º lugar', valor: '40€', cor: '#FF69B4' },
     { pos: '🥉', lugar: '3.º lugar', valor: '20€', cor: '#CD7F32' },
   ]
