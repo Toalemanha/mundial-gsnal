@@ -59,7 +59,7 @@ export default function Regras() {
             <span style={{ fontFamily: 'VT323,monospace', fontSize: 22, color: 'var(--gold)', marginLeft: 12, flexShrink: 0 }}>+{r.pts}</span>
           </div>
         ))}
-        <p style={{ fontSize: 11, color: '#444', marginTop: 12, textAlign: 'center', lineHeight: 1.5, fontFamily: 'Barlow Condensed,sans-serif' }}>
+        <p style={{ fontSize: 11, color: '#ccc', marginTop: 12, textAlign: 'center', lineHeight: 1.5, fontFamily: 'Barlow Condensed,sans-serif' }}>
           Em caso de empate na tabela, ganha quem tiver o melhor marcador.<br />Em novo empate, a equipa que foi mais longe no torneio.
         </p>
       </div>
