@@ -12,6 +12,7 @@ export default function Regras() {
     '3.º lugar': new Date("2026-07-17T22:30:00+01:00"),
     'Final': new Date("2026-07-18T22:30:00+01:00"),
     'Revelação na tabela': new Date("2026-06-26T00:00:00+01:00"),
+    
   }
 
   const regras = [
@@ -34,6 +35,7 @@ export default function Regras() {
     { label: '3.º lugar', data: '17 jul · 22:30' },
     { label: 'Final', data: '18 jul · 22:30' },
     { label: 'Revelação na tabela', data: '26 jun · 00:00' },
+    { label: 'Palpites de cada jogo visíveis', data: 'Após 22:30 do dia anterior' },
   ]
 
   const premios = [
