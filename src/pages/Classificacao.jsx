@@ -137,7 +137,7 @@ export default function Classificacao() {
             </div>
           ))}
         </div>
-        <p style={{ textAlign: 'center', fontSize: 11, color: '#555', padding: '10px 8px 4px', lineHeight: 1.5 }}>
+        <p style={{ textAlign: 'center', fontSize: 11, color: '#ccc', padding: '10px 8px 4px', lineHeight: 1.5 }}>
           Em caso de empate, ganha quem tiver o melhor marcador.<br />Em novo empate, a equipa que foi mais longe no torneio.
         </p>
       </div>
