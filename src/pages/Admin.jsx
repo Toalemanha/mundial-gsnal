@@ -172,7 +172,10 @@ export default function Admin() {
     }
 
     // Guardar pontos
-    for (const [nome, pts] of Object.entries(pontos)) {
+console.log('PONTOS CALCULADOS:', JSON.stringify(pontos))
+console.log('PALPITES:', JSON.stringify(palpitesJogos))
+console.log('RESULTADOS:', JSON.stringify(resDB))
+for (const [nome, pts] of Object.entries(pontos)) {
       await supabase.from('jogadores').update({ pontos: pts }).eq('nome', nome)
     }
 
