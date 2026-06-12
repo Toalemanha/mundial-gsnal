@@ -81,28 +81,36 @@ export default function Admin() {
   }
 
   async function calcularPontos() {
-    // 1. Guardar resultados fase de grupos
+    // 1. Guardar resultados no Supabase (delete + insert para garantir)
     for (const [id, sc] of Object.entries(resultados)) {
-      if (sc.casa !== null && sc.fora !== null)
-        await supabase.from('resultados').upsert({ id_jogo: id, casa: sc.casa, fora: sc.fora }, { onConflict: 'id_jogo' })
+      if (sc.casa !== null && sc.fora !== null) {
+        await supabase.from('resultados').delete().eq('id_jogo', id)
+        await supabase.from('resultados').insert({ id_jogo: id, casa: Number(sc.casa), fora: Number(sc.fora) })
+      }
     }
     for (const [grupo, pos] of Object.entries(resultGrupos)) {
-      if (pos.primeiro || pos.segundo)
-        await supabase.from('resultados_grupos').upsert({ grupo, primeiro: pos.primeiro || null, segundo: pos.segundo || null }, { onConflict: 'grupo' })
+      if (pos.primeiro || pos.segundo) {
+        await supabase.from('resultados_grupos').delete().eq('grupo', grupo)
+        await supabase.from('resultados_grupos').insert({ grupo, primeiro: pos.primeiro || null, segundo: pos.segundo || null })
+      }
     }
-    await supabase.from('config').upsert({ id: 1, campeao_real: campeaoReal || null, marcador_real: marcadorReal || null }, { onConflict: 'id' })
+    await supabase.from('config').update({ campeao_real: campeaoReal || null, marcador_real: marcadorReal || null }).eq('id', 1)
 
     // 2. Guardar equipas e resultados eliminatórias
     for (const [id, eq] of Object.entries(equipasElim)) {
-      if (eq.casa || eq.fora)
-        await supabase.from('equipas_eliminacao').upsert({ id_jogo: id, casa: eq.casa || null, fora: eq.fora || null }, { onConflict: 'id_jogo' })
+      if (eq.casa || eq.fora) {
+        await supabase.from('equipas_eliminacao').delete().eq('id_jogo', id)
+        await supabase.from('equipas_eliminacao').insert({ id_jogo: id, casa: eq.casa || null, fora: eq.fora || null })
+      }
     }
     for (const [id, sc] of Object.entries(resultadosElim)) {
-      if (sc.casa !== null && sc.fora !== null)
-        await supabase.from('resultados_eliminacao').upsert({ id_jogo: id, casa: sc.casa, fora: sc.fora }, { onConflict: 'id_jogo' })
+      if (sc.casa !== null && sc.fora !== null) {
+        await supabase.from('resultados_eliminacao').delete().eq('id_jogo', id)
+        await supabase.from('resultados_eliminacao').insert({ id_jogo: id, casa: Number(sc.casa), fora: Number(sc.fora) })
+      }
     }
 
-    // 3. Buscar todos os dados frescos do Supabase
+    // 3. Buscar TUDO fresco do Supabase após guardar
     const [
       { data: jogadores },
       { data: palpitesJogos },
@@ -123,37 +131,37 @@ export default function Admin() {
       supabase.from('config').select('campeao_real, marcador_real').eq('id', 1).single(),
     ])
 
-    // Mapas dos resultados reais vindos do Supabase
+    // 4. Construir mapas
     const resMap = {}
-    if (resDB) resDB.forEach(r => { resMap[r.id_jogo] = { casa: r.casa, fora: r.fora } })
+    if (resDB) resDB.forEach(r => { resMap[r.id_jogo] = { casa: Number(r.casa), fora: Number(r.fora) } })
 
     const resGrMap = {}
     if (resGrDB) resGrDB.forEach(r => { resGrMap[r.grupo] = { primeiro: r.primeiro, segundo: r.segundo } })
 
     const resElimMap = {}
-    if (resElimDB) resElimDB.forEach(r => { resElimMap[r.id_jogo] = { casa: r.casa, fora: r.fora } })
+    if (resElimDB) resElimDB.forEach(r => { resElimMap[r.id_jogo] = { casa: Number(r.casa), fora: Number(r.fora) } })
 
-    const campReal = cfgDB?.campeao_real || campeaoReal
-    const marcReal = cfgDB?.marcador_real || marcadorReal
+    const campReal = cfgDB?.campeao_real || ''
+    const marcReal = cfgDB?.marcador_real || ''
 
+    // 5. Calcular pontos
     const pontos = {}
     NOMES_AMIGOS.forEach(n => { pontos[n] = 0 })
 
-    // Campeão e marcador
     for (const j of (jogadores || [])) {
       if (campReal && j.campeao === campReal) pontos[j.nome] += 10
       if (marcReal && j.marcador?.trim().toLowerCase() === marcReal.trim().toLowerCase()) pontos[j.nome] += 6
     }
 
-    // Jogos fase de grupos
     for (const p of (palpitesJogos || [])) {
       const r = resMap[p.id_jogo]
-      if (!r || r.casa === null || r.fora === null) continue
-      if (Number(p.casa) === Number(r.casa) && Number(p.fora) === Number(r.fora)) pontos[p.jogador] += 3
-      else if ((p.casa > p.fora && r.casa > r.fora) || (p.casa < p.fora && r.casa < r.fora) || (p.casa === p.fora && r.casa === r.fora)) pontos[p.jogador] += 1
+      if (!r) continue
+      const pc = Number(p.casa), pf = Number(p.fora)
+      const rc = r.casa, rf = r.fora
+      if (pc === rc && pf === rf) pontos[p.jogador] += 3
+      else if ((pc > pf && rc > rf) || (pc < pf && rc < rf) || (pc === pf && rc === rf)) pontos[p.jogador] += 1
     }
 
-    // Vencedores de grupos
     for (const pg of (palpitesGrupos || [])) {
       const rg = resGrMap[pg.grupo]
       if (!rg) continue
@@ -163,21 +171,17 @@ export default function Admin() {
       else if (pg.segundo === rg.primeiro) pontos[pg.jogador] += 1
     }
 
-    // Eliminatórias
     for (const p of (palpitesElim || [])) {
       const r = resElimMap[p.id_jogo]
-      if (!r || r.casa === null || r.fora === null) continue
-      if (Number(p.casa) === Number(r.casa) && Number(p.fora) === Number(r.fora)) pontos[p.jogador] += 3
-      else if ((p.casa > p.fora && r.casa > r.fora) || (p.casa < p.fora && r.casa < r.fora) || (p.casa === p.fora && r.casa === r.fora)) pontos[p.jogador] += 1
+      if (!r) continue
+      const pc = Number(p.casa), pf = Number(p.fora)
+      const rc = r.casa, rf = r.fora
+      if (pc === rc && pf === rf) pontos[p.jogador] += 3
+      else if ((pc > pf && rc > rf) || (pc < pf && rc < rf) || (pc === pf && rc === rf)) pontos[p.jogador] += 1
     }
 
-    // Guardar pontos
-console.log('PONTOS CALCULADOS:', JSON.stringify(pontos))
-console.log('PALPITES:', JSON.stringify(palpitesJogos))
-console.log('RESULTADOS:', JSON.stringify(resDB))
-    console.log('resDB raw:', JSON.stringify(resDB))
-console.log('resMap:', JSON.stringify(resMap))
-for (const [nome, pts] of Object.entries(pontos)) {
+    // 6. Guardar pontos
+    for (const [nome, pts] of Object.entries(pontos)) {
       await supabase.from('jogadores').update({ pontos: pts }).eq('nome', nome)
     }
 
