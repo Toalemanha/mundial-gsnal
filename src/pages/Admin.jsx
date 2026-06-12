@@ -102,39 +102,60 @@ export default function Admin() {
         await supabase.from('resultados_eliminacao').upsert({ id_jogo: id, casa: sc.casa, fora: sc.fora }, { onConflict: 'id_jogo' })
     }
 
-    // 3. Buscar todos os palpites
+    // 3. Buscar todos os dados frescos do Supabase
     const [
       { data: jogadores },
       { data: palpitesJogos },
       { data: palpitesGrupos },
       { data: palpitesElim },
+      { data: resDB },
+      { data: resGrDB },
+      { data: resElimDB },
+      { data: cfgDB },
     ] = await Promise.all([
       supabase.from('jogadores').select('nome, campeao, marcador'),
       supabase.from('palpites').select('jogador, id_jogo, casa, fora'),
       supabase.from('palpites_grupos').select('jogador, grupo, primeiro, segundo'),
       supabase.from('palpites_eliminacao').select('jogador, id_jogo, casa, fora'),
+      supabase.from('resultados').select('id_jogo, casa, fora'),
+      supabase.from('resultados_grupos').select('grupo, primeiro, segundo'),
+      supabase.from('resultados_eliminacao').select('id_jogo, casa, fora'),
+      supabase.from('config').select('campeao_real, marcador_real').eq('id', 1).single(),
     ])
+
+    // Mapas dos resultados reais vindos do Supabase
+    const resMap = {}
+    if (resDB) resDB.forEach(r => { resMap[r.id_jogo] = { casa: r.casa, fora: r.fora } })
+
+    const resGrMap = {}
+    if (resGrDB) resGrDB.forEach(r => { resGrMap[r.grupo] = { primeiro: r.primeiro, segundo: r.segundo } })
+
+    const resElimMap = {}
+    if (resElimDB) resElimDB.forEach(r => { resElimMap[r.id_jogo] = { casa: r.casa, fora: r.fora } })
+
+    const campReal = cfgDB?.campeao_real || campeaoReal
+    const marcReal = cfgDB?.marcador_real || marcadorReal
 
     const pontos = {}
     NOMES_AMIGOS.forEach(n => { pontos[n] = 0 })
 
     // Campeão e marcador
     for (const j of (jogadores || [])) {
-      if (campeaoReal && j.campeao === campeaoReal) pontos[j.nome] += 10
-      if (marcadorReal && j.marcador?.trim().toLowerCase() === marcadorReal.trim().toLowerCase()) pontos[j.nome] += 6
+      if (campReal && j.campeao === campReal) pontos[j.nome] += 10
+      if (marcReal && j.marcador?.trim().toLowerCase() === marcReal.trim().toLowerCase()) pontos[j.nome] += 6
     }
 
     // Jogos fase de grupos
     for (const p of (palpitesJogos || [])) {
-      const r = resultados[p.id_jogo]
+      const r = resMap[p.id_jogo]
       if (!r || r.casa === null || r.fora === null) continue
-      if (p.casa === r.casa && p.fora === r.fora) pontos[p.jogador] += 3
+      if (Number(p.casa) === Number(r.casa) && Number(p.fora) === Number(r.fora)) pontos[p.jogador] += 3
       else if ((p.casa > p.fora && r.casa > r.fora) || (p.casa < p.fora && r.casa < r.fora) || (p.casa === p.fora && r.casa === r.fora)) pontos[p.jogador] += 1
     }
 
     // Vencedores de grupos
     for (const pg of (palpitesGrupos || [])) {
-      const rg = resultGrupos[pg.grupo]
+      const rg = resGrMap[pg.grupo]
       if (!rg) continue
       if (pg.primeiro === rg.primeiro) pontos[pg.jogador] += 3
       else if (pg.primeiro === rg.segundo) pontos[pg.jogador] += 1
@@ -142,22 +163,17 @@ export default function Admin() {
       else if (pg.segundo === rg.primeiro) pontos[pg.jogador] += 1
     }
 
-    // Eliminatórias — mesma lógica: 3 pts resultado exato, 1 pt vencedor certo
+    // Eliminatórias
     for (const p of (palpitesElim || [])) {
-      const r = resultadosElim[p.id_jogo]
+      const r = resElimMap[p.id_jogo]
       if (!r || r.casa === null || r.fora === null) continue
-      if (p.casa === r.casa && p.fora === r.fora) pontos[p.jogador] += 3
+      if (Number(p.casa) === Number(r.casa) && Number(p.fora) === Number(r.fora)) pontos[p.jogador] += 3
       else if ((p.casa > p.fora && r.casa > r.fora) || (p.casa < p.fora && r.casa < r.fora) || (p.casa === p.fora && r.casa === r.fora)) pontos[p.jogador] += 1
     }
 
-    // Guardar pontos — usa update para não apagar a senha guardada
+    // Guardar pontos
     for (const [nome, pts] of Object.entries(pontos)) {
-      const { count } = await supabase.from('jogadores').select('nome', { count: 'exact', head: true }).eq('nome', nome)
-      if (count > 0) {
-        await supabase.from('jogadores').update({ pontos: pts }).eq('nome', nome)
-      } else {
-        await supabase.from('jogadores').insert({ nome, pontos: pts })
-      }
+      await supabase.from('jogadores').update({ pontos: pts }).eq('nome', nome)
     }
 
     showToast('✅ Tabela atualizada com sucesso!')
