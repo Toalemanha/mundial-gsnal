@@ -175,6 +175,8 @@ export default function Admin() {
 console.log('PONTOS CALCULADOS:', JSON.stringify(pontos))
 console.log('PALPITES:', JSON.stringify(palpitesJogos))
 console.log('RESULTADOS:', JSON.stringify(resDB))
+    console.log('resDB raw:', JSON.stringify(resDB))
+console.log('resMap:', JSON.stringify(resMap))
 for (const [nome, pts] of Object.entries(pontos)) {
       await supabase.from('jogadores').update({ pontos: pts }).eq('nome', nome)
     }
