@@ -81,7 +81,7 @@ export default function Admin() {
   }
 
   async function calcularPontos() {
-    // 1. Guardar resultados no Supabase (delete + insert para garantir)
+    // 1. Guardar resultados no Supabase
     for (const [id, sc] of Object.entries(resultados)) {
       if (sc.casa !== null && sc.fora !== null) {
         await supabase.from('resultados').delete().eq('id_jogo', id)
@@ -110,79 +110,12 @@ export default function Admin() {
       }
     }
 
-    // 3. Buscar TUDO fresco do Supabase após guardar
-    const [
-      { data: jogadores },
-      { data: palpitesJogos },
-      { data: palpitesGrupos },
-      { data: palpitesElim },
-      { data: resDB },
-      { data: resGrDB },
-      { data: resElimDB },
-      { data: cfgDB },
-    ] = await Promise.all([
-      supabase.from('jogadores').select('nome, campeao, marcador'),
-      supabase.from('palpites').select('jogador, id_jogo, casa, fora'),
-      supabase.from('palpites_grupos').select('jogador, grupo, primeiro, segundo'),
-      supabase.from('palpites_eliminacao').select('jogador, id_jogo, casa, fora'),
-      supabase.from('resultados').select('id_jogo, casa, fora'),
-      supabase.from('resultados_grupos').select('grupo, primeiro, segundo'),
-      supabase.from('resultados_eliminacao').select('id_jogo, casa, fora'),
-      supabase.from('config').select('campeao_real, marcador_real').eq('id', 1).single(),
-    ])
-
-    // 4. Construir mapas
-    const resMap = {}
-    if (resDB) resDB.forEach(r => { resMap[r.id_jogo] = { casa: Number(r.casa), fora: Number(r.fora) } })
-
-    const resGrMap = {}
-    if (resGrDB) resGrDB.forEach(r => { resGrMap[r.grupo] = { primeiro: r.primeiro, segundo: r.segundo } })
-
-    const resElimMap = {}
-    if (resElimDB) resElimDB.forEach(r => { resElimMap[r.id_jogo] = { casa: Number(r.casa), fora: Number(r.fora) } })
-
-    const campReal = cfgDB?.campeao_real || ''
-    const marcReal = cfgDB?.marcador_real || ''
-
-    // 5. Calcular pontos
-    const pontos = {}
-    NOMES_AMIGOS.forEach(n => { pontos[n] = 0 })
-
-    for (const j of (jogadores || [])) {
-      if (campReal && j.campeao === campReal) pontos[j.nome] += 10
-      if (marcReal && j.marcador?.trim().toLowerCase() === marcReal.trim().toLowerCase()) pontos[j.nome] += 6
-    }
-
-    for (const p of (palpitesJogos || [])) {
-      const r = resMap[p.id_jogo]
-      if (!r) continue
-      const pc = Number(p.casa), pf = Number(p.fora)
-      const rc = r.casa, rf = r.fora
-      if (pc === rc && pf === rf) pontos[p.jogador] += 3
-      else if ((pc > pf && rc > rf) || (pc < pf && rc < rf) || (pc === pf && rc === rf)) pontos[p.jogador] += 1
-    }
-
-    for (const pg of (palpitesGrupos || [])) {
-      const rg = resGrMap[pg.grupo]
-      if (!rg) continue
-      if (pg.primeiro === rg.primeiro) pontos[pg.jogador] += 3
-      else if (pg.primeiro === rg.segundo) pontos[pg.jogador] += 1
-      if (pg.segundo === rg.segundo) pontos[pg.jogador] += 3
-      else if (pg.segundo === rg.primeiro) pontos[pg.jogador] += 1
-    }
-
-    for (const p of (palpitesElim || [])) {
-      const r = resElimMap[p.id_jogo]
-      if (!r) continue
-      const pc = Number(p.casa), pf = Number(p.fora)
-      const rc = r.casa, rf = r.fora
-      if (pc === rc && pf === rf) pontos[p.jogador] += 3
-      else if ((pc > pf && rc > rf) || (pc < pf && rc < rf) || (pc === pf && rc === rf)) pontos[p.jogador] += 1
-    }
-
-    // 6. Guardar pontos
-    for (const [nome, pts] of Object.entries(pontos)) {
-      await supabase.from('jogadores').update({ pontos: pts }).eq('nome', nome)
+    // 3. Chamar função SQL que calcula os pontos corretamente
+    const { error } = await supabase.rpc('recalcular_pontos')
+    if (error) {
+      console.error('Erro RPC:', error)
+      showToast('❌ Erro ao recalcular!')
+      return
     }
 
     showToast('✅ Tabela atualizada com sucesso!')
