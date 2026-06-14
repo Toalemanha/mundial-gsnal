@@ -70,8 +70,6 @@ export const CALENDARIO = [
     { hora: "17:00", id: "Grupo A_J2", casa: "🇨🇿 Chéquia", fora: "🇿🇦 Áfr. Sul" },
     { hora: "23:00", id: "Grupo B_J2", casa: "🇨🇦 Canadá", fora: "🇶🇦 Catar" }
   ]},
-  { data: "Sex., 19/06", jogos: [
-      ]},
   { data: "Sáb., 20/06", jogos: [
     { hora: "01:30", id: "Grupo C_J2", casa: "🇧🇷 Brasil", fora: "🇭🇹 Haiti" },
     { hora: "04:00", id: "Grupo D_J2", casa: "🇹🇷 Turquia", fora: "🇵🇾 Paraguai" }
@@ -101,7 +99,7 @@ export const CALENDARIO = [
   { data: "Sex., 26/06", jogos: [
     { hora: "00:00", id: "Grupo F_J3", casa: "🇯🇵 Japão", fora: "🇸🇪 Suécia" },
     { hora: "03:00", id: "Grupo D_J3", casa: "🇵🇾 Paraguai", fora: "🇦🇺 Austrália" },
-    { hora: "20:00", id: "Grupo I_J3", casa: "🇸🇳 Senegal", fora: "🇮🇶 Iraque" },
+    { hora: "20:00", id: "Grupo I_J3", casa: "🇸🇳 Senegal", fora: "🇮🇶 Iraque" }
   ]},
   { data: "Sáb., 27/06", jogos: [
     { hora: "01:00", id: "Grupo H_J3", casa: "🇨🇻 Cabo Verde", fora: "🇸🇦 Arábia S." },
@@ -109,7 +107,7 @@ export const CALENDARIO = [
     { hora: "22:00", id: "Grupo L_J3", casa: "🇭🇷 Croácia", fora: "🇬🇭 Gana" }
   ]},
   { data: "Dom., 28/06", jogos: [
-    { hora: "03:00", id: "Grupo J_J3", casa: "🇩🇿 Argélia", fora: "🇦🇹 Áustria" }
+    { hora: "03:00", id: "Grupo J_J3", casa: "🇩🇿 Argélia", fora: "🇦🇹 Áustria" },
     { hora: "00:30", id: "Grupo K_J3", casa: "🇨🇩 RD Congo", fora: "🇺🇿 Usbequistão" }
   ]}
 ]
