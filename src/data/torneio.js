@@ -32,7 +32,7 @@ export const JOGOS_FASE_GRUPOS = {
   "Grupo C": [["🇭🇹 Haiti","🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escócia","Grupo C_J1"],["🇧🇷 Brasil","🇭🇹 Haiti","Grupo C_J2"],["🇲🇦 Marrocos","🇭🇹 Haiti","Grupo C_J3"]],
   "Grupo D": [["🇺🇸 EUA","🇵🇾 Paraguai","Grupo D_J1"],["🇹🇷 Turquia","🇵🇾 Paraguai","Grupo D_J2"],["🇵🇾 Paraguai","🇦🇺 Austrália","Grupo D_J3"]],
   "Grupo E": [["🇩🇪 Alemanha","🇨🇼 Curaçau","Grupo E_J1"],["🇪🇨 Equador","🇨🇼 Curaçau","Grupo E_J2"],["🇨🇮 C. Marfim","🇨🇼 Curaçau","Grupo E_J3"]],
-  "Grupo F": [["🇸🇪 Suécia","🇹🇳 Tunísia","Grupo F_J1"],["🇯🇵 Japão","🇹🇳 Tunísia","Grupo F_J2"],["🇯🇵 Japão","🇸🇪 Suécia","Grupo F_J3"]],
+  "Grupo F": [["🇸🇪 Suécia","🇹🇳 Tunísia","Grupo F_J1"],["🇹🇳 Tunísia","🇯🇵 Japão","Grupo F_J2"],["🇯🇵 Japão","🇸🇪 Suécia","Grupo F_J3"]],
   "Grupo G": [["🇮🇷 Irão","🇳🇿 N. Zelândia","Grupo G_J1"],["🇳🇿 N. Zelândia","🇪🇬 Egito","Grupo G_J2"],["🇧🇪 Bélgica","🇳🇿 N. Zelândia","Grupo G_J3"]],
   "Grupo H": [["🇪🇸 Espanha","🇨🇻 Cabo Verde","Grupo H_J1"],["🇨🇻 Cabo Verde","🇺🇾 Uruguai","Grupo H_J2"],["🇨🇻 Cabo Verde","🇸🇦 Arábia S.","Grupo H_J3"]],
   "Grupo I": [["🇮🇶 Iraque","🇳🇴 Noruega","Grupo I_J1"],["🇳🇴 Noruega","🇸🇳 Senegal","Grupo I_J2"],["🇸🇳 Senegal","🇮🇶 Iraque","Grupo I_J3"]],
