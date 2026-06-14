@@ -42,26 +42,73 @@ export const JOGOS_FASE_GRUPOS = {
 }
 
 export const CALENDARIO = [
-  { data: "Sex., 12/06", jogos: [{ hora: "03:00", id: "Grupo A_J1", casa: "🇰🇷 Cor. Sul", fora: "🇨🇿 Chéquia" }, { hora: "20:00", id: "Grupo B_J1", casa: "🇨🇦 Canadá", fora: "🇧🇦 Bósnia" }] },
-  { data: "Sáb., 13/06", jogos: [{ hora: "02:00", id: "Grupo D_J1", casa: "🇺🇸 EUA", fora: "🇵🇾 Paraguai" }] },
-  { data: "Dom., 14/06", jogos: [{ hora: "02:00", id: "Grupo C_J1", casa: "🇭🇹 Haiti", fora: "🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escócia" }, { hora: "18:00", id: "Grupo E_J1", casa: "🇩🇪 Alemanha", fora: "🇨🇼 Curaçau" }] },
-  { data: "Seg., 15/06", jogos: [{ hora: "03:00", id: "Grupo F_J1", casa: "🇸🇪 Suécia", fora: "🇹🇳 Tunísia" }, { hora: "17:00", id: "Grupo H_J1", casa: "🇪🇸 Espanha", fora: "🇨🇻 Cabo Verde" }] },
-  { data: "Ter., 16/06", jogos: [{ hora: "02:00", id: "Grupo G_J1", casa: "🇮🇷 Irão", fora: "🇳🇿 N. Zelândia" }, { hora: "23:00", id: "Grupo I_J1", casa: "🇮🇶 Iraque", fora: "🇳🇴 Noruega" }] },
-  { data: "Qua., 17/06", jogos: [{ hora: "05:00", id: "Grupo J_J1", casa: "🇦🇹 Áustria", fora: "🇯🇴 Jordânia" }] },
-  { data: "Qui., 18/06", jogos: [{ hora: "00:00", id: "Grupo L_J1", casa: "🇬🇭 Gana", fora: "🇵🇦 Panamá" }, { hora: "03:00", id: "Grupo K_J1", casa: "🇺🇿 Usbequistão", fora: "🇨🇴 Colômbia" }] },
-  { data: "Sex., 19/06", jogos: [{ hora: "03:00", id: "Grupo B_J2", casa: "🇨🇦 Canadá", fora: "🇶🇦 Catar" }, { hora: "21:00", id: "Grupo A_J2", casa: "🇿🇦 Áfr. Sul", fora: "🇨🇿 Chéquia" }] },
-  { data: "Sáb., 20/06", jogos: [{ hora: "01:30", id: "Grupo C_J2", casa: "🇧🇷 Brasil", fora: "🇭🇹 Haiti" }, { hora: "04:00", id: "Grupo D_J2", casa: "🇵🇾 Paraguai", fora: "🇹🇷 Turquia" }] },
-  { data: "Dom., 21/06", jogos: [{ hora: "01:00", id: "Grupo E_J2", casa: "🇨🇼 Curaçau", fora: "🇪🇨 Equador" }, { hora: "05:00", id: "Grupo F_J2", casa: "🇯🇵 Japão", fora: "🇹🇳 Tunísia" }, { hora: "23:00", id: "Grupo H_J2", casa: "🇨🇻 Cabo Verde", fora: "🇺🇾 Uruguai" }] },
-  { data: "Seg., 22/06", jogos: [{ hora: "02:00", id: "Grupo G_J2", casa: "🇪🇬 Egito", fora: "🇳🇿 N. Zelândia" }] },
-  { data: "Ter., 23/06", jogos: [{ hora: "01:00", id: "Grupo I_J2", casa: "🇸🇳 Senegal", fora: "🇳🇴 Noruega" }, { hora: "04:00", id: "Grupo J_J2", casa: "🇩🇿 Argélia", fora: "🇯🇴 Jordânia" }, { hora: "21:00", id: "Grupo L_J2", casa: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra", fora: "🇬🇭 Gana" }] },
-  { data: "Qua., 24/06", jogos: [{ hora: "03:00", id: "Grupo K_J2", casa: "🇨🇩 RD Congo", fora: "🇨🇴 Colômbia" }, { hora: "20:00", id: "Grupo A_J3", casa: "🇿🇦 Áfr. Sul", fora: "🇰🇷 Cor. Sul" }, { hora: "23:00", id: "Grupo B_J3", casa: "🇧🇦 Bósnia", fora: "🇶🇦 Catar" }] },
-  { data: "Qui., 25/06", jogos: [{ hora: "02:00", id: "Grupo C_J3", casa: "🇲🇦 Marrocos", fora: "🇭🇹 Haiti" }, { hora: "20:00", id: "Grupo D_J3", casa: "🇵🇾 Paraguai", fora: "🇦🇺 Austrália" }] },
-  { data: "Sex., 26/06", jogos: [{ hora: "01:00", id: "Grupo E_J3", casa: "🇨🇮 C. Marfim", fora: "🇨🇼 Curaçau" }, { hora: "05:00", id: "Grupo F_J3", casa: "🇯🇵 Japão", fora: "🇸🇪 Suécia" }] },
-  { data: "Sáb., 27/06", jogos: [{ hora: "02:00", id: "Grupo G_J3", casa: "🇧🇪 Bélgica", fora: "🇳🇿 N. Zelândia" }, { hora: "23:00", id: "Grupo H_J3", casa: "🇨🇻 Cabo Verde", fora: "🇸🇦 Arábia S." }] },
-  { data: "Dom., 28/06", jogos: [{ hora: "01:00", id: "Grupo I_J3", casa: "🇸🇳 Senegal", fora: "🇮🇶 Iraque" }, { hora: "04:00", id: "Grupo J_J3", casa: "🇩🇿 Argélia", fora: "🇦🇹 Áustria" }] },
-  { data: "Seg., 29/06", jogos: [{ hora: "03:00", id: "Grupo K_J3", casa: "🇨🇩 RD Congo", fora: "🇺🇿 Usbequistão" }, { hora: "21:00", id: "Grupo L_J3", casa: "🇭🇷 Croácia", fora: "🇬🇭 Gana" }] }
+  { data: "Sex., 12/06", jogos: [
+    { hora: "02:00", id: "Grupo A_J1", casa: "🇰🇷 Cor. Sul", fora: "🇨🇿 Chéquia" }, // Madrugada de 5ª para 6ª
+    { hora: "19:00", id: "Grupo B_J1", casa: "🇨🇦 Canadá", fora: "🇧🇦 Bósnia" }
+  ]},
+  { data: "Sáb., 13/06", jogos: [
+    { hora: "01:00", id: "Grupo D_J1", casa: "🇺🇸 EUA", fora: "🇵🇾 Paraguai" }
+  ]},
+  { data: "Dom., 14/06", jogos: [
+    { hora: "01:00", id: "Grupo C_J1", casa: "🇭🇹 Haiti", fora: "🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escócia" },
+    { hora: "17:00", id: "Grupo E_J1", casa: "🇩🇪 Alemanha", fora: "🇨🇼 Curaçau" }
+  ]},
+  { data: "Seg., 15/06", jogos: [
+    { hora: "02:00", id: "Grupo F_J1", casa: "🇸🇪 Suécia", fora: "🇹🇳 Tunísia" },
+    { hora: "16:00", id: "Grupo H_J1", casa: "🇪🇸 Espanha", fora: "🇨🇻 Cabo Verde" }
+  ]},
+  { data: "Ter., 16/06", jogos: [
+    { hora: "01:00", id: "Grupo G_J1", casa: "🇮🇷 Irão", fora: "🇳🇿 N. Zelândia" },
+    { hora: "22:00", id: "Grupo I_J1", casa: "🇮🇶 Iraque", fora: "🇳🇴 Noruega" }
+  ]},
+  { data: "Qua., 17/06", jogos: [
+    { hora: "04:00", id: "Grupo J_J1", casa: "🇦🇹 Áustria", fora: "🇯🇴 Jordânia" },
+    { hora: "23:00", id: "Grupo L_J1", casa: "🇬🇭 Gana", fora: "🇵🇦 Panamá" }
+  ]},
+  { data: "Qui., 18/06", jogos: [
+    { hora: "02:00", id: "Grupo K_J1", casa: "🇺🇿 Usbequistão", fora: "🇨🇴 Colômbia" },
+    { hora: "16:00", id: "Grupo A_J2", casa: "🇨🇿 Chéquia", fora: "🇿🇦 Áfr. Sul" },
+    { hora: "22:00", id: "Grupo B_J2", casa: "🇨🇦 Canadá", fora: "🇶🇦 Catar" }
+  ]},
+  { data: "Sáb., 20/06", jogos: [
+    { hora: "00:30", id: "Grupo C_J2", casa: "🇧🇷 Brasil", fora: "🇭🇹 Haiti" },
+    { hora: "03:00", id: "Grupo D_J2", casa: "🇹🇷 Turquia", fora: "🇵🇾 Paraguai" }
+  ]},
+  { data: "Dom., 21/06", jogos: [
+    { hora: "00:00", id: "Grupo E_J2", casa: "🇪🇨 Equador", fora: "🇨🇼 Curaçau" },
+    { hora: "04:00", id: "Grupo F_J2", casa: "🇹🇳 Tunísia", fora: "🇯🇵 Japão" },
+    { hora: "22:00", id: "Grupo H_J2", casa: "🇺🇾 Uruguai", fora: "🇨🇻 Cabo Verde" }
+  ]},
+  { data: "Seg., 22/06", jogos: [
+    { hora: "01:00", id: "Grupo G_J2", casa: "🇳🇿 N. Zelândia", fora: "🇪🇬 Egito" }
+  ]},
+  { data: "Ter., 23/06", jogos: [
+    { hora: "00:00", id: "Grupo I_J2", casa: "🇳🇴 Noruega", fora: "🇸🇳 Senegal" },
+    { hora: "03:00", id: "Grupo J_J2", casa: "🇯🇴 Jordânia", fora: "🇩🇿 Argélia" },
+    { hora: "20:00", id: "Grupo L_J2", casa: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra", fora: "🇬🇭 Gana" }
+  ]},
+  { data: "Qua., 24/06", jogos: [
+    { hora: "03:00", id: "Grupo K_J2", casa: "🇨🇴 Colômbia", fora: "🇨🇩 RD Congo" },
+    { hora: "19:00", id: "Grupo B_J3", casa: "🇧🇦 Bósnia", fora: "🇶🇦 Catar" }, // Horário simultâneo oficial
+    { hora: "23:00", id: "Grupo A_J3", casa: "🇿🇦 Áfr. Sul", fora: "🇰🇷 Cor. Sul" }
+  ]},
+  { data: "Qui., 25/06", jogos: [
+    { hora: "22:00", id: "Grupo C_J3", casa: "🇲🇦 Marrocos", fora: "🇭🇹 Haiti" },
+    { hora: "22:00", id: "Grupo D_J3", casa: "🇵🇾 Paraguai", fora: "🇦🇺 Austrália" },
+    { hora: "22:00", id: "Grupo E_J3", casa: "🇨🇮 C. Marfim", fora: "🇨🇼 Curaçau" },
+    { hora: "22:00", id: "Grupo F_J3", casa: "🇯🇵 Japão", fora: "🇸🇪 Suécia" }
+  ]},
+  { data: "Sex., 26/06", jogos: [
+    { hora: "21:00", id: "Grupo G_J3", casa: "🇧🇪 Bélgica", fora: "🇳🇿 N. Zelândia" },
+    { hora: "21:00", id: "Grupo H_J3", casa: "🇨🇻 Cabo Verde", fora: "🇸🇦 Arábia S." },
+    { hora: "24:00", id: "Grupo I_J3", casa: "🇸🇳 Senegal", fora: "🇮🇶 Iraque" },
+    { hora: "24:00", id: "Grupo J_J3", casa: "🇩🇿 Argélia", fora: "🇦🇹 Áustria" }
+  ]},
+  { data: "Sáb., 27/06", jogos: [
+    { hora: "21:00", id: "Grupo K_J3", casa: "🇨🇩 RD Congo", fora: "🇺🇿 Usbequistão" },
+    { hora: "21:00", id: "Grupo L_J3", casa: "🇭🇷 Croácia", fora: "🇬🇭 Gana" }
+  ]}
 ]
-
 // Datas limite (fuso de Lisboa)
 export const LIMITE_FASE_FINAL = new Date("2026-06-11T18:00:00+01:00")
 export const LIMITE_GRUPOS    = new Date("2026-06-18T12:00:00+01:00")
