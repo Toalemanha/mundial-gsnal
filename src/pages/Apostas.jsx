@@ -6,16 +6,22 @@ import {
 } from '../data/torneio.js'
 import { Toast, useToast } from '../components/Toast.jsx'
 
+// Agrupa os grupos em pares dinamicamente (ex: [['Grupo A', 'Grupo B'], ['Grupo C', 'Grupo D'], ...])
+const chavesGrupos = Object.keys(EQUIPAS_POR_GRUPO)
+const PARES_GRUPOS = []
+for (let i = 0; i < chavesGrupos.length; i += 2) {
+  PARES_GRUPOS.push([chavesGrupos[i], chavesGrupos[i + 1]].filter(Boolean))
+}
+
 export default function Apostas({ jogador, isAdmin }) {
   const [subMenu, setSubMenu] = useState('jogos')
   const [diaIdx, setDiaIdx] = useState(indiceDiaHoje())
-  const [grupo, setGrupo] = useState('Grupo A')
+  const [parIdx, setParIdx] = useState(0) // Controla qual o par de grupos ativo (0 a 5)
   const [jogadorSel, setJogadorSel] = useState(jogador)
   const [apostas, setApostas] = useState({ jogos: {}, grupos: {} })
+  const [valoresGrupos, setValoresGrupos] = useState({}) // Guarda o estado temporário de todos os grupos
   const [apostasCarregadas, setApostasCarregadas] = useState(false)
   const [scores, setScores] = useState({})
-  const [p1, setP1] = useState('')
-  const [p2, setP2] = useState('')
   const [campeao, setCampeao] = useState('')
   const [marcador, setMarcador] = useState('')
   const [confirmacao, setConfirmacao] = useState(null)
@@ -23,6 +29,8 @@ export default function Apostas({ jogador, isAdmin }) {
   const agora = new Date()
   const bloqFinal = agora >= LIMITE_FASE_FINAL && !isAdmin
   const bloqGrupos = agora >= LIMITE_GRUPOS && !isAdmin
+
+  const dia = CALENDARIO[diaIdx]
 
   useEffect(() => { carregarApostas() }, [jogadorSel])
 
@@ -36,7 +44,6 @@ export default function Apostas({ jogador, isAdmin }) {
 
       const jogosMap = {}
       if (jogosData) jogosData.forEach(j => {
-        // Garante que os valores são números ou null, nunca undefined
         jogosMap[j.id_jogo] = {
           casa: j.casa !== null && j.casa !== undefined ? Number(j.casa) : null,
           fora: j.fora !== null && j.fora !== undefined ? Number(j.fora) : null,
@@ -49,6 +56,7 @@ export default function Apostas({ jogador, isAdmin }) {
       })
 
       setApostas({ jogos: jogosMap, grupos: gruposMap })
+      setValoresGrupos(gruposMap)
       setCampeao(jData?.campeao || '')
       setMarcador(jData?.marcador || '')
       setScores(jogosMap)
@@ -57,15 +65,6 @@ export default function Apostas({ jogador, isAdmin }) {
       console.error('Erro ao carregar apostas:', err)
     }
   }
-
-  useEffect(() => {
-    if (!apostasCarregadas) return
-    const g = apostas.grupos?.[grupo] || {}
-    setP1(g.primeiro || '')
-    setP2(g.segundo || '')
-  }, [grupo, apostas, apostasCarregadas])
-
-  const dia = CALENDARIO[diaIdx]
 
   // ── Guardar com confirmação ───────────────────────────────
   function pedirConfirmacaoJogos() {
@@ -85,8 +84,19 @@ export default function Apostas({ jogador, isAdmin }) {
   }
 
   function pedirConfirmacaoGrupo() {
-    if (!p1 && !p2) { showToast('❌ Escolhe pelo menos um lugar!'); return }
-    setConfirmacao({ tipo: 'grupo', linhas: [p1 ? `🥇 1.º: ${p1}` : '🥇 1.º: —', p2 ? `🥈 2.º: ${p2}` : '🥈 2.º: —'] })
+    const ativos = PARES_GRUPOS[parIdx] || []
+    const linhasConf = []
+    let temPelo MenosUm = false
+
+    for (const gNome of ativos) {
+      const p1Val = valoresGrupos[gNome]?.primeiro
+      const p2Val = valoresGrupos[gNome]?.segundo
+      if (p1Val || p2Val) temPeloMenosUm = true
+      linhasConf.push(`${gNome} ➔ 🥇 1.º: ${p1Val || '—'} | 🥈 2.º: ${p2Val || '—'}`)
+    }
+
+    if (!temPeloMenosUm) { showToast('❌ Escolhe pelo menos um lugar!'); return }
+    setConfirmacao({ tipo: 'grupo', linhas: linhasConf, gruposAlvo: ativos })
   }
 
   function pedirConfirmacaoFinal() {
@@ -107,18 +117,23 @@ export default function Apostas({ jogador, isAdmin }) {
       showToast(`✅ Jogos de ${dia.data} guardados!`)
     }
     if (tipo === 'grupo') {
-      await supabase.from('palpites_grupos').upsert(
-        { jogador: jogadorSel, grupo, primeiro: p1 || null, segundo: p2 || null },
-        { onConflict: 'jogador,grupo' }
-      )
-      showToast(`✅ ${grupo} guardado!`)
+      const gruposAlvo = confirmacao.gruposAlvo || []
+      for (const gNome of gruposAlvo) {
+        const p1Val = valoresGrupos[gNome]?.primeiro || null
+        const p2Val = valoresGrupos[gNome]?.segundo || null
+        await supabase.from('palpites_grupos').upsert(
+          { jogador: jogadorSel, grupo: gNome, primeiro: p1Val, segundo: p2Val },
+          { onConflict: 'jogador,grupo' }
+        )
+      }
+      showToast(`✅ Grupos guardados com sucesso!`)
     }
     if (tipo === 'final') {
       await supabase.from('jogadores').upsert(
         { nome: jogadorSel, campeao: campeao || null, marcador: marcador || null },
         { onConflict: 'nome' }
       )
-      showToast('✅ Fase final guardada!')
+      showToast('✅ Escolhas guardadas!')
     }
   }
 
@@ -168,7 +183,6 @@ export default function Apostas({ jogador, isAdmin }) {
         <button className={`submenu-btn ${subMenu === 'grupos' ? 'active' : ''}`} onClick={() => setSubMenu('grupos')}>Vencedores</button>
       </div>
 
-
       {/* ── MODAL DE CONFIRMAÇÃO ── */}
       {confirmacao && (
         <div style={{
@@ -181,7 +195,7 @@ export default function Apostas({ jogador, isAdmin }) {
               Confirmar aposta?
             </h4>
             {confirmacao.linhas.map((linha, i) => (
-              <p key={i} style={{ textAlign: 'center', fontFamily: 'Barlow Condensed,sans-serif', fontSize: 16, color: '#eee', margin: '6px 0' }}>
+              <p key={i} style={{ textAlign: 'center', fontFamily: 'Barlow Condensed,sans-serif', fontSize: 15, color: '#eee', margin: '6px 0' }}>
                 {linha}
               </p>
             ))}
@@ -260,10 +274,10 @@ export default function Apostas({ jogador, isAdmin }) {
       {/* ── VENCEDORES ── */}
       {subMenu === 'grupos' && (
         <div>
-          <h4 style={{ color: 'var(--gold)', textAlign: 'center', marginBottom: 12 }}>🌍 Fase Final</h4>
+          {/* Texto "Fase Final" removido daqui */}
           {bloqFinal && <div className="alert alert-warning" style={{ marginBottom: 10 }}>🔒 Edição do Campeão e Marcador encerrada.</div>}
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 12 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 12, marginTop: 12 }}>
             <select value={campeao} onChange={e => setCampeao(e.target.value)} disabled={bloqFinal}>
               <option value="">Campeão do mundo...</option>
               {TODAS_EQUIPAS.map(eq => <option key={eq} value={eq}>{eq}</option>)}
@@ -282,19 +296,73 @@ export default function Apostas({ jogador, isAdmin }) {
           <h4 style={{ color: 'var(--gold)', textAlign: 'center', margin: '12px 0' }}>📊 Vencedores dos grupos</h4>
           {bloqGrupos && <div className="alert alert-warning" style={{ marginBottom: 10 }}>🔒 Edição das posições encerrada.</div>}
 
-          <select value={grupo} onChange={e => setGrupo(e.target.value)} style={{ marginBottom: 12 }}>
-            {Object.keys(EQUIPAS_POR_GRUPO).map(g => <option key={g} value={g}>{g}</option>)}
-          </select>
+          {/* Grelha de 6 botões dispostos em duas filas de 3 */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '8px',
+            marginBottom: '16px'
+          }}>
+            {PARES_GRUPOS.map((par, idx) => {
+              const label = par.map(g => g.replace('Grupo ', '')).join(' / ')
+              const ativo = parIdx === idx
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  className={`btn ${ativo ? 'active' : ''}`}
+                  style={{
+                    padding: '10px 4px',
+                    fontSize: '12px',
+                    fontFamily: 'Oswald, sans-serif',
+                    textTransform: 'uppercase',
+                    border: ativo ? '1px solid var(--gold)' : '1px solid #2a2a2a',
+                    color: ativo ? 'var(--gold)' : '#aaa',
+                    background: ativo ? '#161616' : '#0d0d0d'
+                  }}
+                  onClick={() => setParIdx(idx)}
+                >
+                  Gr. {label}
+                </button>
+              )
+            })}
+          </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <select value={p1} onChange={e => setP1(e.target.value)} disabled={bloqGrupos}>
-              <option value="">🥇 1.º Lugar...</option>
-              {EQUIPAS_POR_GRUPO[grupo].map(eq => <option key={eq} value={eq}>{eq}</option>)}
-            </select>
-            <select value={p2} onChange={e => setP2(e.target.value)} disabled={bloqGrupos}>
-              <option value="">🥈 2.º Lugar...</option>
-              {EQUIPAS_POR_GRUPO[grupo].map(eq => <option key={eq} value={eq}>{eq}</option>)}
-            </select>
+          {/* Renderização de ambos os grupos contidos no par ativo */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {PARES_GRUPOS[parIdx]?.map(gNome => (
+              <div key={gNome} style={{ border: '1px solid #1e1e1e', padding: '12px', borderRadius: '8px', background: '#0a0a0a' }}>
+                <span style={{ fontSize: 13, fontFamily: 'Oswald, sans-serif', color: 'var(--gold)', display: 'block', marginBottom: 8, letterSpacing: 0.5 }}>
+                  {gNome.toUpperCase()}
+                </span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <select
+                    value={valoresGrupos[gNome]?.primeiro || ''}
+                    onChange={e => setValoresGrupos(prev => ({
+                      ...prev,
+                      [gNome]: { ...prev[gNome], primeiro: e.target.value }
+                    }))}
+                    disabled={bloqGrupos}
+                  >
+                    <option value="">🥇 1.º Lugar...</option>
+                    {EQUIPAS_POR_GRUPO[gNome]?.map(eq => <option key={eq} value={eq}>{eq}</option>)}
+                  </select>
+
+                  <select
+                    value={valoresGrupos[gNome]?.segundo || ''}
+                    onChange={e => setValoresGrupos(prev => ({
+                      ...prev,
+                      [gNome]: { ...prev[gNome], segundo: e.target.value }
+                    }))}
+                    disabled={bloqGrupos}
+                  >
+                    <option value="">🥈 2.º Lugar...</option>
+                    {EQUIPAS_POR_GRUPO[gNome]?.map(eq => <option key={eq} value={eq}>{eq}</option>)}
+                  </select>
+                </div>
+              </div>
+            ))}
+            
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button className="btn btn-sm" style={{ width: 120 }} onClick={pedirConfirmacaoGrupo} disabled={bloqGrupos}>Guardar</button>
             </div>
