@@ -40,18 +40,42 @@ export default function PalpitesGrupos({ jogador, isAdmin }) {
 
   if (loading) return <div className="spinner">A carregar...</div>
 
-  const gruposDaPagina = PAGINAS[paginaIdx]
+  const gruposDaPagina = PAGINAS[paginaIdx] || []
 
   return (
     <div>
       <h2 style={{ marginBottom: 16 }}>🗂️ Vencedores dos grupos</h2>
 
-      <div className="nav-row">
-        <button className="btn btn-icon" onClick={() => setPaginaIdx(Math.max(0, paginaIdx - 1))}>◀</button>
-        <div style={{ flex: 1, textAlign: 'center', fontFamily: 'Oswald,sans-serif', fontSize: 'clamp(14px,3.5vw,17px)', letterSpacing: 1, color: '#eee' }}>
-          {gruposDaPagina.join(' · ')}
-        </div>
-        <button className="btn btn-icon" onClick={() => setPaginaIdx(Math.min(PAGINAS.length - 1, paginaIdx + 1))}>▶</button>
+      {/* Grelha de 6 botões dispostos em duas filas de 3 */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gap: '8px',
+        marginBottom: '20px'
+      }}>
+        {PAGINAS.map((par, idx) => {
+          const label = par.map(g => g.replace('Grupo ', '')).join(' / ')
+          const ativo = paginaIdx === idx
+          return (
+            <button
+              key={idx}
+              type="button"
+              className={`btn ${ativo ? 'active' : ''}`}
+              style={{
+                padding: '10px 4px',
+                fontSize: '12px',
+                fontFamily: 'Oswald, sans-serif',
+                textTransform: 'uppercase',
+                border: ativo ? '1px solid var(--gold)' : '1px solid #2a2a2a',
+                color: ativo ? 'var(--gold)' : '#aaa',
+                background: ativo ? '#161616' : '#0d0d0d'
+              }}
+              onClick={() => setPaginaIdx(idx)}
+            >
+              Gr. {label}
+            </button>
+          )
+        })}
       </div>
 
       {gruposDaPagina.map(grupo => {
