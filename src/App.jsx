@@ -3,13 +3,15 @@ import Login from './pages/Login.jsx'
 import Classificacao from './pages/Classificacao.jsx'
 import Apostas from './pages/Apostas.jsx'
 import PalpitesDeTodos from './pages/PalpitesDeTodos.jsx'
+import PalpitesGrupos from './pages/PalpitesGrupos.jsx'
 import Admin from './pages/Admin.jsx'
 import Regras from './pages/Regras.jsx'
 
 const NAV_ITEMS = [
   { id: 'classificacao', icon: '🏆', label: 'Tabela' },
   { id: 'apostas',       icon: '🎯', label: 'Apostar' },
-  { id: 'todos',         icon: '👥', label: 'Palpites' },
+  { id: 'todos',         icon: '👥', label: 'Jogos' },
+  { id: 'grupos',        icon: '🗂️', label: 'Grupos' },
   { id: 'regras',        icon: '📋', label: 'Regras' },
 ]
 
@@ -67,7 +69,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* ── Menu dropdown (extra opções) ── */}
+      {/* ── Menu dropdown ── */}
       {menuAberto && (
         <div className="card" style={{ marginBottom: 12 }}>
           <button className="btn" style={{ marginBottom: 6, textAlign: 'left', paddingLeft: 14 }}
@@ -97,6 +99,7 @@ export default function App() {
       {pagina === 'eliminacao'    && <PlaceholderEliminacao />}
       {pagina === 'todos'         && <PalpitesDeTodos jogador={jogador} isAdmin={isAdmin} />}
       {pagina === 'todos-elim'    && <PlaceholderEliminacao />}
+      {pagina === 'grupos'        && <PalpitesGrupos jogador={jogador} isAdmin={isAdmin} />}
       {pagina === 'admin'         && isAdmin && <Admin />}
       {pagina === 'regras'        && <Regras />}
 
