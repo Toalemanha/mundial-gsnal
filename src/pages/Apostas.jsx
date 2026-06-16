@@ -86,7 +86,7 @@ export default function Apostas({ jogador, isAdmin }) {
   function pedirConfirmacaoGrupo() {
     const ativos = PARES_GRUPOS[parIdx] || []
     const linhasConf = []
-    let temPelo MenosUm = false
+    let temPeloMenosUm = false // Corrigido o espaço no nome da variável
 
     for (const gNome of ativos) {
       const p1Val = valoresGrupos[gNome]?.primeiro
@@ -151,7 +151,7 @@ export default function Apostas({ jogador, isAdmin }) {
   function alertaPrazo() {
     for (const j of dia.jogos) {
       const prazo = prazoJogo(j.id)
-      if (!prazo) continue
+      if (!prazo) continue // Corrigido de maxo para prazo
       const diff = prazo - agora
       if (diff <= 0) continue
       const tempo = formatarTempo(diff)
@@ -274,7 +274,6 @@ export default function Apostas({ jogador, isAdmin }) {
       {/* ── VENCEDORES ── */}
       {subMenu === 'grupos' && (
         <div>
-          {/* Texto "Fase Final" removido daqui */}
           {bloqFinal && <div className="alert alert-warning" style={{ marginBottom: 10 }}>🔒 Edição do Campeão e Marcador encerrada.</div>}
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 12, marginTop: 12 }}>
