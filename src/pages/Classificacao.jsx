@@ -64,10 +64,14 @@ export default function Classificacao() {
           const r = resMap[p.id_jogo]
           if (!r) continue
           
-          if (!statsCalc[p.jogador]) {
-            statsCalc[p.jogador] = { jogados: 0, tendencias: 0, exatos: 0 }
+          // 1. Limpar espaços extra no nome
+          const nomeLimpo = p.jogador.trim()
+          
+          // 2. Usar nomeLimpo em vez de p.jogador
+          if (!statsCalc[nomeLimpo]) {
+            statsCalc[nomeLimpo] = { jogados: 0, tendencias: 0, exatos: 0 }
           }
-          statsCalc[p.jogador].jogados += 1
+          statsCalc[nomeLimpo].jogados += 1
 
           const pc = Number(p.casa)
           const pf = Number(p.fora)
@@ -75,9 +79,9 @@ export default function Classificacao() {
           const rf = r.fora
           
           if (pc === rc && pf === rf) {
-            statsCalc[p.jogador].exatos += 1
+            statsCalc[nomeLimpo].exatos += 1
           } else if ((pc > pf && rc > rf) || (pc < pf && rc < rf) || (pc === pf && rc === rf)) {
-            statsCalc[p.jogador].tendencias += 1
+            statsCalc[nomeLimpo].tendencias += 1
           }
         }
       }
