@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { NOMES_AMIGOS, LIMITE_REVELACAO } from '../data/torneio.js'
 
-// Cor única por jogador
 const CORES_JOGADOR = [
   '#4FC3F7', '#81C784', '#FFB74D', '#F06292',
   '#BA68C8', '#4DB6AC', '#FF8A65', '#A1887F',
@@ -25,6 +24,7 @@ function Avatar({ nome, idx }) {
 export default function Classificacao() {
   const [dados, setDados] = useState([])
   const [dadosAntes, setDadosAntes] = useState([])
+  const [stats, setStats] = useState({}) // { nome: { jogados, tendencias, exatos } }
   const [loading, setLoading] = useState(true)
   const podeRevelar = new Date() >= LIMITE_REVELACAO
 
@@ -32,10 +32,11 @@ export default function Classificacao() {
 
   async function carregarDados() {
     try {
-      const { data } = await supabase
-        .from('jogadores')
-        .select('nome, pontos, campeao, marcador')
-        .order('pontos', { ascending: false })
+      const [{ data }, { data: palpitesJogos }, { data: resultadosDB }] = await Promise.all([
+        supabase.from('jogadores').select('nome, pontos, campeao, marcador').order('pontos', { ascending: false }),
+        supabase.from('palpites').select('jogador, id_jogo, casa, fora'),
+        supabase.from('resultados').select('id_jogo, casa, fora'),
+      ])
 
       const novos = data && data.length > 0
         ? data
@@ -43,6 +44,32 @@ export default function Classificacao() {
 
       setDadosAntes(dados)
       setDados(novos)
+
+      // Construir mapa de resultados reais
+      const resMap = {}
+      if (resultadosDB) resultadosDB.forEach(r => { resMap[r.id_jogo] = { casa: Number(r.casa), fora: Number(r.fora) } })
+
+      // Calcular estatísticas por jogador
+      const statsCalc = {}
+      NOMES_AMIGOS.forEach(n => { statsCalc[n] = { jogados: 0, tendencias: 0, exatos: 0 } })
+
+      if (palpitesJogos) {
+        for (const p of palpitesJogos) {
+          const r = resMap[p.id_jogo]
+          if (!r) continue // jogo ainda sem resultado real
+          if (!statsCalc[p.jogador]) statsCalc[p.jogador] = { jogados: 0, tendencias: 0, exatos: 0 }
+          statsCalc[p.jogador].jogados += 1
+
+          const pc = Number(p.casa), pf = Number(p.fora)
+          const rc = r.casa, rf = r.fora
+          if (pc === rc && pf === rf) {
+            statsCalc[p.jogador].exatos += 1
+          } else if ((pc > pf && rc > rf) || (pc < pf && rc < rf) || (pc === pf && rc === rf)) {
+            statsCalc[p.jogador].tendencias += 1
+          }
+        }
+      }
+      setStats(statsCalc)
     } catch {
       setDados(NOMES_AMIGOS.map(n => ({ nome: n, pontos: 0, campeao: null, marcador: null })))
     }
@@ -51,8 +78,6 @@ export default function Classificacao() {
 
   const coresBorda = ['#FFD700', '#FF69B4', '#8B4513']
   const medalhas = ['🥇', '🥈', '🥉']
-
-  // Índice original por nome (para cor consistente)
   const idxNome = {}
   NOMES_AMIGOS.forEach((n, i) => { idxNome[n] = i })
 
@@ -62,11 +87,7 @@ export default function Classificacao() {
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
         <h2 style={{ margin: 0 }}>🏆 Classificação</h2>
-        <button
-          className="btn btn-sm"
-          style={{ width: 'auto', padding: '0 14px', fontSize: 13, color: '#888' }}
-          onClick={carregarDados}
-        >
+        <button className="btn btn-sm" style={{ width: 'auto', padding: '0 14px', fontSize: 13, color: '#888' }} onClick={carregarDados}>
           ↻ Atualizar
         </button>
       </div>
@@ -79,27 +100,18 @@ export default function Classificacao() {
           const posAntes = dadosAntes.findIndex(d => d.nome === j.nome)
           const subiu = posAntes > i
           const desceu = posAntes !== -1 && posAntes < i
+          const s = stats[j.nome] || { jogados: 0, tendencias: 0, exatos: 0 }
 
           return (
-            <div
-              key={j.nome}
-              className="rank-card"
-              style={{ borderLeftColor: corBorda, transition: 'all 0.4s ease' }}
-            >
-              {/* Posição / medalha */}
-              <div style={{ width: 28, textAlign: 'center', flexShrink: 0, fontSize: i < 3 ? 20 : 14 }}>
-                {i < 3
-                  ? medalhas[i]
-                  : <span style={{ color: '#444', fontFamily: 'Oswald,sans-serif' }}>{i + 1}º</span>
-                }
+            <div key={j.nome} className="rank-card" style={{ borderLeftColor: corBorda, transition: 'all 0.4s ease', flexWrap: 'wrap', alignItems: 'flex-start', paddingBottom: 10 }}>
+              <div style={{ width: 28, textAlign: 'center', flexShrink: 0, fontSize: i < 3 ? 20 : 14, paddingTop: 4 }}>
+                {i < 3 ? medalhas[i] : <span style={{ color: '#444', fontFamily: 'Oswald,sans-serif' }}>{i + 1}º</span>}
               </div>
 
-              {/* Avatar */}
-              <div style={{ marginLeft: 8, flexShrink: 0 }}>
+              <div style={{ marginLeft: 8, flexShrink: 0, paddingTop: 2 }}>
                 <Avatar nome={j.nome} idx={idxNome[j.nome] ?? i} />
               </div>
 
-              {/* Nome e sub */}
               <div style={{ flex: 1, minWidth: 0, padding: '0 10px' }}>
                 <div style={{
                   fontFamily: 'Oswald,sans-serif', fontSize: 'clamp(14px,3vw,16px)',
@@ -113,12 +125,27 @@ export default function Classificacao() {
                 <div style={{ fontSize: 11, color: '#444', marginTop: 1 }}>{campAp} · {marcAp}</div>
               </div>
 
-              {/* Pontos */}
-              <div style={{ textAlign: 'right', flexShrink: 0 }}>
+              <div style={{ textAlign: 'right', flexShrink: 0, paddingTop: 0 }}>
                 <div style={{ fontFamily: 'VT323,monospace', fontSize: 'clamp(24px,5vw,30px)', color: 'var(--gold)', lineHeight: 1 }}>
                   {j.pontos}
                 </div>
                 <div style={{ fontSize: 11, color: '#444' }}>pts</div>
+              </div>
+
+              {/* Linha de estatísticas detalhadas */}
+              <div style={{
+                width: '100%', display: 'flex', justifyContent: 'flex-start', gap: 14,
+                marginTop: 8, paddingLeft: 72, fontFamily: 'Barlow Condensed,sans-serif',
+              }}>
+                <span style={{ fontSize: 11, color: '#666' }}>
+                  ⚽ <strong style={{ color: '#999' }}>{s.jogados}</strong> jogos
+                </span>
+                <span style={{ fontSize: 11, color: '#666' }}>
+                  🎯 <strong style={{ color: 'var(--gold)' }}>{s.tendencias}</strong> tendências
+                </span>
+                <span style={{ fontSize: 11, color: '#666' }}>
+                  ✅ <strong style={{ color: '#00C853' }}>{s.exatos}</strong> exatos
+                </span>
               </div>
             </div>
           )
