@@ -43,15 +43,7 @@ export default function Classificacao() {
       const novos = data && data.length > 0
         ? data
         : NOMES_AMIGOS.map(n => ({ nome: n, pontos: 0, campeao: null, marcador: null }))
-
-      const palpitesRicardo = palpitesJogos.filter(p => p.jogador.trim() === 'Ricardo');
-console.log("Total de palpites do Ricardo recebidos:", palpitesRicardo.length);
-
-// Para ver se há algum jogo com ID inválido
-const palpitesSemResultado = palpitesRicardo.filter(p => !resMap[p.id_jogo]);
-if (palpitesSemResultado.length > 0) {
-  console.log("Palpites do Ricardo que não têm resultado correspondente:", palpitesSemResultado);
-}
+      
       setDadosAntes(dados)
       setDados(novos)
 
