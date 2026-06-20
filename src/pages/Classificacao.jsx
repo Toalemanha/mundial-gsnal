@@ -147,9 +147,9 @@ export default function Classificacao() {
                 }}>
                   <span>⚽<strong style={{ color: '#888', fontWeight: 600, marginLeft: 2 }}>{s.jogados}</strong></span>
                   <span style={{ color: '#333' }}>·</span>
-                  <span>✅<strong style={{ color: '#00C853', fontWeight: 600, marginLeft: 2 }}>{s.exatos}</strong></span>
+                  <span>🎯<strong style={{ color: '#00C853', fontWeight: 600, marginLeft: 2 }}>{s.exatos}</strong></span>
                   <span style={{ color: '#333' }}>·</span>
-                  <span>🎯<strong style={{ color: 'var(--gold)', fontWeight: 600, marginLeft: 2 }}>{s.tendencias}</strong></span>
+                  <span>✅<strong style={{ color: 'var(--gold)', fontWeight: 600, marginLeft: 2 }}>{s.tendencias}</strong></span>
                 </div>
 
               </div>
