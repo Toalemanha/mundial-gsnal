@@ -154,7 +154,6 @@ export default function Classificacao() {
                 <div style={{ fontFamily: 'VT323,monospace', fontSize: 'clamp(24px,5vw,30px)', color: 'var(--gold)', lineHeight: 1 }}>
                   {j.pontos}
                 </div>
-                <div style={{ fontSize: 11, color: '#444' }}>pts</div>
               </div>
             </div>
           )
