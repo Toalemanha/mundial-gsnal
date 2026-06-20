@@ -103,49 +103,44 @@ export default function Classificacao() {
           const s = stats[j.nome] || { jogados: 0, tendencias: 0, exatos: 0 }
 
           return (
-            <div key={j.nome} className="rank-card" style={{ borderLeftColor: corBorda, transition: 'all 0.4s ease', flexWrap: 'wrap', alignItems: 'flex-start', paddingBottom: 10 }}>
-              <div style={{ width: 28, textAlign: 'center', flexShrink: 0, fontSize: i < 3 ? 20 : 14, paddingTop: 4 }}>
+            <div key={j.nome} className="rank-card" style={{ borderLeftColor: corBorda, transition: 'all 0.4s ease' }}>
+              <div style={{ width: 28, textAlign: 'center', flexShrink: 0, fontSize: i < 3 ? 20 : 14 }}>
                 {i < 3 ? medalhas[i] : <span style={{ color: '#444', fontFamily: 'Oswald,sans-serif' }}>{i + 1}º</span>}
               </div>
 
-              <div style={{ marginLeft: 8, flexShrink: 0, paddingTop: 2 }}>
+              <div style={{ marginLeft: 8, flexShrink: 0 }}>
                 <Avatar nome={j.nome} idx={idxNome[j.nome] ?? i} />
               </div>
 
               <div style={{ flex: 1, minWidth: 0, padding: '0 10px' }}>
                 <div style={{
-                  fontFamily: 'Oswald,sans-serif', fontSize: 'clamp(14px,3vw,16px)',
-                  color: '#eee', letterSpacing: 0.5,
+                  fontFamily: 'Oswald,sans-serif', fontSize: 'clamp(13px,2.8vw,15px)',
+                  color: '#eee', letterSpacing: 0.3,
                   whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                  display: 'flex', alignItems: 'baseline', gap: 6,
                 }}>
-                  {j.nome}
-                  {subiu && <span style={{ fontSize: 11, color: '#00C853', marginLeft: 6 }}>▲</span>}
-                  {desceu && <span style={{ fontSize: 11, color: '#FF3D00', marginLeft: 6 }}>▼</span>}
+                  <span>{j.nome}</span>
+                  {subiu && <span style={{ fontSize: 10, color: '#00C853' }}>▲</span>}
+                  {desceu && <span style={{ fontSize: 10, color: '#FF3D00' }}>▼</span>}
                 </div>
-                <div style={{ fontSize: 11, color: '#444', marginTop: 1 }}>{campAp} · {marcAp}</div>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 8, marginTop: 2,
+                  fontFamily: 'Barlow Condensed,sans-serif', fontSize: 11, color: '#555',
+                  whiteSpace: 'nowrap', overflow: 'hidden',
+                }}>
+                  <span>⚽<strong style={{ color: '#888', fontWeight: 600 }}>{s.jogados}</strong></span>
+                  <span style={{ color: '#333' }}>·</span>
+                  <span>🎯<strong style={{ color: 'var(--gold)', fontWeight: 600 }}>{s.tendencias}</strong></span>
+                  <span style={{ color: '#333' }}>·</span>
+                  <span>✅<strong style={{ color: '#00C853', fontWeight: 600 }}>{s.exatos}</strong></span>
+                </div>
               </div>
 
-              <div style={{ textAlign: 'right', flexShrink: 0, paddingTop: 0 }}>
+              <div style={{ textAlign: 'right', flexShrink: 0 }}>
                 <div style={{ fontFamily: 'VT323,monospace', fontSize: 'clamp(24px,5vw,30px)', color: 'var(--gold)', lineHeight: 1 }}>
                   {j.pontos}
                 </div>
                 <div style={{ fontSize: 11, color: '#444' }}>pts</div>
-              </div>
-
-              {/* Linha de estatísticas detalhadas */}
-              <div style={{
-                width: '100%', display: 'flex', justifyContent: 'flex-start', gap: 14,
-                marginTop: 8, paddingLeft: 72, fontFamily: 'Barlow Condensed,sans-serif',
-              }}>
-                <span style={{ fontSize: 11, color: '#666' }}>
-                  ⚽ <strong style={{ color: '#999' }}>{s.jogados}</strong> jogos
-                </span>
-                <span style={{ fontSize: 11, color: '#666' }}>
-                  🎯 <strong style={{ color: 'var(--gold)' }}>{s.tendencias}</strong> tendências
-                </span>
-                <span style={{ fontSize: 11, color: '#666' }}>
-                  ✅ <strong style={{ color: '#00C853' }}>{s.exatos}</strong> exatos
-                </span>
               </div>
             </div>
           )
