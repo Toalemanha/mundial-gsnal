@@ -95,47 +95,54 @@ export default function Classificacao() {
       <div className="card">
         {dados.map((j, i) => {
           const corBorda = i < 3 ? coresBorda[i] : '#2a2a2a'
-          const campAp = podeRevelar ? (j.campeao || '—') : '🔒'
-          const marcAp = podeRevelar ? (j.marcador || '—') : '🔒'
           const posAntes = dadosAntes.findIndex(d => d.nome === j.nome)
           const subiu = posAntes > i
           const desceu = posAntes !== -1 && posAntes < i
           const s = stats[j.nome] || { jogados: 0, tendencias: 0, exatos: 0 }
 
           return (
-            <div key={j.nome} className="rank-card" style={{ borderLeftColor: corBorda, transition: 'all 0.4s ease' }}>
+            <div key={j.nome} className="rank-card" style={{ borderLeftColor: corBorda, transition: 'all 0.4s ease', display: 'flex', alignItems: 'center' }}>
+              {/* Medalha / Posição */}
               <div style={{ width: 28, textAlign: 'center', flexShrink: 0, fontSize: i < 3 ? 20 : 14 }}>
                 {i < 3 ? medalhas[i] : <span style={{ color: '#444', fontFamily: 'Oswald,sans-serif' }}>{i + 1}º</span>}
               </div>
 
+              {/* Avatar */}
               <div style={{ marginLeft: 8, flexShrink: 0 }}>
                 <Avatar nome={j.nome} idx={idxNome[j.nome] ?? i} />
               </div>
 
-              <div style={{ flex: 1, minWidth: 0, padding: '0 10px' }}>
+              {/* Conteúdo Centralizado na Mesma Linha */}
+              <div style={{ flex: 1, minWidth: 0, padding: '0 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+                
+                {/* Nome do Jogador + Tendência de Posição */}
                 <div style={{
                   fontFamily: 'Oswald,sans-serif', fontSize: 'clamp(13px,2.8vw,15px)',
                   color: '#eee', letterSpacing: 0.3,
                   whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                  display: 'flex', alignItems: 'baseline', gap: 6,
+                  display: 'flex', alignItems: 'baseline', gap: 6, flexShrink: 1
                 }}>
                   <span>{j.nome}</span>
                   {subiu && <span style={{ fontSize: 10, color: '#00C853' }}>▲</span>}
                   {desceu && <span style={{ fontSize: 10, color: '#FF3D00' }}>▼</span>}
                 </div>
+
+                {/* Estatísticas (Jogos, Certos/Exatos, Tendências) */}
                 <div style={{
-                  display: 'flex', alignItems: 'center', gap: 8, marginTop: 2,
-                  fontFamily: 'Barlow Condensed,sans-serif', fontSize: 11, color: '#555',
-                  whiteSpace: 'nowrap', overflow: 'hidden',
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  fontFamily: 'Barlow Condensed,sans-serif', fontSize: 12, color: '#aaa',
+                  whiteSpace: 'nowrap', flexShrink: 0
                 }}>
-                  <span>⚽<strong style={{ color: '#888', fontWeight: 600 }}>{s.jogados}</strong></span>
+                  <span>⚽<strong style={{ color: '#888', fontWeight: 600, marginLeft: 2 }}>{s.jogados}</strong></span>
                   <span style={{ color: '#333' }}>·</span>
-                  <span>🎯<strong style={{ color: 'var(--gold)', fontWeight: 600 }}>{s.tendencias}</strong></span>
+                  <span>✅<strong style={{ color: '#00C853', fontWeight: 600, marginLeft: 2 }}>{s.exatos}</strong></span>
                   <span style={{ color: '#333' }}>·</span>
-                  <span>✅<strong style={{ color: '#00C853', fontWeight: 600 }}>{s.exatos}</strong></span>
+                  <span>🎯<strong style={{ color: 'var(--gold)', fontWeight: 600, marginLeft: 2 }}>{s.tendencias}</strong></span>
                 </div>
+
               </div>
 
+              {/* Pontuação Final */}
               <div style={{ textAlign: 'right', flexShrink: 0 }}>
                 <div style={{ fontFamily: 'VT323,monospace', fontSize: 'clamp(24px,5vw,30px)', color: 'var(--gold)', lineHeight: 1 }}>
                   {j.pontos}
@@ -160,9 +167,4 @@ export default function Classificacao() {
           ))}
         </div>
         <p style={{ textAlign: 'center', fontSize: 11, color: '#ccc', padding: '10px 8px 4px', lineHeight: 1.5 }}>
-          Em caso de empate, ganha quem tiver o melhor marcador.<br />Em novo empate, a equipa que foi mais longe no torneio.
-        </p>
-      </div>
-    </div>
-  )
-}
+          Em caso de empate, ganha quem tiver o melhor marcador.<br />Em novo empate, a equipa que foi mais longe
