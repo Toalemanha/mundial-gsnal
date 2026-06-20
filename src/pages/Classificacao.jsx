@@ -24,11 +24,13 @@ function Avatar({ nome, idx }) {
 export default function Classificacao() {
   const [dados, setDados] = useState([])
   const [dadosAntes, setDadosAntes] = useState([])
-  const [stats, setStats] = useState({}) // { nome: { jogados, tendencias, exatos } }
+  const [stats, setStats] = useState({})
   const [loading, setLoading] = useState(true)
   const podeRevelar = new Date() >= LIMITE_REVELACAO
 
-  useEffect(() => { carregarDados() }, [])
+  useEffect(() => {
+    carregarDados()
+  }, [])
 
   async function carregarDados() {
     try {
@@ -45,23 +47,33 @@ export default function Classificacao() {
       setDadosAntes(dados)
       setDados(novos)
 
-      // Construir mapa de resultados reais
       const resMap = {}
-      if (resultadosDB) resultadosDB.forEach(r => { resMap[r.id_jogo] = { casa: Number(r.casa), fora: Number(r.fora) } })
+      if (resultadosDB) {
+        resultadosDB.forEach(r => { 
+          resMap[r.id_jogo] = { casa: Number(r.casa), fora: Number(r.fora) } 
+        })
+      }
 
-      // Calcular estatísticas por jogador
       const statsCalc = {}
-      NOMES_AMIGOS.forEach(n => { statsCalc[n] = { jogados: 0, tendencias: 0, exatos: 0 } })
+      NOMES_AMIGOS.forEach(n => { 
+        statsCalc[n] = { jogados: 0, tendencias: 0, exatos: 0 } 
+      })
 
       if (palpitesJogos) {
         for (const p of palpitesJogos) {
           const r = resMap[p.id_jogo]
-          if (!r) continue // jogo ainda sem resultado real
-          if (!statsCalc[p.jogador]) statsCalc[p.jogador] = { jogados: 0, tendencias: 0, exatos: 0 }
+          if (!r) continue
+          
+          if (!statsCalc[p.jogador]) {
+            statsCalc[p.jogador] = { jogados: 0, tendencias: 0, exatos: 0 }
+          }
           statsCalc[p.jogador].jogados += 1
 
-          const pc = Number(p.casa), pf = Number(p.fora)
-          const rc = r.casa, rf = r.fora
+          const pc = Number(p.casa)
+          const pf = Number(p.fora)
+          const rc = r.casa
+          const rf = r.fora
+          
           if (pc === rc && pf === rf) {
             statsCalc[p.jogador].exatos += 1
           } else if ((pc > pf && rc > rf) || (pc < pf && rc < rf) || (pc === pf && rc === rf)) {
@@ -102,20 +114,17 @@ export default function Classificacao() {
 
           return (
             <div key={j.nome} className="rank-card" style={{ borderLeftColor: corBorda, transition: 'all 0.4s ease', display: 'flex', alignItems: 'center' }}>
-              {/* Medalha / Posição */}
+              
               <div style={{ width: 28, textAlign: 'center', flexShrink: 0, fontSize: i < 3 ? 20 : 14 }}>
                 {i < 3 ? medalhas[i] : <span style={{ color: '#444', fontFamily: 'Oswald,sans-serif' }}>{i + 1}º</span>}
               </div>
 
-              {/* Avatar */}
               <div style={{ marginLeft: 8, flexShrink: 0 }}>
                 <Avatar nome={j.nome} idx={idxNome[j.nome] ?? i} />
               </div>
 
-              {/* Conteúdo Centralizado na Mesma Linha */}
               <div style={{ flex: 1, minWidth: 0, padding: '0 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
                 
-                {/* Nome do Jogador + Tendência de Posição */}
                 <div style={{
                   fontFamily: 'Oswald,sans-serif', fontSize: 'clamp(13px,2.8vw,15px)',
                   color: '#eee', letterSpacing: 0.3,
@@ -127,7 +136,6 @@ export default function Classificacao() {
                   {desceu && <span style={{ fontSize: 10, color: '#FF3D00' }}>▼</span>}
                 </div>
 
-                {/* Estatísticas (Jogos, Certos/Exatos, Tendências) */}
                 <div style={{
                   display: 'flex', alignItems: 'center', gap: 8,
                   fontFamily: 'Barlow Condensed,sans-serif', fontSize: 12, color: '#aaa',
@@ -142,7 +150,6 @@ export default function Classificacao() {
 
               </div>
 
-              {/* Pontuação Final */}
               <div style={{ textAlign: 'right', flexShrink: 0 }}>
                 <div style={{ fontFamily: 'VT323,monospace', fontSize: 'clamp(24px,5vw,30px)', color: 'var(--gold)', lineHeight: 1 }}>
                   {j.pontos}
@@ -167,4 +174,9 @@ export default function Classificacao() {
           ))}
         </div>
         <p style={{ textAlign: 'center', fontSize: 11, color: '#ccc', padding: '10px 8px 4px', lineHeight: 1.5 }}>
-          Em caso de empate, ganha quem tiver o melhor marcador.<br />Em novo empate, a equipa que foi mais longe
+          Em caso de empate, ganha quem tiver o melhor marcador.<br />Em novo empate, a equipa que foi mais longe no torneio.
+        </p>
+      </div>
+    </div>
+  )
+}
