@@ -36,7 +36,7 @@ export default function Classificacao() {
     try {
       const [{ data }, { data: palpitesJogos }, { data: resultadosDB }] = await Promise.all([
         supabase.from('jogadores').select('nome, pontos, campeao, marcador').order('pontos', { ascending: false }),
-        supabase.from('palpites').select('jogador, id_jogo, casa, fora'),
+        supabase.from('palpites').select('jogador, id_jogo, casa, fora').limit(5000),
         supabase.from('resultados').select('id_jogo, casa, fora'),
       ])
 
