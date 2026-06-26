@@ -234,7 +234,7 @@ export const LABEL_FASE = {
 
 // Prazos: 22:30 do dia anterior ao primeiro jogo de cada fase
 export const PRAZOS_ELIMINACAO = {
-  oitavos:  new Date("2026-07-03T22:30:00+01:00"),  // 1º jogo: 4 jul
+  oitavos:  new Date("2026-06-27T22:30:00+01:00"),  // 1º jogo: 28 jun
   quartos:  new Date("2026-07-08T22:30:00+01:00"),  // 1º jogo: 9 jul
   meias:    new Date("2026-07-13T22:30:00+01:00"),  // 1º jogo: 14 jul
   terceiro: new Date("2026-07-17T22:30:00+01:00"),  // jogo: 18 jul
