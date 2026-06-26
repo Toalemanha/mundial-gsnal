@@ -156,16 +156,55 @@ export function indiceDiaHoje() {
 
 export const FASES_ELIMINACAO = ['oitavos', 'quartos', 'meias', 'terceiro', 'final']
 
+export const CALENDARIO_ELIMINACAO = [
+  { data: "Sáb., 28/06", jogos: [
+    { hora: "21:00", id: "R32_1",  label: "Jogo 1" },
+    { hora: "01:00", id: "R32_2",  label: "Jogo 2" },
+  ]},
+  { data: "Dom., 29/06", jogos: [
+    { hora: "18:00", id: "R32_3",  label: "Jogo 3" },
+    { hora: "22:00", id: "R32_4",  label: "Jogo 4" },
+  ]},
+  { data: "Seg., 30/06", jogos: [
+    { hora: "21:00", id: "R32_5",  label: "Jogo 5" },
+    { hora: "01:00", id: "R32_6",  label: "Jogo 6" },
+  ]},
+  { data: "Ter., 01/07", jogos: [
+    { hora: "18:00", id: "R32_7",  label: "Jogo 7" },
+    { hora: "22:00", id: "R32_8",  label: "Jogo 8" },
+  ]},
+  { data: "Qua., 02/07", jogos: [
+    { hora: "21:00", id: "R32_9",  label: "Jogo 9" },
+    { hora: "01:00", id: "R32_10", label: "Jogo 10" },
+  ]},
+  { data: "Qui., 03/07", jogos: [
+    { hora: "18:00", id: "R32_11", label: "Jogo 11" },
+    { hora: "18:00", id: "R32_12", label: "Jogo 12" },
+    { hora: "22:00", id: "R32_13", label: "Jogo 13" },
+    { hora: "22:00", id: "R32_14", label: "Jogo 14" },
+    { hora: "02:00", id: "R32_15", label: "Jogo 15" },
+    { hora: "02:00", id: "R32_16", label: "Jogo 16" },
+  ]},
+]
+
 export const JOGOS_ELIMINACAO = {
   oitavos: [
-    { id: 'R16_1', label: 'Oitavo 1' },
-    { id: 'R16_2', label: 'Oitavo 2' },
-    { id: 'R16_3', label: 'Oitavo 3' },
-    { id: 'R16_4', label: 'Oitavo 4' },
-    { id: 'R16_5', label: 'Oitavo 5' },
-    { id: 'R16_6', label: 'Oitavo 6' },
-    { id: 'R16_7', label: 'Oitavo 7' },
-    { id: 'R16_8', label: 'Oitavo 8' },
+    { id: 'R32_1',  label: 'Jogo 1' },
+    { id: 'R32_2',  label: 'Jogo 2' },
+    { id: 'R32_3',  label: 'Jogo 3' },
+    { id: 'R32_4',  label: 'Jogo 4' },
+    { id: 'R32_5',  label: 'Jogo 5' },
+    { id: 'R32_6',  label: 'Jogo 6' },
+    { id: 'R32_7',  label: 'Jogo 7' },
+    { id: 'R32_8',  label: 'Jogo 8' },
+    { id: 'R32_9',  label: 'Jogo 9' },
+    { id: 'R32_10', label: 'Jogo 10' },
+    { id: 'R32_11', label: 'Jogo 11' },
+    { id: 'R32_12', label: 'Jogo 12' },
+    { id: 'R32_13', label: 'Jogo 13' },
+    { id: 'R32_14', label: 'Jogo 14' },
+    { id: 'R32_15', label: 'Jogo 15' },
+    { id: 'R32_16', label: 'Jogo 16' },
   ],
   quartos: [
     { id: 'QF1', label: 'Quarto 1' },
