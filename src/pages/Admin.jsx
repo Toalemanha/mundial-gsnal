@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase.js'
-import { JOGOS_FASE_GRUPOS, EQUIPAS_POR_GRUPO, TODAS_EQUIPAS, NOMES_AMIGOS, FASES_ELIMINACAO, JOGOS_ELIMINACAO, LABEL_FASE, CALENDARIO, prazoJogo } from '../data/torneio.js'
+import { 
+  JOGOS_FASE_GRUPOS, EQUIPAS_POR_GRUPO, TODAS_EQUIPAS, NOMES_AMIGOS, 
+  FASES_ELIMINACAO, JOGOS_ELIMINACAO, LABEL_FASE, CALENDARIO, prazoJogo 
+} from '../data/torneio.js'
 import { Toast, useToast } from '../components/Toast.jsx'
 
 export default function Admin() {
@@ -10,9 +13,11 @@ export default function Admin() {
   const [campeaoReal, setCampeaoReal] = useState('')
   const [marcadorReal, setMarcadorReal] = useState('')
   const [senhas, setSenhas] = useState({})
+  
   // Eliminatórias
   const [equipasElim, setEquipasElim] = useState({})    // { id_jogo: { casa, fora } }
-  const [resultadosElim, setResultadosElim] = useState({})
+  const [resultadosElim, setResultadosElim] = useState({}) // { id_jogo: { casa, fora, classificado } }
+  
   const [palpites, setPalpites] = useState({})
   const [palpitesGrupos, setPalpitesGrupos] = useState({})
   const [jogosEncerrados, setJogosEncerrados] = useState([])
@@ -27,7 +32,7 @@ export default function Admin() {
         supabase.from('resultados_grupos').select('grupo, primeiro, segundo'),
         supabase.from('config').select('campeao_real, marcador_real').eq('id', 1).single(),
         supabase.from('equipas_eliminacao').select('id_jogo, casa, fora'),
-        supabase.from('resultados_eliminacao').select('id_jogo, casa, fora'),
+        supabase.from('resultados_eliminacao').select('id_jogo, casa, fora, classificado'),
         supabase.from('palpites').select('jogador, id_jogo, casa, fora'),
         supabase.from('palpites_grupos').select('jogador, grupo, primeiro, segundo'),
       ])
@@ -47,8 +52,9 @@ export default function Admin() {
       setEquipasElim(eq2)
 
       const re2 = {}
-      if (resElim) resElim.forEach(r => { re2[r.id_jogo] = { casa: r.casa, fora: r.fora } })
+      if (resElim) resElim.forEach(r => { re2[r.id_jogo] = { casa: r.casa, fora: r.fora, classificado: r.classificado || null } })
       setResultadosElim(re2)
+
       const mp = {}
       if (palp) palp.forEach(r => {
         if (!mp[r.jogador]) mp[r.jogador] = {}
@@ -67,21 +73,29 @@ export default function Admin() {
       const todosJogos = CALENDARIO.flatMap(d => d.jogos)
       setJogosEncerrados(todosJogos.filter(j => { const p = prazoJogo(j.id); return p && agora >= p }))
 
-    } catch {}
+    } catch (err) {
+      console.error('Erro ao carregar dados do admin:', err)
+    }
   }
 
   function setScore(idJogo, lado, valor) {
     setResultados(prev => ({ ...prev, [idJogo]: { ...prev[idJogo], [lado]: valor === '' ? null : Number(valor) } }))
   }
+  
   function setScoreElim(idJogo, lado, valor) {
     setResultadosElim(prev => ({ ...prev, [idJogo]: { ...prev[idJogo], [lado]: valor === '' ? null : Number(valor) } }))
   }
+
+  function setRealClassificado(idJogo, equipaNome) {
+    setResultadosElim(prev => ({ ...prev, [idJogo]: { ...prev[idJogo], classificado: equipaNome } }))
+  }
+
   function setEquipa(idJogo, lado, valor) {
     setEquipasElim(prev => ({ ...prev, [idJogo]: { ...prev[idJogo], [lado]: valor } }))
   }
 
   async function calcularPontos() {
-    // 1. Guardar resultados no Supabase
+    // 1. Guardar resultados da Fase de Grupos
     for (const [id, sc] of Object.entries(resultados)) {
       if (sc.casa !== null && sc.fora !== null) {
         await supabase.from('resultados').delete().eq('id_jogo', id)
@@ -96,7 +110,7 @@ export default function Admin() {
     }
     await supabase.from('config').update({ campeao_real: campeaoReal || null, marcador_real: marcadorReal || null }).eq('id', 1)
 
-    // 2. Guardar equipas e resultados eliminatórias
+    // 2. Guardar equipas decididas e resultados reais das eliminatórias
     for (const [id, eq] of Object.entries(equipasElim)) {
       if (eq.casa || eq.fora) {
         await supabase.from('equipas_eliminacao').delete().eq('id_jogo', id)
@@ -106,11 +120,16 @@ export default function Admin() {
     for (const [id, sc] of Object.entries(resultadosElim)) {
       if (sc.casa !== null && sc.fora !== null) {
         await supabase.from('resultados_eliminacao').delete().eq('id_jogo', id)
-        await supabase.from('resultados_eliminacao').insert({ id_jogo: id, casa: Number(sc.casa), fora: Number(sc.fora) })
+        await supabase.from('resultados_eliminacao').insert({ 
+          id_jogo: id, 
+          casa: Number(sc.casa), 
+          fora: Number(sc.fora),
+          classificado: sc.classificado || null
+        })
       }
     }
 
-    // 3. Chamar função SQL que calcula os pontos corretamente
+    // 3. Recalcular Pontuação Geral
     const { error } = await supabase.rpc('recalcular_pontos')
     if (error) {
       console.error('Erro RPC:', error)
@@ -118,7 +137,7 @@ export default function Admin() {
       return
     }
 
-    showToast('✅ Tabela atualizada com sucesso!')
+    showToast('✅ Tabela real e pontos atualizados com sucesso!')
   }
 
   async function guardarSenhas() {
@@ -198,49 +217,95 @@ export default function Admin() {
         </div>
       )}
 
-      {/* ── ELIMINATÓRIAS ── */}
+      {/* ── ELIMINATÓRIAS (INCLUI 16AVOS) ── */}
       {subMenu === 'eliminacao' && (
         <div>
           <div className="alert alert-info" style={{ marginBottom: 12 }}>
-            Preenche as equipas de cada jogo à medida que se apuram. Depois insere os resultados e recalcula.
+            Preenche as equipas reais de cada jogo. Insere o score regulamentar e <b>clica no botão da equipa que passou</b> (caso haja prolongamento/pênaltis).
           </div>
 
           {FASES_ELIMINACAO.map(fase => (
             <details key={fase} style={{ marginBottom: 8 }}>
               <summary style={{ cursor: 'pointer', padding: '10px 14px', background: 'var(--card)', borderRadius: 8, border: '1px solid var(--border)', fontFamily: 'Oswald,sans-serif', letterSpacing: 1, listStyle: 'none', userSelect: 'none' }}>
-                {LABEL_FASE[fase]}
+                {LABEL_FASE[fase] || fase.toUpperCase()}
               </summary>
               <div className="card" style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0, marginTop: 2 }}>
-                {JOGOS_ELIMINACAO[fase].map(j => (
-                  <div key={j.id} style={{ marginBottom: 16 }}>
-                    <p style={{ fontSize: 11, color: '#555', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>{j.label}</p>
+                {JOGOS_ELIMINACAO[fase]?.map(j => {
+                  const casaReal = equipasElim[j.id]?.casa || ''
+                  const foraReal = equipasElim[j.id]?.fora || ''
+                  const realClassificado = resultadosElim[j.id]?.classificado
 
-                    {/* Nomes das equipas */}
-                    <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
-                      <input
-                        type="text" placeholder="Equipa Casa"
-                        value={equipasElim[j.id]?.casa || ''}
-                        onChange={e => setEquipa(j.id, 'casa', e.target.value)}
-                        style={{ flex: 1 }}
-                      />
-                      <input
-                        type="text" placeholder="Equipa Fora"
-                        value={equipasElim[j.id]?.fora || ''}
-                        onChange={e => setEquipa(j.id, 'fora', e.target.value)}
-                        style={{ flex: 1 }}
-                      />
-                    </div>
+                  return (
+                    <div key={j.id} style={{ marginBottom: 20, borderBottom: '1px solid #1a1a1a', paddingBottom: 14 }}>
+                      <p style={{ fontSize: 11, color: 'var(--gold)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>
+                        {j.label} <span style={{ color: '#555' }}>(ID: {j.id})</span>
+                      </p>
 
-                    {/* Resultado real */}
-                    <div className="jogo-row">
-                      <div className="team-name left" style={{ fontSize: 12 }}>{equipasElim[j.id]?.casa || '—'}</div>
-                      <input type="number" min={0} value={resultadosElim[j.id]?.casa ?? ''} onChange={e => setScoreElim(j.id, 'casa', e.target.value)} placeholder="–" />
-                      <span className="sep">—</span>
-                      <input type="number" min={0} value={resultadosElim[j.id]?.fora ?? ''} onChange={e => setScoreElim(j.id, 'fora', e.target.value)} placeholder="–" />
-                      <div className="team-name right" style={{ fontSize: 12 }}>{equipasElim[j.id]?.fora || '—'}</div>
+                      {/* Definir as Equipas que chegaram aqui */}
+                      <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
+                        <input
+                          type="text" placeholder="Equipa Casa Real"
+                          value={casaReal}
+                          onChange={e => setEquipa(j.id, 'casa', e.target.value)}
+                          style={{ flex: 1, fontSize: 13 }}
+                        />
+                        <input
+                          type="text" placeholder="Equipa Fora Real"
+                          value={foraReal}
+                          onChange={e => setEquipa(j.id, 'fora', e.target.value)}
+                          style={{ flex: 1, fontSize: 13 }}
+                        />
+                      </div>
+
+                      {/* Resultado Regulamentar e Seleção de quem avança */}
+                      <div className="jogo-row" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <button
+                          type="button"
+                          disabled={!casaReal}
+                          onClick={() => setRealClassificado(j.id, casaReal)}
+                          style={{
+                            flex: 1, padding: '6px', borderRadius: 4, fontSize: 12, cursor: 'pointer',
+                            border: realClassificado === casaReal ? '1px solid #00C853' : '1px solid #222',
+                            background: realClassificado === casaReal ? 'rgba(0,200,83,0.15)' : '#0d0d0d',
+                            color: realClassificado === casaReal ? '#00C853' : '#aaa'
+                          }}
+                        >
+                          {casaReal || '—'} {realClassificado === casaReal ? '✓' : ''}
+                        </button>
+
+                        <input 
+                          type="number" min={0} 
+                          value={resultadosElim[j.id]?.casa ?? ''} 
+                          onChange={e => setScoreElim(j.id, 'casa', e.target.value)} 
+                          placeholder="–" style={{ width: 40, textAlign: 'center' }}
+                        />
+                        
+                        <span className="sep">—</span>
+                        
+                        <input 
+                          type="number" min={0} 
+                          value={resultadosElim[j.id]?.fora ?? ''} 
+                          onChange={e => setScoreElim(j.id, 'fora', e.target.value)} 
+                          placeholder="–" style={{ width: 40, textAlign: 'center' }}
+                        />
+
+                        <button
+                          type="button"
+                          disabled={!foraReal}
+                          onClick={() => setRealClassificado(j.id, foraReal)}
+                          style={{
+                            flex: 1, padding: '6px', borderRadius: 4, fontSize: 12, cursor: 'pointer',
+                            border: realClassificado === foraReal ? '1px solid #00C853' : '1px solid #222',
+                            background: realClassificado === foraReal ? 'rgba(0,200,83,0.15)' : '#0d0d0d',
+                            color: realClassificado === foraReal ? '#00C853' : '#aaa'
+                          }}
+                        >
+                          {realClassificado === foraReal ? '✓ ' : ''}{foraReal || '—'}
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </details>
           ))}
@@ -266,7 +331,6 @@ export default function Admin() {
               const feitas = jogosEncerrados.filter(j => apostasJ[j.id] !== undefined).length
               const pct = jogosEncerrados.length > 0 ? Math.round((feitas / jogosEncerrados.length) * 100) : 0
               const corBarra = pct >= 80 ? '#00C853' : pct >= 50 ? '#FFD700' : '#FF3D00'
-              const pts = 0
 
               return (
                 <div key={nome} style={{ marginBottom: 12 }}>
