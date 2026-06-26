@@ -6,7 +6,6 @@ import {
 } from '../data/torneio.js'
 import { Toast, useToast } from '../components/Toast.jsx'
 
-// Agrupa os grupos em pares dinamicamente (ex: [['Grupo A', 'Grupo B'], ['Grupo C', 'Grupo D'], ...])
 const chavesGrupos = Object.keys(EQUIPAS_POR_GRUPO)
 const PARES_GRUPOS = []
 for (let i = 0; i < chavesGrupos.length; i += 2) {
@@ -16,10 +15,10 @@ for (let i = 0; i < chavesGrupos.length; i += 2) {
 export default function Apostas({ jogador, isAdmin }) {
   const [subMenu, setSubMenu] = useState('jogos')
   const [diaIdx, setDiaIdx] = useState(indiceDiaHoje())
-  const [parIdx, setParIdx] = useState(0) // Controla qual o par de grupos ativo (0 a 5)
+  const [parIdx, setParIdx] = useState(0)
   const [jogadorSel, setJogadorSel] = useState(jogador)
   const [apostas, setApostas] = useState({ jogos: {}, grupos: {} })
-  const [valoresGrupos, setValoresGrupos] = useState({}) // Guarda o estado temporário de todos os grupos
+  const [valoresGrupos, setValoresGrupos] = useState({})
   const [apostasCarregadas, setApostasCarregadas] = useState(false)
   const [scores, setScores] = useState({})
   const [campeao, setCampeao] = useState('')
@@ -36,8 +35,8 @@ export default function Apostas({ jogador, isAdmin }) {
 
   async function carregarApostas() {
     try {
-      const [{ data: jogosData, error: e1 }, { data: gruposData, error: e2 }, { data: jData }] = await Promise.all([
-        supabase.from('palpites').select('id_jogo, casa, fora').eq('jogador', jogadorSel),
+      const [{ data: jogosData }, { data: gruposData }, { data: jData }] = await Promise.all([
+        supabase.from('palpites').select('id_jogo, casa, fora, classificado').eq('jogador', jogadorSel),
         supabase.from('palpites_grupos').select('grupo, primeiro, segundo').eq('jogador', jogadorSel),
         supabase.from('jogadores').select('campeao, marcador').eq('nome', jogadorSel).single(),
       ])
@@ -47,6 +46,7 @@ export default function Apostas({ jogador, isAdmin }) {
         jogosMap[j.id_jogo] = {
           casa: j.casa !== null && j.casa !== undefined ? Number(j.casa) : null,
           fora: j.fora !== null && j.fora !== undefined ? Number(j.fora) : null,
+          classificado: j.classificado || null
         }
       })
 
@@ -66,27 +66,43 @@ export default function Apostas({ jogador, isAdmin }) {
     }
   }
 
-  // ── Guardar com confirmação ───────────────────────────────
   function pedirConfirmacaoJogos() {
     const jogosParaMostrar = []
     let temVazio = false
+    let faltaClassificado = false
+
     for (const j of dia.jogos) {
       const prazo = prazoJogo(j.id)
       if (prazo && agora >= prazo && !isAdmin) continue
+      
       const c = scores[j.id]?.casa
       const f = scores[j.id]?.fora
+      const cl = scores[j.id]?.classificado
+
       if (c === undefined || c === null || f === undefined || f === null) { temVazio = true; break }
-      jogosParaMostrar.push({ ...j, sc: c, sf: f })
+      
+      if (j.eliminatoria && !cl) { 
+        faltaClassificado = true; 
+        break; 
+      }
+
+      let textoJogo = `${j.casa} ${c} — ${f} ${j.fora}`
+      if (j.eliminatoria) textoJogo += ` (Passa: ${cl})`
+      
+      jogosParaMostrar.push({ ...j, sc: c, sf: f, cl: cl, texto: textoJogo })
     }
+
     if (temVazio) { showToast('❌ Mete um resultado válido, pá!'); return }
+    if (faltaClassificado) { showToast('⚠️ Escolha quem passa clicando no nome da equipa!'); return }
     if (jogosParaMostrar.length === 0) { showToast('ℹ️ Não há jogos para guardar.'); return }
-    setConfirmacao({ tipo: 'jogos', linhas: jogosParaMostrar.map(j => `${j.casa} ${j.sc} — ${j.sf} ${j.fora}`) })
+    
+    setConfirmacao({ tipo: 'jogos', linhas: jogosParaMostrar.map(j => j.texto) })
   }
 
   function pedirConfirmacaoGrupo() {
     const ativos = PARES_GRUPOS[parIdx] || []
     const linhasConf = []
-    let temPeloMenosUm = false // Corrigido o espaço no nome da variável
+    let temPeloMenosUm = false
 
     for (const gNome of ativos) {
       const p1Val = valoresGrupos[gNome]?.primeiro
@@ -106,16 +122,25 @@ export default function Apostas({ jogador, isAdmin }) {
   async function confirmarGuardar() {
     const tipo = confirmacao.tipo
     setConfirmacao(null)
+    
     if (tipo === 'jogos') {
       const rows = dia.jogos
         .filter(j => { const p = prazoJogo(j.id); return !(p && agora >= p && !isAdmin) })
         .filter(j => scores[j.id]?.casa !== null && scores[j.id]?.fora !== null)
-        .map(j => ({ jogador: jogadorSel, id_jogo: j.id, casa: Number(scores[j.id].casa), fora: Number(scores[j.id].fora) }))
+        .map(j => ({ 
+          jogador: jogadorSel, 
+          id_jogo: j.id, 
+          casa: Number(scores[j.id].casa), 
+          fora: Number(scores[j.id].fora),
+          classificado: j.eliminatoria ? scores[j.id]?.classificado : null
+        }))
+
       for (const row of rows) {
         await supabase.from('palpites').upsert(row, { onConflict: 'jogador,id_jogo' })
       }
       showToast(`✅ Jogos de ${dia.data} guardados!`)
     }
+    
     if (tipo === 'grupo') {
       const gruposAlvo = confirmacao.gruposAlvo || []
       for (const gNome of gruposAlvo) {
@@ -128,6 +153,7 @@ export default function Apostas({ jogador, isAdmin }) {
       }
       showToast(`✅ Grupos guardados com sucesso!`)
     }
+    
     if (tipo === 'final') {
       await supabase.from('jogadores').upsert(
         { nome: jogadorSel, campeao: campeao || null, marcador: marcador || null },
@@ -137,7 +163,6 @@ export default function Apostas({ jogador, isAdmin }) {
     }
   }
 
-  // ── Calcular tempo até ao próximo prazo ──────────────────
   function formatarTempo(ms) {
     if (ms <= 0) return null
     const h = Math.floor(ms / 3600000)
@@ -151,7 +176,7 @@ export default function Apostas({ jogador, isAdmin }) {
   function alertaPrazo() {
     for (const j of dia.jogos) {
       const prazo = prazoJogo(j.id)
-      if (!prazo) continue // Corrigido de maxo para prazo
+      if (!prazo) continue
       const diff = prazo - agora
       if (diff <= 0) continue
       const tempo = formatarTempo(diff)
@@ -219,17 +244,18 @@ export default function Apostas({ jogador, isAdmin }) {
           <div className="nav-row">
             <button className="btn btn-icon" onClick={() => setDiaIdx(Math.max(0, diaIdx - 1))}>◀</button>
             <div style={{ flex: 1, textAlign: 'center', fontFamily: 'Oswald,sans-serif', fontSize: 'clamp(14px,3.5vw,17px)', letterSpacing: 1 }}>
-              {dia.data}
+              {dia?.data}
             </div>
             <button className="btn btn-icon" onClick={() => setDiaIdx(Math.min(CALENDARIO.length - 1, diaIdx + 1))}>▶</button>
           </div>
 
-          {dia.jogos.map(j => {
+          {dia?.jogos.map(j => {
             const prazo = prazoJogo(j.id)
             const bloqueado = prazo && agora >= prazo && !isAdmin
             const horaCor = bloqueado ? 'var(--red)' : '#555'
             const temAposta = scores[j.id]?.casa !== null && scores[j.id]?.casa !== undefined
                            && scores[j.id]?.fora !== null && scores[j.id]?.fora !== undefined
+            const AdvancedTeam = scores[j.id]?.classificado
 
             return (
               <div key={j.id} className="card" style={{
@@ -244,22 +270,65 @@ export default function Apostas({ jogador, isAdmin }) {
                     {temAposta ? '✓ apostado' : '· por apostar'}
                   </span>
                 </div>
-                <div className="jogo-row">
-                  <div className="team-name left">{j.casa}</div>
+                
+                <div className="jogo-row" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  
+                  {j.eliminatoria ? (
+                    <button
+                      type="button"
+                      disabled={bloqueado}
+                      onClick={() => setScores(prev => ({ ...prev, [j.id]: { ...prev[j.id], classificado: j.casa } }))}
+                      style={{
+                        flex: 1, textAlign: 'left', padding: '6px 10px', borderRadius: 6, cursor: 'pointer',
+                        border: AdvancedTeam === j.casa ? '1px solid var(--gold)' : '1px solid #222',
+                        background: AdvancedTeam === j.casa ? 'rgba(212,175,55,0.15)' : '#111',
+                        color: AdvancedTeam === j.casa ? 'var(--gold)' : '#fff',
+                        fontFamily: 'Barlow Condensed, sans-serif'
+                      }}
+                    >
+                      {j.casa} {AdvancedTeam === j.casa ? '⭐️' : ''}
+                    </button>
+                  ) : (
+                    <div className="team-name left" style={{ flex: 1 }}>{j.casa}</div>
+                  )}
+
                   <input
                     type="number" min={0}
                     value={scores[j.id]?.casa ?? ''}
                     onChange={e => setScores(prev => ({ ...prev, [j.id]: { ...prev[j.id], casa: e.target.value === '' ? null : Number(e.target.value) } }))}
                     disabled={bloqueado} placeholder="–"
+                    style={{ width: 40, textAlign: 'center' }}
                   />
+                  
                   <span className="sep">—</span>
+                  
                   <input
                     type="number" min={0}
                     value={scores[j.id]?.fora ?? ''}
                     onChange={e => setScores(prev => ({ ...prev, [j.id]: { ...prev[j.id], fora: e.target.value === '' ? null : Number(e.target.value) } }))}
                     disabled={bloqueado} placeholder="–"
+                    style={{ width: 40, textAlign: 'center' }}
                   />
-                  <div className="team-name right">{j.fora}</div>
+
+                  {j.eliminatoria ? (
+                    <button
+                      type="button"
+                      disabled={bloqueado}
+                      onClick={() => setScores(prev => ({ ...prev, [j.id]: { ...prev[j.id], classificado: j.fora } }))}
+                      style={{
+                        flex: 1, textAlign: 'right', padding: '6px 10px', borderRadius: 6, cursor: 'pointer',
+                        border: AdvancedTeam === j.fora ? '1px solid var(--gold)' : '1px solid #222',
+                        background: AdvancedTeam === j.fora ? 'rgba(212,175,55,0.15)' : '#111',
+                        color: AdvancedTeam === j.fora ? 'var(--gold)' : '#fff',
+                        fontFamily: 'Barlow Condensed, sans-serif'
+                      }}
+                    >
+                      {AdvancedTeam === j.fora ? '⭐️ ' : ''}{j.fora}
+                    </button>
+                  ) : (
+                    <div className="team-name right" style={{ flex: 1 }}>{j.fora}</div>
+                  )}
+                  
                 </div>
               </div>
             )
@@ -295,7 +364,6 @@ export default function Apostas({ jogador, isAdmin }) {
           <h4 style={{ color: 'var(--gold)', textAlign: 'center', margin: '12px 0' }}>📊 Vencedores dos grupos</h4>
           {bloqGrupos && <div className="alert alert-warning" style={{ marginBottom: 10 }}>🔒 Edição das posições encerrada.</div>}
 
-          {/* Grelha de 6 botões dispostos em duas filas de 3 */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
@@ -327,7 +395,6 @@ export default function Apostas({ jogador, isAdmin }) {
             })}
           </div>
 
-          {/* Renderização de ambos os grupos contidos no par ativo */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {PARES_GRUPOS[parIdx]?.map(gNome => (
               <div key={gNome} style={{ border: '1px solid #1e1e1e', padding: '12px', borderRadius: '8px', background: '#0a0a0a' }}>
@@ -337,10 +404,7 @@ export default function Apostas({ jogador, isAdmin }) {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   <select
                     value={valoresGrupos[gNome]?.primeiro || ''}
-                    onChange={e => setValoresGrupos(prev => ({
-                      ...prev,
-                      [gNome]: { ...prev[gNome], primeiro: e.target.value }
-                    }))}
+                    onChange={e => setValoresGrupos(prev => ({ ...prev, [gNome]: { ...prev[gNome], primeiro: e.target.value } }))}
                     disabled={bloqGrupos}
                   >
                     <option value="">🥇 1.º Lugar...</option>
@@ -349,10 +413,7 @@ export default function Apostas({ jogador, isAdmin }) {
 
                   <select
                     value={valoresGrupos[gNome]?.segundo || ''}
-                    onChange={e => setValoresGrupos(prev => ({
-                      ...prev,
-                      [gNome]: { ...prev[gNome], segundo: e.target.value }
-                    }))}
+                    onChange={e => setValoresGrupos(prev => ({ ...prev, [gNome]: { ...prev[gNome], segundo: e.target.value } }))}
                     disabled={bloqGrupos}
                   >
                     <option value="">🥈 2.º Lugar...</option>
