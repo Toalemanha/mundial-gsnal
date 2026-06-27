@@ -6,6 +6,72 @@ import {
 } from '../data/torneio.js'
 import { Toast, useToast } from '../components/Toast.jsx'
 
+function AutocompleteInput({ value, onChange, placeholder, style }) {
+  const [sugestoes, setSugestoes] = useState([])
+  const [aberto, setAberto] = useState(false)
+
+  function handleChange(e) {
+    const val = e.target.value
+    onChange(val)
+    if (val.length >= 1) {
+      const filtradas = TODAS_EQUIPAS.filter(eq =>
+        eq.toLowerCase().includes(val.toLowerCase()) ||
+        eq.replace(/[^\w\s]/g, '').toLowerCase().includes(val.toLowerCase())
+      ).slice(0, 6)
+      setSugestoes(filtradas)
+      setAberto(filtradas.length > 0)
+    } else {
+      setSugestoes([])
+      setAberto(false)
+    }
+  }
+
+  function selecionar(eq) {
+    onChange(eq)
+    setSugestoes([])
+    setAberto(false)
+  }
+
+  return (
+    <div style={{ position: 'relative', flex: 1 }}>
+      <input
+        type="text"
+        placeholder={placeholder}
+        value={value}
+        onChange={handleChange}
+        onBlur={() => setTimeout(() => setAberto(false), 150)}
+        onFocus={() => value && sugestoes.length > 0 && setAberto(true)}
+        style={{ ...style, width: '100%' }}
+        autoComplete="off"
+      />
+      {aberto && (
+        <div style={{
+          position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 200,
+          background: '#111', border: '1px solid #2a2a2a', borderRadius: 6,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.5)', overflow: 'hidden',
+        }}>
+          {sugestoes.map(eq => (
+            <div
+              key={eq}
+              onMouseDown={() => selecionar(eq)}
+              style={{
+                padding: '8px 12px', cursor: 'pointer', fontSize: 13,
+                fontFamily: 'Barlow Condensed,sans-serif', color: '#ccc',
+                borderBottom: '1px solid #1a1a1a',
+                transition: 'background 0.1s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = '#1a1a1a'}
+              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+            >
+              {eq}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function Admin() {
   const [subMenu, setSubMenu] = useState('resultados')
   const [resultados, setResultados] = useState({})
@@ -256,8 +322,8 @@ export default function Admin() {
 
                       {/* Equipas */}
                       <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
-                        <input type="text" placeholder="Equipa Casa" value={casaReal} onChange={e => setEquipa(j.id, 'casa', e.target.value)} style={{ flex: 1, fontSize: 13 }} />
-                        <input type="text" placeholder="Equipa Fora" value={foraReal} onChange={e => setEquipa(j.id, 'fora', e.target.value)} style={{ flex: 1, fontSize: 13 }} />
+                        <AutocompleteInput placeholder="Equipa Casa" value={casaReal} onChange={val => setEquipa(j.id, 'casa', val)} style={{ fontSize: 13 }} />
+                        <AutocompleteInput placeholder="Equipa Fora" value={foraReal} onChange={val => setEquipa(j.id, 'fora', val)} style={{ fontSize: 13 }} />
                       </div>
 
                       {/* Resultado + quem passa */}
