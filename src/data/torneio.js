@@ -126,8 +126,9 @@ export function prazoJogo(idJogo) {
         // Prazo: 22:30 do dia anterior ao jogo
         const dtJogo = new Date(2026, m - 1, d)
         const dtPrazo = new Date(dtJogo)
-        dtPrazo.setDate(dtPrazo.getDate() - 1)
-        dtPrazo.setHours(22, 30, 0, 0)
+        const [hJogo, mJogo] = j.hora.split(':').map(Number)
+        dtPrazo.setHours(hJogo, mJogo, 0, 0)
+        dtPrazo.setTime(dtPrazo.getTime() - 2 * 60 * 60 * 1000)
         return dtPrazo
       }
     }
