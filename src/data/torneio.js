@@ -154,87 +154,104 @@ export function indiceDiaHoje() {
 // ── Fase a eliminar ───────────────────────────────────────────────────────────
 // As equipas ficam em branco — o admin preenche à medida que se apuram
 
-export const FASES_ELIMINACAO = ['oitavos', 'quartos', 'meias', 'terceiro', 'final']
+export const FASES_ELIMINACAO = ['r32', 'r16', 'quartos', 'meias', 'terceiro', 'final']
 
 export const CALENDARIO_ELIMINACAO = [
-  { data: "Sáb., 28/06", jogos: [
-    { hora: "21:00", id: "R32_1",  label: "Jogo 1" },
-    { hora: "01:00", id: "R32_2",  label: "Jogo 2" },
-  ]},
+  { data: "Sáb., 28/06", jogos: [{ hora: "20:00", id: "R32_1", label: "R32 Jogo 1" }]},
   { data: "Dom., 29/06", jogos: [
-    { hora: "18:00", id: "R32_3",  label: "Jogo 3" },
-    { hora: "22:00", id: "R32_4",  label: "Jogo 4" },
+    { hora: "18:00", id: "R32_3", label: "R32 Jogo 3" },
+    { hora: "21:00", id: "R32_2", label: "R32 Jogo 2" },
+    { hora: "02:00", id: "R32_4", label: "R32 Jogo 4" },
   ]},
   { data: "Seg., 30/06", jogos: [
-    { hora: "21:00", id: "R32_5",  label: "Jogo 5" },
-    { hora: "01:00", id: "R32_6",  label: "Jogo 6" },
+    { hora: "18:00", id: "R32_6", label: "R32 Jogo 6" },
+    { hora: "22:00", id: "R32_5", label: "R32 Jogo 5" },
+    { hora: "02:00", id: "R32_7", label: "R32 Jogo 7" },
   ]},
   { data: "Ter., 01/07", jogos: [
-    { hora: "18:00", id: "R32_7",  label: "Jogo 7" },
-    { hora: "22:00", id: "R32_8",  label: "Jogo 8" },
+    { hora: "17:00", id: "R32_8",  label: "R32 Jogo 8" },
+    { hora: "21:00", id: "R32_9",  label: "R32 Jogo 9" },
+    { hora: "01:00", id: "R32_10", label: "R32 Jogo 10" },
   ]},
   { data: "Qua., 02/07", jogos: [
-    { hora: "21:00", id: "R32_9",  label: "Jogo 9" },
-    { hora: "01:00", id: "R32_10", label: "Jogo 10" },
+    { hora: "00:00", id: "R32_11", label: "R32 Jogo 11" },
+    { hora: "20:00", id: "R32_12", label: "R32 Jogo 12" },
+    { hora: "02:00", id: "R32_13", label: "R32 Jogo 13" },
   ]},
   { data: "Qui., 03/07", jogos: [
-    { hora: "18:00", id: "R32_11", label: "Jogo 11" },
-    { hora: "18:00", id: "R32_12", label: "Jogo 12" },
-    { hora: "22:00", id: "R32_13", label: "Jogo 13" },
-    { hora: "22:00", id: "R32_14", label: "Jogo 14" },
-    { hora: "02:00", id: "R32_15", label: "Jogo 15" },
-    { hora: "02:00", id: "R32_16", label: "Jogo 16" },
+    { hora: "19:00", id: "R32_16", label: "R32 Jogo 16" },
+    { hora: "23:00", id: "R32_14", label: "R32 Jogo 14" },
+    { hora: "02:30", id: "R32_15", label: "R32 Jogo 15" },
   ]},
+  { data: "Sáb., 04/07", jogos: [
+    { hora: "18:00", id: "R16_2", label: "R16 Jogo 2" },
+    { hora: "22:00", id: "R16_1", label: "R16 Jogo 1" },
+  ]},
+  { data: "Dom., 05/07", jogos: [
+    { hora: "21:00", id: "R16_3", label: "R16 Jogo 3" },
+    { hora: "01:00", id: "R16_4", label: "R16 Jogo 4" },
+  ]},
+  { data: "Seg., 07/07", jogos: [
+    { hora: "20:00", id: "R16_5", label: "R16 Jogo 5" },
+    { hora: "01:00", id: "R16_6", label: "R16 Jogo 6" },
+  ]},
+  { data: "Ter., 08/07", jogos: [
+    { hora: "17:00", id: "R16_7", label: "R16 Jogo 7" },
+    { hora: "21:00", id: "R16_8", label: "R16 Jogo 8" },
+  ]},
+  { data: "Qui., 09/07", jogos: [{ hora: "21:00", id: "QF1", label: "QF 1" }]},
+  { data: "Sex., 10/07", jogos: [{ hora: "20:00", id: "QF2", label: "QF 2" }]},
+  { data: "Sáb., 11/07", jogos: [
+    { hora: "22:00", id: "QF3", label: "QF 3" },
+    { hora: "02:00", id: "QF4", label: "QF 4" },
+  ]},
+  { data: "Ter., 14/07", jogos: [{ hora: "20:00", id: "SF1", label: "Meia 1" }]},
+  { data: "Qua., 15/07", jogos: [{ hora: "20:00", id: "SF2", label: "Meia 2" }]},
+  { data: "Sex., 18/07", jogos: [{ hora: "22:00", id: "TP1", label: "3.º Lugar" }]},
+  { data: "Dom., 19/07", jogos: [{ hora: "20:00", id: "FN1", label: "Final" }]},
 ]
 
 export const JOGOS_ELIMINACAO = {
-  oitavos: [
-    { id: 'R32_1',  label: 'Jogo 1' },
-    { id: 'R32_2',  label: 'Jogo 2' },
-    { id: 'R32_3',  label: 'Jogo 3' },
-    { id: 'R32_4',  label: 'Jogo 4' },
-    { id: 'R32_5',  label: 'Jogo 5' },
-    { id: 'R32_6',  label: 'Jogo 6' },
-    { id: 'R32_7',  label: 'Jogo 7' },
-    { id: 'R32_8',  label: 'Jogo 8' },
-    { id: 'R32_9',  label: 'Jogo 9' },
-    { id: 'R32_10', label: 'Jogo 10' },
-    { id: 'R32_11', label: 'Jogo 11' },
-    { id: 'R32_12', label: 'Jogo 12' },
-    { id: 'R32_13', label: 'Jogo 13' },
-    { id: 'R32_14', label: 'Jogo 14' },
-    { id: 'R32_15', label: 'Jogo 15' },
-    { id: 'R32_16', label: 'Jogo 16' },
+  r32: [
+    { id: 'R32_1',  label: 'Jogo 1' }, { id: 'R32_2',  label: 'Jogo 2' },
+    { id: 'R32_3',  label: 'Jogo 3' }, { id: 'R32_4',  label: 'Jogo 4' },
+    { id: 'R32_5',  label: 'Jogo 5' }, { id: 'R32_6',  label: 'Jogo 6' },
+    { id: 'R32_7',  label: 'Jogo 7' }, { id: 'R32_8',  label: 'Jogo 8' },
+    { id: 'R32_9',  label: 'Jogo 9' }, { id: 'R32_10', label: 'Jogo 10' },
+    { id: 'R32_11', label: 'Jogo 11' }, { id: 'R32_12', label: 'Jogo 12' },
+    { id: 'R32_13', label: 'Jogo 13' }, { id: 'R32_14', label: 'Jogo 14' },
+    { id: 'R32_15', label: 'Jogo 15' }, { id: 'R32_16', label: 'Jogo 16' },
+  ],
+  r16: [
+    { id: 'R16_1', label: 'Jogo 1' }, { id: 'R16_2', label: 'Jogo 2' },
+    { id: 'R16_3', label: 'Jogo 3' }, { id: 'R16_4', label: 'Jogo 4' },
+    { id: 'R16_5', label: 'Jogo 5' }, { id: 'R16_6', label: 'Jogo 6' },
+    { id: 'R16_7', label: 'Jogo 7' }, { id: 'R16_8', label: 'Jogo 8' },
   ],
   quartos: [
-    { id: 'QF1', label: 'Quarto 1' },
-    { id: 'QF2', label: 'Quarto 2' },
-    { id: 'QF3', label: 'Quarto 3' },
-    { id: 'QF4', label: 'Quarto 4' },
+    { id: 'QF1', label: 'Quarto 1' }, { id: 'QF2', label: 'Quarto 2' },
+    { id: 'QF3', label: 'Quarto 3' }, { id: 'QF4', label: 'Quarto 4' },
   ],
   meias: [
     { id: 'SF1', label: 'Meia-final 1' },
     { id: 'SF2', label: 'Meia-final 2' },
   ],
-  terceiro: [
-    { id: 'TP1', label: '3.º Lugar' },
-  ],
-  final: [
-    { id: 'FN1', label: 'Final' },
-  ],
+  terceiro: [{ id: 'TP1', label: '3.º Lugar' }],
+  final:    [{ id: 'FN1', label: 'Final' }],
 }
 
 export const LABEL_FASE = {
-  oitavos:  '🎯 Oitavos de Final',
+  r32:      '🆕 32 Avos de Final',
+  r16:      '⚔️ 16 Avos de Final',
   quartos:  '💥 Quartos de Final',
   meias:    '🔥 Meias-Finais',
   terceiro: '🥉 3.º Lugar',
   final:    '🏆 Final',
 }
 
-// Prazos: 22:30 do dia anterior ao primeiro jogo de cada fase
 export const PRAZOS_ELIMINACAO = {
-  oitavos:  new Date("2026-06-27T22:30:00+01:00"),  // 1º jogo: 28 jun
+  r32:      new Date("2026-06-27T22:30:00+01:00"),  // 1º jogo: 28 jun
+  r16:      new Date("2026-07-03T22:30:00+01:00"),  // 1º jogo: 4 jul
   quartos:  new Date("2026-07-08T22:30:00+01:00"),  // 1º jogo: 9 jul
   meias:    new Date("2026-07-13T22:30:00+01:00"),  // 1º jogo: 14 jul
   terceiro: new Date("2026-07-17T22:30:00+01:00"),  // jogo: 18 jul
