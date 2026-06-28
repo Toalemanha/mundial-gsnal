@@ -107,17 +107,15 @@ export const CALENDARIO = [
     { hora: "22:00", id: "Grupo L_J3", casa: "🇭🇷 Croácia", fora: "🇬🇭 Gana" }
   ]},
   { data: "Dom., 28/06", jogos: [
-    { hora: "03:00", id: "Grupo J_J3", casa: "🇩🇿 Argélia", fora: "🇦🇹 Áustria" },
-    { hora: "00:30", id: "Grupo K_J3", casa: "🇨🇩 RD Congo", fora: "🇺🇿 Usbequistão" }
+    { hora: "00:30", id: "Grupo K_J3", casa: "🇨🇩 RD Congo", fora: "🇺🇿 Usbequistão" },
+    { hora: "03:00", id: "Grupo J_J3", casa: "🇩🇿 Argélia", fora: "🇦🇹 Áustria" }
   ]}
 ]
 
-// Datas limite (fuso de Lisboa)
 export const LIMITE_FASE_FINAL = new Date("2026-06-11T18:00:00+01:00")
 export const LIMITE_GRUPOS    = new Date("2026-06-18T12:00:00+01:00")
 export const LIMITE_REVELACAO = new Date("2026-06-26T00:00:00+01:00")
 
-// Prazo de cada jogo = 2 horas antes do início
 export function prazoJogo(idJogo) {
   for (const dia of CALENDARIO) {
     for (const j of dia.jogos) {
@@ -151,86 +149,104 @@ export function indiceDiaHoje() {
 export const FASES_ELIMINACAO = ['r32', 'r16', 'quartos', 'meias', 'terceiro', 'final']
 
 export const CALENDARIO_ELIMINACAO = [
-  { data: "Sáb., 28/06", jogos: [{ hora: "20:00", id: "R32_1", label: "16avos Jogo 1" }]},
+  // ── 16 Avos de Final (28 jun – 3 jul) ──
+  { data: "Sáb., 28/06", jogos: [
+    { hora: "20:00", id: "R32_1", label: "16avos — Áfr. Sul vs Canadá" },
+  ]},
   { data: "Dom., 29/06", jogos: [
-    { hora: "18:00", id: "R32_3", label: "16avos Jogo 3" },
-    { hora: "21:00", id: "R32_2", label: "16avos Jogo 2" },
-    { hora: "02:00", id: "R32_4", label: "16avos Jogo 4" },
+    { hora: "18:00", id: "R32_2", label: "16avos — Brasil vs Japão" },
+    { hora: "21:30", id: "R32_3", label: "16avos — Alemanha vs Paraguai" },
+    { hora: "02:00", id: "R32_4", label: "16avos — P. Baixos vs Marrocos" },
   ]},
   { data: "Seg., 30/06", jogos: [
-    { hora: "18:00", id: "R32_6", label: "16avos Jogo 6" },
-    { hora: "22:00", id: "R32_5", label: "16avos Jogo 5" },
-    { hora: "02:00", id: "R32_7", label: "16avos Jogo 7" },
+    { hora: "18:00", id: "R32_5", label: "16avos — C. Marfim vs Noruega" },
+    { hora: "22:00", id: "R32_6", label: "16avos — França vs Suécia" },
+    { hora: "02:00", id: "R32_7", label: "16avos — México vs Equador" },
   ]},
   { data: "Ter., 01/07", jogos: [
-    { hora: "17:00", id: "R32_8",  label: "16avos Jogo 8" },
-    { hora: "21:00", id: "R32_9",  label: "16avos Jogo 9" },
-    { hora: "01:00", id: "R32_10", label: "16avos Jogo 10" },
+    { hora: "17:00", id: "R32_8",  label: "16avos — Inglaterra vs 3.º" },
+    { hora: "21:00", id: "R32_9",  label: "16avos — Bélgica vs 3.º" },
+    { hora: "01:00", id: "R32_10", label: "16avos — EUA vs Bósnia" },
   ]},
   { data: "Qua., 02/07", jogos: [
-    { hora: "00:00", id: "R32_11", label: "16avos Jogo 11" },
-    { hora: "20:00", id: "R32_12", label: "16avos Jogo 12" },
-    { hora: "02:00", id: "R32_13", label: "16avos Jogo 13" },
+    { hora: "20:00", id: "R32_11", label: "16avos — Espanha vs 2.º J" },
+    { hora: "00:00", id: "R32_12", label: "16avos — 2.º K vs Croácia" },
+    { hora: "04:00", id: "R32_13", label: "16avos — Suíça vs 3.º" },
   ]},
   { data: "Qui., 03/07", jogos: [
-    { hora: "19:00", id: "R32_16", label: "16avos Jogo 16" },
-    { hora: "23:00", id: "R32_14", label: "16avos Jogo 14" },
-    { hora: "02:30", id: "R32_15", label: "16avos Jogo 15" },
+    { hora: "19:00", id: "R32_14", label: "16avos — Austrália vs Egito" },
+    { hora: "23:00", id: "R32_15", label: "16avos — Argentina vs Cabo Verde" },
+    { hora: "02:30", id: "R32_16", label: "16avos — 1.º K vs 3.º" },
   ]},
-  { data: "Sáb., 04/07", jogos: [
-    { hora: "18:00", id: "R16_2", label: "Oitavos Jogo 2" },
-    { hora: "22:00", id: "R16_1", label: "Oitavos Jogo 1" },
+  // ── Oitavos de Final (4 jul – 8 jul) ──
+  { data: "Sex., 04/07", jogos: [
+    { hora: "18:00", id: "R16_1", label: "Oitavos — Jogo 1" },
+    { hora: "22:00", id: "R16_2", label: "Oitavos — Jogo 2" },
   ]},
-  { data: "Dom., 05/07", jogos: [
-    { hora: "21:00", id: "R16_3", label: "Oitavos Jogo 3" },
-    { hora: "01:00", id: "R16_4", label: "Oitavos Jogo 4" },
+  { data: "Sáb., 05/07", jogos: [
+    { hora: "21:00", id: "R16_3", label: "Oitavos — Jogo 3" },
+    { hora: "01:00", id: "R16_4", label: "Oitavos — Jogo 4" },
   ]},
   { data: "Seg., 07/07", jogos: [
-    { hora: "20:00", id: "R16_5", label: "Oitavos Jogo 5" },
-    { hora: "01:00", id: "R16_6", label: "Oitavos Jogo 6" },
+    { hora: "20:00", id: "R16_5", label: "Oitavos — Jogo 5" },
+    { hora: "00:00", id: "R16_6", label: "Oitavos — Jogo 6" },
   ]},
   { data: "Ter., 08/07", jogos: [
-    { hora: "17:00", id: "R16_7", label: "Oitavos Jogo 7" },
-    { hora: "21:00", id: "R16_8", label: "Oitavos Jogo 8" },
+    { hora: "17:00", id: "R16_7", label: "Oitavos — Jogo 7" },
+    { hora: "21:00", id: "R16_8", label: "Oitavos — Jogo 8" },
   ]},
-  { data: "Qui., 09/07", jogos: [{ hora: "21:00", id: "QF1", label: "Quarto 1" }]},
-  { data: "Sex., 10/07", jogos: [{ hora: "20:00", id: "QF2", label: "Quarto 2" }]},
+  // ── Quartos (9 jul – 12 jul) ──
+  { data: "Qui., 09/07", jogos: [{ hora: "21:00", id: "QF1", label: "Quartos — Jogo 1" }]},
+  { data: "Sex., 10/07", jogos: [{ hora: "20:00", id: "QF2", label: "Quartos — Jogo 2" }]},
   { data: "Sáb., 11/07", jogos: [
-    { hora: "22:00", id: "QF3", label: "Quarto 3" },
-    { hora: "02:00", id: "QF4", label: "Quarto 4" },
+    { hora: "22:00", id: "QF3", label: "Quartos — Jogo 3" },
+    { hora: "02:00", id: "QF4", label: "Quartos — Jogo 4" },
   ]},
+  // ── Meias-finais ──
   { data: "Ter., 14/07", jogos: [{ hora: "20:00", id: "SF1", label: "Meia-final 1" }]},
   { data: "Qua., 15/07", jogos: [{ hora: "20:00", id: "SF2", label: "Meia-final 2" }]},
+  // ── 3.º lugar e Final ──
   { data: "Sex., 18/07", jogos: [{ hora: "22:00", id: "TP1", label: "3.º Lugar" }]},
-  { data: "Dom., 19/07", jogos: [{ hora: "20:00", id: "FN1", label: "Final" }]},
+  { data: "Dom., 19/07", jogos: [{ hora: "20:00", id: "FN1", label: "🏆 Final" }]},
 ]
 
 export const JOGOS_ELIMINACAO = {
   r32: [
-    { id: 'R32_1',  label: 'Jogo 1' },  { id: 'R32_2',  label: 'Jogo 2' },
-    { id: 'R32_3',  label: 'Jogo 3' },  { id: 'R32_4',  label: 'Jogo 4' },
-    { id: 'R32_5',  label: 'Jogo 5' },  { id: 'R32_6',  label: 'Jogo 6' },
-    { id: 'R32_7',  label: 'Jogo 7' },  { id: 'R32_8',  label: 'Jogo 8' },
-    { id: 'R32_9',  label: 'Jogo 9' },  { id: 'R32_10', label: 'Jogo 10' },
-    { id: 'R32_11', label: 'Jogo 11' }, { id: 'R32_12', label: 'Jogo 12' },
-    { id: 'R32_13', label: 'Jogo 13' }, { id: 'R32_14', label: 'Jogo 14' },
-    { id: 'R32_15', label: 'Jogo 15' }, { id: 'R32_16', label: 'Jogo 16' },
+    { id: 'R32_1',  label: 'Áfr. Sul vs Canadá' },
+    { id: 'R32_2',  label: 'Brasil vs Japão' },
+    { id: 'R32_3',  label: 'Alemanha vs Paraguai' },
+    { id: 'R32_4',  label: 'P. Baixos vs Marrocos' },
+    { id: 'R32_5',  label: 'C. Marfim vs Noruega' },
+    { id: 'R32_6',  label: 'França vs Suécia' },
+    { id: 'R32_7',  label: 'México vs Equador' },
+    { id: 'R32_8',  label: 'Inglaterra vs 3.º' },
+    { id: 'R32_9',  label: 'Bélgica vs 3.º' },
+    { id: 'R32_10', label: 'EUA vs Bósnia' },
+    { id: 'R32_11', label: 'Espanha vs 2.º J' },
+    { id: 'R32_12', label: '2.º K vs Croácia' },
+    { id: 'R32_13', label: 'Suíça vs 3.º' },
+    { id: 'R32_14', label: 'Austrália vs Egito' },
+    { id: 'R32_15', label: 'Argentina vs Cabo Verde' },
+    { id: 'R32_16', label: '1.º K vs 3.º' },
   ],
   r16: [
-    { id: 'R16_1', label: 'Jogo 1' }, { id: 'R16_2', label: 'Jogo 2' },
-    { id: 'R16_3', label: 'Jogo 3' }, { id: 'R16_4', label: 'Jogo 4' },
-    { id: 'R16_5', label: 'Jogo 5' }, { id: 'R16_6', label: 'Jogo 6' },
-    { id: 'R16_7', label: 'Jogo 7' }, { id: 'R16_8', label: 'Jogo 8' },
+    { id: 'R16_1', label: 'Oitavos Jogo 1' }, { id: 'R16_2', label: 'Oitavos Jogo 2' },
+    { id: 'R16_3', label: 'Oitavos Jogo 3' }, { id: 'R16_4', label: 'Oitavos Jogo 4' },
+    { id: 'R16_5', label: 'Oitavos Jogo 5' }, { id: 'R16_6', label: 'Oitavos Jogo 6' },
+    { id: 'R16_7', label: 'Oitavos Jogo 7' }, { id: 'R16_8', label: 'Oitavos Jogo 8' },
   ],
-  quartos:  [{ id: 'QF1', label: 'Quarto 1' }, { id: 'QF2', label: 'Quarto 2' }, { id: 'QF3', label: 'Quarto 3' }, { id: 'QF4', label: 'Quarto 4' }],
+  quartos:  [
+    { id: 'QF1', label: 'Quartos Jogo 1' }, { id: 'QF2', label: 'Quartos Jogo 2' },
+    { id: 'QF3', label: 'Quartos Jogo 3' }, { id: 'QF4', label: 'Quartos Jogo 4' },
+  ],
   meias:    [{ id: 'SF1', label: 'Meia-final 1' }, { id: 'SF2', label: 'Meia-final 2' }],
   terceiro: [{ id: 'TP1', label: '3.º Lugar' }],
   final:    [{ id: 'FN1', label: 'Final' }],
 }
 
 export const LABEL_FASE = {
-  r32:      '🆕 16 Avos de Final',
-  r16:      '⚔️ Oitavos de Final',
+  r32:      '⚔️ 16 Avos de Final',
+  r16:      '🎯 Oitavos de Final',
   quartos:  '💥 Quartos de Final',
   meias:    '🔥 Meias-Finais',
   terceiro: '🥉 3.º Lugar',
