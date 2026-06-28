@@ -380,11 +380,29 @@ export default function Apostas({ jogador, isAdmin }) {
                   </div>
                 )}
 
-                {/* Inputs de resultado */}
-                <div className="jogo-row" style={{ marginBottom: elim && nomeCasa && nomeFora ? 10 : 0 }}>
-                  <div className="team-name left" style={{ fontSize: 'clamp(11px,2.5vw,13px)' }}>
-                    {nomeCasa || <span style={{ color: '#333' }}>A definir</span>}
-                  </div>
+                {/* Inputs de resultado — nomes clicáveis nas eliminatórias */}
+                <div className="jogo-row">
+                  {elim && nomeCasa ? (
+                    <button
+                      disabled={bloqueado}
+                      onClick={() => !bloqueado && setScoresElim(prev => ({ ...prev, [j.id]: { ...prev[j.id], passa: prev[j.id]?.passa === nomeCasa ? null : nomeCasa } }))}
+                      style={{
+                        flex: 1, textAlign: 'left', padding: '4px 6px', borderRadius: 6,
+                        border: `1px solid ${scoresElim[j.id]?.passa === nomeCasa ? '#00C853' : '#2a2a2a'}`,
+                        background: scoresElim[j.id]?.passa === nomeCasa ? 'rgba(0,200,83,0.1)' : 'transparent',
+                        color: scoresElim[j.id]?.passa === nomeCasa ? '#00C853' : '#eee',
+                        fontSize: 'clamp(11px,2.5vw,13px)', fontFamily: 'Barlow Condensed,sans-serif',
+                        cursor: bloqueado ? 'default' : 'pointer', transition: 'all 0.15s',
+                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                      }}>
+                      {scoresElim[j.id]?.passa === nomeCasa ? '✓ ' : ''}{nomeCasa}
+                    </button>
+                  ) : (
+                    <div className="team-name left" style={{ fontSize: 'clamp(11px,2.5vw,13px)' }}>
+                      {nomeCasa || <span style={{ color: '#333' }}>A definir</span>}
+                    </div>
+                  )}
+
                   <input type="number" min={0}
                     value={a.casa ?? ''}
                     onChange={e => {
@@ -404,37 +422,32 @@ export default function Apostas({ jogador, isAdmin }) {
                     }}
                     disabled={bloqueado} placeholder="–"
                   />
-                  <div className="team-name right" style={{ fontSize: 'clamp(11px,2.5vw,13px)' }}>
-                    {nomeFora || <span style={{ color: '#333' }}>A definir</span>}
-                  </div>
-                </div>
 
-                {/* Quem passa (só eliminatórias com equipas definidas) */}
-                {elim && nomeCasa && nomeFora && (
-                  <div style={{ marginBottom: 8 }}>
-                    <p style={{ fontSize: 10, color: '#444', textAlign: 'center', margin: '0 0 6px', letterSpacing: 1, textTransform: 'uppercase', fontFamily: 'Barlow Condensed,sans-serif' }}>
-                      Quem passa? <span style={{ color: '#00C853' }}>(+1 pt)</span>
-                    </p>
-                    <div style={{ display: 'flex', gap: 6 }}>
-                      {[nomeCasa, nomeFora].map(eq => {
-                        const ativo = scoresElim[j.id]?.passa === eq
-                        return (
-                          <button key={eq} disabled={bloqueado}
-                            onClick={() => setScoresElim(prev => ({ ...prev, [j.id]: { ...prev[j.id], passa: prev[j.id]?.passa === eq ? null : eq } }))}
-                            style={{
-                              flex: 1, padding: '7px 4px', borderRadius: 8, cursor: bloqueado ? 'default' : 'pointer',
-                              border: `1px solid ${ativo ? '#00C853' : '#2a2a2a'}`,
-                              background: ativo ? 'rgba(0,200,83,0.1)' : 'transparent',
-                              color: ativo ? '#00C853' : '#666',
-                              fontSize: 'clamp(10px,2.3vw,12px)', fontFamily: 'Barlow Condensed,sans-serif',
-                              transition: 'all 0.15s', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                            }}>
-                            {eq}
-                          </button>
-                        )
-                      })}
+                  {elim && nomeFora ? (
+                    <button
+                      disabled={bloqueado}
+                      onClick={() => !bloqueado && setScoresElim(prev => ({ ...prev, [j.id]: { ...prev[j.id], passa: prev[j.id]?.passa === nomeFora ? null : nomeFora } }))}
+                      style={{
+                        flex: 1, textAlign: 'right', padding: '4px 6px', borderRadius: 6,
+                        border: `1px solid ${scoresElim[j.id]?.passa === nomeFora ? '#00C853' : '#2a2a2a'}`,
+                        background: scoresElim[j.id]?.passa === nomeFora ? 'rgba(0,200,83,0.1)' : 'transparent',
+                        color: scoresElim[j.id]?.passa === nomeFora ? '#00C853' : '#eee',
+                        fontSize: 'clamp(11px,2.5vw,13px)', fontFamily: 'Barlow Condensed,sans-serif',
+                        cursor: bloqueado ? 'default' : 'pointer', transition: 'all 0.15s',
+                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                      }}>
+                      {nomeFora}{scoresElim[j.id]?.passa === nomeFora ? ' ✓' : ''}
+                    </button>
+                  ) : (
+                    <div className="team-name right" style={{ fontSize: 'clamp(11px,2.5vw,13px)' }}>
+                      {nomeFora || <span style={{ color: '#333' }}>A definir</span>}
                     </div>
-                  </div>
+                  )}
+                </div>
+                {elim && nomeCasa && nomeFora && !bloqueado && (
+                  <p style={{ fontSize: 10, color: '#444', textAlign: 'center', margin: '4px 0 0', letterSpacing: 1, textTransform: 'uppercase', fontFamily: 'Barlow Condensed,sans-serif' }}>
+                    Clica no nome da equipa que passa <span style={{ color: '#00C853' }}>(+1 pt)</span>
+                  </p>
                 )}
 
                 {/* Palpites de todos (após prazo) */}
