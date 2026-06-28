@@ -450,46 +450,7 @@ export default function Apostas({ jogador, isAdmin }) {
                   </p>
                 )}
 
-                {/* Palpites de todos (após prazo) */}
-                {encerrado && (
-                  <div style={{ borderTop: '1px solid #1a1a1a', paddingTop: 8, marginTop: 4 }}>
-                    {NOMES_AMIGOS.map(nome => {
-                      const mp = elim ? palpitesElimTodos : palpitesTodos
-                      const p = mp[j.id]?.[nome]
-                      const podeVer = encerrado || nome === jogadorSel || isAdmin
-                      if (!p) return (
-                        <p key={nome} style={{ margin: 0, padding: '3px 0', fontSize: 11, color: '#2a2a2a', textAlign: 'center', fontFamily: 'Barlow Condensed,sans-serif' }}>
-                          {nome} — sem aposta
-                        </p>
-                      )
-                      const vc = podeVer ? p.casa : '🔒'
-                      const vf = podeVer ? p.fora : '🔒'
-                      const destaque = nome === jogadorSel ? 'var(--gold)' : '#ccc'
-                      const pts = podeVer ? pontosAposta(j.id, p, r) : null
-                      const corPts = pts === 3 ? '#00C853' : pts === 1 ? 'var(--gold)' : pts === 0 ? '#FF3D00' : null
-                      const passaAcertou = elim && p.passa && r?.passa && p.passa === r.passa
 
-                      return (
-                        <div key={nome} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '3px 0', borderTop: '1px solid #111' }}>
-                          <span style={{ fontSize: 12, color: destaque, fontFamily: 'Barlow Condensed,sans-serif', minWidth: 48 }}>{nome}</span>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                            <span style={{ fontFamily: 'VT323,monospace', fontSize: 18, color: '#eee', letterSpacing: 2 }}>{vc} - {vf}</span>
-                            {elim && podeVer && p.passa && (
-                              <span style={{ fontSize: 11, color: passaAcertou ? '#00C853' : '#555', fontFamily: 'Barlow Condensed,sans-serif' }}>
-                                →{p.passa.split(' ').pop()}
-                              </span>
-                            )}
-                            {pts !== null && (
-                              <span style={{ fontFamily: 'VT323,monospace', fontSize: 16, color: corPts, minWidth: 24, textAlign: 'right' }}>
-                                {pts === 3 ? '+3' : pts === 1 ? '+1' : '✗'}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                )}
               </div>
             )
           })}
