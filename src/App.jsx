@@ -58,34 +58,35 @@ export default function App() {
             <strong style={{ color: '#eee' }}>{jogador}</strong>
             {isAdmin && <span style={{ color: 'var(--gold)' }}> ★</span>}
           </div>
-          <button
-            className="btn btn-icon"
-            onClick={() => setMenuAberto(!menuAberto)}
-            aria-label="Menu"
-            style={{ flexShrink: 0 }}
-          >
-            {menuAberto ? '✕' : '☰'}
-          </button>
+          {isAdmin ? (
+            <button
+              className="btn btn-icon"
+              onClick={() => setMenuAberto(!menuAberto)}
+              aria-label="Menu"
+              style={{ flexShrink: 0 }}
+            >
+              {menuAberto ? '✕' : '☰'}
+            </button>
+          ) : (
+            <button
+              className="btn btn-icon"
+              onClick={sair}
+              aria-label="Sair"
+              style={{ flexShrink: 0, fontSize: 16 }}
+            >
+              ↩
+            </button>
+          )}
         </div>
       </div>
 
-      {/* ── Menu dropdown ── */}
-      {menuAberto && (
+      {/* ── Menu dropdown (só admin) ── */}
+      {isAdmin && menuAberto && (
         <div className="card" style={{ marginBottom: 12 }}>
           <button className="btn" style={{ marginBottom: 6, textAlign: 'left', paddingLeft: 14 }}
-            onClick={() => { setPagina('eliminacao'); setMenuAberto(false) }}>
-            🏟️  Apostas — Fase a eliminar
+            onClick={() => { setPagina('admin'); setMenuAberto(false) }}>
+            ⚙️  Admin
           </button>
-          <button className="btn" style={{ marginBottom: 6, textAlign: 'left', paddingLeft: 14 }}
-            onClick={() => { setPagina('todos-elim'); setMenuAberto(false) }}>
-            👥  Palpites — Eliminatórias
-          </button>
-          {isAdmin && (
-            <button className="btn" style={{ marginBottom: 6, textAlign: 'left', paddingLeft: 14 }}
-              onClick={() => { setPagina('admin'); setMenuAberto(false) }}>
-              ⚙️  Admin
-            </button>
-          )}
           <hr />
           <button className="btn" style={{ textAlign: 'left', paddingLeft: 14 }} onClick={sair}>
             ↩  Sair
@@ -96,9 +97,7 @@ export default function App() {
       {/* ── Páginas ── */}
       {pagina === 'classificacao' && <Classificacao />}
       {pagina === 'apostas'       && <Apostas jogador={jogador} isAdmin={isAdmin} />}
-      {pagina === 'eliminacao'    && <PlaceholderEliminacao />}
       {pagina === 'todos'         && <PalpitesDeTodos jogador={jogador} isAdmin={isAdmin} />}
-      {pagina === 'todos-elim'    && <PlaceholderEliminacao />}
       {pagina === 'grupos'        && <PalpitesGrupos jogador={jogador} isAdmin={isAdmin} />}
       {pagina === 'admin'         && isAdmin && <Admin />}
       {pagina === 'regras'        && <Regras />}
@@ -154,18 +153,6 @@ export default function App() {
           </span>
         </button>
       </nav>
-    </div>
-  )
-}
-
-function PlaceholderEliminacao() {
-  return (
-    <div className="card" style={{ textAlign: 'center', padding: 32 }}>
-      <div style={{ fontSize: 40, marginBottom: 12 }}>🏟️</div>
-      <h3 style={{ fontFamily: 'Oswald,sans-serif', color: 'var(--gold)', marginBottom: 8 }}>Fase a Eliminar</h3>
-      <p style={{ color: '#666', fontSize: 14, fontFamily: 'Barlow Condensed,sans-serif', lineHeight: 1.6 }}>
-        Em breve disponível.<br />As apostas abrirão após a fase de grupos.
-      </p>
     </div>
   )
 }
