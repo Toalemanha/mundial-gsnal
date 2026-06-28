@@ -134,24 +134,6 @@ export default function App() {
             </button>
           )
         })}
-        <button
-          onClick={() => setMenuAberto(!menuAberto)}
-          style={{
-            flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
-            justifyContent: 'center', padding: '10px 0 12px', background: 'none',
-            border: 'none', cursor: 'pointer', gap: 3,
-            borderTop: menuAberto ? '2px solid var(--gold)' : '2px solid transparent',
-            transition: 'border-color 0.15s',
-          }}
-        >
-          <span style={{ fontSize: 20 }}>{menuAberto ? '✕' : '☰'}</span>
-          <span style={{
-            fontSize: 10, fontFamily: 'Barlow Condensed,sans-serif', letterSpacing: 0.5,
-            color: menuAberto ? 'var(--gold)' : '#555', textTransform: 'uppercase',
-          }}>
-            Mais
-          </span>
-        </button>
       </nav>
     </div>
   )
