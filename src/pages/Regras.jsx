@@ -4,7 +4,7 @@ export default function Regras() {
   const prazosDatas = {
     'Campeão e Marcador': new Date("2026-06-11T18:00:00+01:00"),
     'Vencedores dos grupos': new Date("2026-06-18T12:00:00+01:00"),
-    'Jogos fase de grupos': null,
+    'Jogos fase de grupos': new Date("2026-06-11T18:00:00+01:00"),
     '16 Avos de Final': null,
     'Oitavos de Final': null,
     'Quartos de Final': null,
@@ -28,7 +28,7 @@ export default function Regras() {
   const prazos = [
     { label: 'Campeão e Marcador', data: '11 jun · 18:00' },
     { label: 'Vencedores dos grupos', data: '18 jun · 12:00' },
-    { label: 'Jogos fase de grupos', data: '2h antes de cada jogo' },
+    { label: 'Jogos fase de grupos', data: '22:30 do dia anterior' },
     { label: '16 Avos de Final', data: '2h antes de cada jogo' },
     { label: 'Oitavos de Final', data: '2h antes de cada jogo' },
     { label: 'Quartos de Final', data: '2h antes de cada jogo' },
