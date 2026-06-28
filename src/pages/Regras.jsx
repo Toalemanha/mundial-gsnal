@@ -17,7 +17,7 @@ export default function Regras() {
   const regras = [
     { pts: '3', desc: 'Resultado exato de um jogo' },
     { pts: '1', desc: 'Vencedor ou empate correto' },
-    { pts: '1', desc: 'Equipa que passa correta (eliminatórias)' },
+    { pts: '1', desc: 'Equipa que passa correta (eliminatórias, resultado ao fim do tempo regulamentar)' },
     { pts: '3', desc: '1.º lugar do grupo correto' },
     { pts: '3', desc: '2.º lugar do grupo correto' },
     { pts: '1', desc: '1.º ou 2.º trocados' },
