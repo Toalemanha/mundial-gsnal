@@ -1,23 +1,23 @@
 export default function Regras() {
   const agora = new Date()
 
-  // Prazos como objetos Date para comparar
   const prazosDatas = {
     'Campeão e Marcador': new Date("2026-06-11T18:00:00+01:00"),
     'Vencedores dos grupos': new Date("2026-06-18T12:00:00+01:00"),
     'Jogos fase de grupos': null,
-    'Oitavos de final': new Date("2026-07-03T22:30:00+01:00"),
-    'Quartos de final': new Date("2026-07-08T22:30:00+01:00"),
-    'Meias-finais': new Date("2026-07-13T22:30:00+01:00"),
-    '3.º lugar': new Date("2026-07-17T22:30:00+01:00"),
-    'Final': new Date("2026-07-18T22:30:00+01:00"),
+    '16 Avos de Final': null,
+    'Oitavos de Final': null,
+    'Quartos de Final': null,
+    'Meias-Finais': null,
+    '3.º Lugar': null,
+    'Final': null,
     'Revelação na tabela': new Date("2026-06-26T00:00:00+01:00"),
-    
   }
 
   const regras = [
     { pts: '3', desc: 'Resultado exato de um jogo' },
     { pts: '1', desc: 'Vencedor ou empate correto' },
+    { pts: '1', desc: 'Equipa que passa correta (eliminatórias)' },
     { pts: '3', desc: '1.º lugar do grupo correto' },
     { pts: '3', desc: '2.º lugar do grupo correto' },
     { pts: '1', desc: '1.º ou 2.º trocados' },
@@ -28,14 +28,15 @@ export default function Regras() {
   const prazos = [
     { label: 'Campeão e Marcador', data: '11 jun · 18:00' },
     { label: 'Vencedores dos grupos', data: '18 jun · 12:00' },
-    { label: 'Jogos fase de grupos', data: '22:30 do dia anterior' },
-    { label: 'Oitavos de final', data: '3 jul · 22:30' },
-    { label: 'Quartos de final', data: '8 jul · 22:30' },
-    { label: 'Meias-finais', data: '13 jul · 22:30' },
-    { label: '3.º lugar', data: '17 jul · 22:30' },
-    { label: 'Final', data: '18 jul · 22:30' },
+    { label: 'Jogos fase de grupos', data: '2h antes de cada jogo' },
+    { label: '16 Avos de Final', data: '2h antes de cada jogo' },
+    { label: 'Oitavos de Final', data: '2h antes de cada jogo' },
+    { label: 'Quartos de Final', data: '2h antes de cada jogo' },
+    { label: 'Meias-Finais', data: '2h antes de cada jogo' },
+    { label: '3.º Lugar', data: '2h antes de cada jogo' },
+    { label: 'Final', data: '2h antes de cada jogo' },
     { label: 'Revelação na tabela', data: '26 jun · 00:00' },
-    { label: 'Palpites de cada jogo visíveis', data: 'Após 22:30 do dia anterior' },
+    { label: 'Palpites visíveis', data: '2h antes do início do jogo' },
   ]
 
   const premios = [
@@ -66,9 +67,13 @@ export default function Regras() {
 
       {/* Prazos */}
       <div className="card" style={{ marginBottom: 12 }}>
-        <h4 style={{ fontFamily: 'Oswald,sans-serif', color: 'var(--gold)', letterSpacing: 1, marginBottom: 14, textAlign: 'center' }}>
+        <h4 style={{ fontFamily: 'Oswald,sans-serif', color: 'var(--gold)', letterSpacing: 1, marginBottom: 6, textAlign: 'center' }}>
           ⏱ Prazos limite
         </h4>
+        <p style={{ fontSize: 11, color: '#666', textAlign: 'center', marginBottom: 12, fontFamily: 'Barlow Condensed,sans-serif', lineHeight: 1.5 }}>
+          Podes apostar até <strong style={{ color: '#ccc' }}>2 horas antes</strong> do início de cada jogo.<br />
+          Os palpites de todos ficam visíveis <strong style={{ color: '#ccc' }}>após esse prazo</strong>.
+        </p>
         {prazos.map((p, i) => {
           const dt = prazosDatas[p.label]
           const passou = dt && agora > dt
