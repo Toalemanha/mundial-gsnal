@@ -156,26 +156,28 @@ export const CALENDARIO_ELIMINACAO = [
   { data: "Seg., 29/06", jogos: [
     { hora: "18:00", id: "R32_2", label: "16avos — Brasil vs Japão" },
     { hora: "21:30", id: "R32_3", label: "16avos — Alemanha vs 3.º" },
-    { hora: "02:00", id: "R32_4", label: "16avos — P. Baixos vs Marrocos" },
   ]},
   { data: "Ter., 30/06", jogos: [
+    { hora: "02:00", id: "R32_4", label: "16avos — P. Baixos vs Marrocos" },
     { hora: "18:00", id: "R32_5", label: "16avos — C. Marfim vs Noruega" },
     { hora: "22:00", id: "R32_6", label: "16avos — França vs Suécia" },
-    { hora: "02:00", id: "R32_7", label: "16avos — México vs Equador" },
   ]},
   { data: "Qua., 01/07", jogos: [
+    { hora: "02:00", id: "R32_7",  label: "16avos — México vs Equador" },
     { hora: "17:00", id: "R32_8",  label: "16avos — Inglaterra vs 3.º" },
     { hora: "21:00", id: "R32_9",  label: "16avos — Bélgica vs 3.º" },
-    { hora: "01:00", id: "R32_10", label: "16avos — EUA vs Bósnia" },
   ]},
   { data: "Qui., 02/07", jogos: [
+    { hora: "01:00", id: "R32_10", label: "16avos — EUA vs Bósnia" },
     { hora: "20:00", id: "R32_11", label: "16avos — Espanha vs 2.º J" },
-    { hora: "00:00", id: "R32_12", label: "16avos — 2.º K vs Croácia" },
-    { hora: "04:00", id: "R32_13", label: "16avos — Suíça vs 3.º" },
   ]},
   { data: "Sex., 03/07", jogos: [
+    { hora: "00:00", id: "R32_12", label: "16avos — 2.º K vs Croácia" },
+    { hora: "04:00", id: "R32_13", label: "16avos — Suíça vs 3.º" },
     { hora: "19:00", id: "R32_14", label: "16avos — Austrália vs Egito" },
     { hora: "23:00", id: "R32_15", label: "16avos — Argentina vs Cabo Verde" },
+  ]},
+  { data: "Sáb., 04/07", jogos: [
     { hora: "02:30", id: "R32_16", label: "16avos — 1.º K vs 3.º" },
   ]},
   // ── Oitavos de Final (4 jul – 8 jul) ──
@@ -189,7 +191,11 @@ export const CALENDARIO_ELIMINACAO = [
   ]},
   { data: "Seg., 07/07", jogos: [
     { hora: "20:00", id: "R16_5", label: "Oitavos — Jogo 5" },
+  ]},
+  { data: "Ter., 08/07", jogos: [
     { hora: "00:00", id: "R16_6", label: "Oitavos — Jogo 6" },
+    { hora: "17:00", id: "R16_7", label: "Oitavos — Jogo 7" },
+    { hora: "21:00", id: "R16_8", label: "Oitavos — Jogo 8" },
   ]},
   { data: "Ter., 08/07", jogos: [
     { hora: "17:00", id: "R16_7", label: "Oitavos — Jogo 7" },
