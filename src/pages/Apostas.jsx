@@ -54,8 +54,8 @@ function indiceDiaHojeCompleto() {
 
 function labelFase(id) {
   if (!id) return null
-  if (id.startsWith('R32')) return '32 Avos de Final'
-  if (id.startsWith('R16')) return '16 Avos de Final'
+  if (id.startsWith('R32')) return '16 Avos de Final'
+  if (id.startsWith('R16')) return 'Oitavos de Final'
   if (id.startsWith('QF'))  return 'Quartos de Final'
   if (id.startsWith('SF'))  return 'Meias-Finais'
   if (id === 'TP1')          return '3.º Lugar'
