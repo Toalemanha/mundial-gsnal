@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { CALENDARIO, CALENDARIO_ELIMINACAO, NOMES_AMIGOS, prazoJogo } from '../data/torneio.js'
 
-// Calendário unificado
 const CALENDARIO_COMPLETO = (() => {
   const mapa = {}
   for (const dia of CALENDARIO) {
@@ -146,7 +145,6 @@ export default function PalpitesDeTodos({ jogador, isAdmin }) {
         const mp = elim ? palpitesElim : palpites
         const r = elim ? resultadosElim[j.id] : resultados[j.id]
 
-        // Jogo a decorrer
         const partes = dia.data.split(', ')[1].split('/')
         const dd = parseInt(partes[0]), mm = parseInt(partes[1])
         const [hh, mmin] = j.hora.split(':').map(Number)
@@ -160,21 +158,18 @@ export default function PalpitesDeTodos({ jogador, isAdmin }) {
             boxShadow: aDecorrer ? '0 0 12px rgba(255,215,0,0.08)' : 'none',
             marginBottom: 12,
           }}>
-            {/* Cabeçalho */}
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: fase ? 4 : 8 }}>
               <p style={{ fontSize: 11, letterSpacing: 2, color: aDecorrer ? 'var(--gold)' : '#555', textTransform: 'uppercase', margin: 0 }}>
                 {aDecorrer ? '🟢 A DECORRER' : `⏱ ${j.hora} Lisboa`}
               </p>
             </div>
 
-            {/* Etiqueta da fase */}
             {fase && (
               <div style={{ fontSize: 10, color: 'var(--gold)', fontFamily: 'Barlow Condensed,sans-serif', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8, textAlign: 'center' }}>
                 🏟️ {fase}
               </div>
             )}
 
-            {/* Resultado real */}
             {r && r.casa !== null && (
               <div style={{ textAlign: 'center', marginBottom: 6 }}>
                 <span style={{ fontFamily: 'VT323,monospace', fontSize: 28, color: 'var(--green)', letterSpacing: 3 }}>
@@ -189,14 +184,12 @@ export default function PalpitesDeTodos({ jogador, isAdmin }) {
               </div>
             )}
 
-            {/* Equipas */}
             <p style={{ textAlign: 'center', fontSize: 'clamp(13px,3vw,15px)', marginBottom: 10, color: '#eee' }}>
               {nomeCasa || <span style={{ color: '#333' }}>A definir</span>}
               <span style={{ color: '#333', padding: '0 6px' }}>VS</span>
               {nomeFora || <span style={{ color: '#333' }}>A definir</span>}
             </p>
 
-            {/* Palpites de cada jogador */}
             {NOMES_AMIGOS.map(amigo => {
               const p = mp[j.id]?.[amigo]
               const podeVer = encerrado || amigo === jogador || isAdmin
@@ -216,7 +209,7 @@ export default function PalpitesDeTodos({ jogador, isAdmin }) {
 
               return (
                 <div key={amigo} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '5px 0', borderTop: '1px solid #1a1a1a' }}>
-                  <span style={{ fontSize: 'clamp(12px,3vw,14px)', color: destaque, fontFamily: 'Barlow Condensed,sans-serif' }}>
+                  <span style={{ fontSize: 'clamp(12px,3vw,14px)', color: destaque, fontFamily: 'Barlow Condensed,sans-serif', flexShrink: 0 }}>
                     {amigo}
                   </span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -224,8 +217,8 @@ export default function PalpitesDeTodos({ jogador, isAdmin }) {
                       {vc} - {vf}
                     </span>
                     {elim && podeVer && p.passa && (
-                      <span style={{ fontSize: 11, color: passaAcertou ? '#00C853' : '#555', fontFamily: 'Barlow Condensed,sans-serif' }}>
-                        →{p.passa.split(' ').slice(-2).join(' ')}
+                      <span style={{ fontFamily: 'VT323,monospace', fontSize: 'clamp(18px,4vw,22px)', color: passaAcertou ? '#00C853' : '#eee', letterSpacing: 1 }}>
+                        → {p.passa.split(' ').slice(-2).join(' ')}
                       </span>
                     )}
                     {pts !== null && (
