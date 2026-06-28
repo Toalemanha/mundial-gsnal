@@ -173,12 +173,12 @@ export const CALENDARIO_ELIMINACAO = [
   ]},
   { data: "Sex., 03/07", jogos: [
     { hora: "00:00", id: "R32_12", label: "16avos — 2.º K vs Croácia" },
-    { hora: "04:00", id: "R32_13", label: "16avos — Suíça vs 3.º" },
+    { hora: "04:00", id: "R32_13", label: "16avos — Suíça vs Argélia" },
     { hora: "19:00", id: "R32_14", label: "16avos — Austrália vs Egito" },
     { hora: "23:00", id: "R32_15", label: "16avos — Argentina vs Cabo Verde" },
   ]},
   { data: "Sáb., 04/07", jogos: [
-    { hora: "02:30", id: "R32_16", label: "16avos — 1.º K vs 3.º" },
+    { hora: "02:30", id: "R32_16", label: "16avos — Colômbia vs Gana" },
   ]},
   // ── Oitavos de Final (4 jul – 8 jul) ──
   { data: "Sáb., 04/07", jogos: [
@@ -230,10 +230,10 @@ export const JOGOS_ELIMINACAO = {
     { id: 'R32_10', label: 'EUA vs Bósnia' },
     { id: 'R32_11', label: 'Espanha vs 2.º J' },
     { id: 'R32_12', label: '2.º K vs Croácia' },
-    { id: 'R32_13', label: 'Suíça vs 3.º' },
+    { id: 'R32_13', label: 'Suíça vs Argélia' },
     { id: 'R32_14', label: 'Austrália vs Egito' },
     { id: 'R32_15', label: 'Argentina vs Cabo Verde' },
-    { id: 'R32_16', label: '1.º K vs 3.º' },
+    { id: 'R32_16', label: 'Colômbia vs Gana' },
   ],
   r16: [
     { id: 'R16_1', label: 'Oitavos Jogo 1' }, { id: 'R16_2', label: 'Oitavos Jogo 2' },
