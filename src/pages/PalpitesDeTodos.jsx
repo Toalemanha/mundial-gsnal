@@ -14,9 +14,11 @@ const CALENDARIO_COMPLETO = (() => {
       mapa[dia.data] = { data: dia.data, jogos: [...dia.jogos] }
     }
   }
-  const ordem = [...CALENDARIO.map(d => d.data), ...CALENDARIO_ELIMINACAO.map(d => d.data)]
-  const unique = [...new Set(ordem)]
-  return unique.map(d => mapa[d]).filter(Boolean)
+  function parseDia(data) {
+    const partes = data.split(', ')[1].split('/')
+    return new Date(2026, parseInt(partes[1]) - 1, parseInt(partes[0]))
+  }
+  return Object.values(mapa).sort((a, b) => parseDia(a.data) - parseDia(b.data))
 })()
 
 function prazoJogoCompleto(j) {
