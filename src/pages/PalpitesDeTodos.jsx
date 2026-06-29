@@ -27,7 +27,9 @@ function prazoJogoCompleto(j) {
       const partes = dia.data.split(', ')[1].split('/')
       const d = parseInt(partes[0]), m = parseInt(partes[1])
       const [h, min] = j.hora.split(':').map(Number)
-      const dtJogo = new Date(2026, m - 1, d, h, min, 0)
+      // Forçar hora de Lisboa (UTC+1 no verão)
+      const isoStr = `2026-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}T${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}:00+01:00`
+      const dtJogo = new Date(isoStr)
       return new Date(dtJogo.getTime() - 2 * 60 * 60 * 1000)
     }
   }
