@@ -189,23 +189,23 @@ export const CALENDARIO_ELIMINACAO = [
     { hora: "18:00", id: "R16_3", label: "Oitavos — Jogo 3" },
     { hora: "22:00", id: "R16_4", label: "Oitavos — Jogo 4" },
   ]},
-  { data: "Seg., 07/07", jogos: [
+  { data: "Ter., 07/07", jogos: [
     { hora: "20:00", id: "R16_5", label: "Oitavos — Jogo 5" },
   ]},
-  { data: "Ter., 08/07", jogos: [
-    { hora: "00:00", id: "R16_6", label: "Oitavos — Jogo 6" },
+  { data: "Qua., 08/07", jogos: [
     { hora: "17:00", id: "R16_7", label: "Oitavos — Jogo 7" },
     { hora: "21:00", id: "R16_8", label: "Oitavos — Jogo 8" },
   ]},
-  { data: "Ter., 08/07", jogos: [
-    { hora: "17:00", id: "R16_7", label: "Oitavos — Jogo 7" },
-    { hora: "21:00", id: "R16_8", label: "Oitavos — Jogo 8" },
+  { data: "Qui., 09/07", jogos: [
+    { hora: "00:00", id: "R16_6", label: "Oitavos — Jogo 6" },
   ]},
   // ── Quartos (9 jul – 12 jul) ──
   { data: "Qui., 09/07", jogos: [{ hora: "21:00", id: "QF1", label: "Quartos — Jogo 1" }]},
   { data: "Sex., 10/07", jogos: [{ hora: "20:00", id: "QF2", label: "Quartos — Jogo 2" }]},
   { data: "Sáb., 11/07", jogos: [
     { hora: "22:00", id: "QF3", label: "Quartos — Jogo 3" },
+  ]},
+  { data: "Dom., 12/07", jogos: [
     { hora: "02:00", id: "QF4", label: "Quartos — Jogo 4" },
   ]},
   // ── Meias-finais ──
