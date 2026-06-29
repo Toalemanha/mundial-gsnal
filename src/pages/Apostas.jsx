@@ -29,12 +29,13 @@ const CALENDARIO_COMPLETO = (() => {
 
 function prazoJogoUnificado(j) {
   const [h, m] = j.hora.split(':').map(Number)
-  // Encontrar a data do jogo
   for (const dia of CALENDARIO_COMPLETO) {
     if (dia.jogos.find(jj => jj.id === j.id)) {
       const partes = dia.data.split(', ')[1].split('/')
       const d = parseInt(partes[0]), mo = parseInt(partes[1])
-      const dtJogo = new Date(2026, mo - 1, d, h, m, 0)
+      // Forçar hora de Lisboa (UTC+1 no verão)
+      const isoStr = `2026-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}T${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:00+01:00`
+      const dtJogo = new Date(isoStr)
       return new Date(dtJogo.getTime() - 2 * 60 * 60 * 1000)
     }
   }
