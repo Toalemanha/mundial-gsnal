@@ -112,12 +112,14 @@ export default function PalpitesDeTodos({ jogador, isAdmin }) {
     setLoading(false)
   }
 
-  function pontosAposta(p, r) {
+  function pontosAposta(p, r, elim) {
     if (!r || r.casa === null || r.fora === null) return null
     const pc = Number(p.casa), pf = Number(p.fora), rc = Number(r.casa), rf = Number(r.fora)
-    if (pc === rc && pf === rf) return 3
-    if ((pc > pf && rc > rf) || (pc < pf && rc < rf) || (pc === pf && rc === rf)) return 1
-    return 0
+    let pts = 0
+    if (pc === rc && pf === rf) pts += 3
+    else if ((pc > pf && rc > rf) || (pc < pf && rc < rf) || (pc === pf && rc === rf)) pts += 1
+    if (elim && p.passa && r.passa && p.passa === r.passa) pts += 1
+    return pts
   }
 
   if (loading) return <div className="spinner">A carregar...</div>
@@ -205,8 +207,8 @@ export default function PalpitesDeTodos({ jogador, isAdmin }) {
               const vc = podeVer ? p.casa : '🔒'
               const vf = podeVer ? p.fora : '🔒'
               const destaque = amigo === jogador ? 'var(--gold)' : '#ccc'
-              const pts = podeVer ? pontosAposta(p, r) : null
-              const corPts = pts === 3 ? '#00C853' : pts === 1 ? 'var(--gold)' : pts === 0 ? '#FF3D00' : null
+              const pts = podeVer ? pontosAposta(p, r, elim) : null
+              const corPts = pts >= 3 ? '#00C853' : pts > 0 ? 'var(--gold)' : pts === 0 ? '#FF3D00' : null
               const passaAcertou = elim && podeVer && p.passa && r?.passa && p.passa === r.passa
 
               return (
@@ -225,7 +227,7 @@ export default function PalpitesDeTodos({ jogador, isAdmin }) {
                     )}
                     {pts !== null && (
                       <span style={{ fontFamily: 'VT323,monospace', fontSize: 18, color: corPts, minWidth: 32, textAlign: 'right' }}>
-                        {pts === 3 ? '+3' : pts === 1 ? '+1' : '✗'}
+                        {pts > 0 ? `+${pts}` : '✗'}
                       </span>
                     )}
                   </div>
