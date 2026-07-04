@@ -44,9 +44,11 @@ const BRACKET = {
   R16_7: { nextId: 'QF4', lado: 'casa' },
   R16_8: { nextId: 'QF4', lado: 'fora' },
   // Quartos -> Meias
+  // SF1 = vencedor(R16_1+R16_2) vs vencedor(R16_5+R16_6)  → Canadá/Marrocos/Paraguai/França vs Portugal/Espanha/EUA/Bélgica
+  // SF2 = vencedor(R16_3+R16_4) vs vencedor(R16_7+R16_8)  → Brasil/Noruega/México/Inglaterra vs Argentina/Egito/Suíça/Colômbia
   QF1: { nextId: 'SF1', lado: 'casa' },
-  QF2: { nextId: 'SF1', lado: 'fora' },
-  QF3: { nextId: 'SF2', lado: 'casa' },
+  QF2: { nextId: 'SF2', lado: 'casa' },
+  QF3: { nextId: 'SF1', lado: 'fora' },
   QF4: { nextId: 'SF2', lado: 'fora' },
   // Meias -> Final e 3.º lugar
   SF1: { nextId: 'FN1', lado: 'casa', perdedorId: 'TP1', perdedorLado: 'casa' },
