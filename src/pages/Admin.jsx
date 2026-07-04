@@ -55,6 +55,35 @@ const BRACKET = {
   SF2: { nextId: 'FN1', lado: 'fora', perdedorId: 'TP1', perdedorLado: 'fora' },
 }
 
+// Recalcula TODAS as equipas de todas as rondas (Oitavos -> Quartos -> Meias -> 3.º/Final)
+// a partir das equipas base (16avos, introduzidas manualmente) + das escolhas de "quem passou"
+// já registadas em resultadosElim. É determinístico: não depende de cliques feitos nesta sessão
+// do browser, por isso nunca fica "preso" a meio do bracket.
+function propagarBracket(baseEquipas, resultadosMap) {
+  const equipas = {}
+  for (const [id, eq] of Object.entries(baseEquipas || {})) {
+    equipas[id] = { ...eq }
+  }
+  // 2 passagens para garantir que a cascata chega sempre até à Final, mesmo que a
+  // ordem de iteração alguma vez não coincida com a ordem das rondas.
+  for (let passe = 0; passe < 2; passe++) {
+    for (const [idJogo, info] of Object.entries(BRACKET)) {
+      const passa = resultadosMap?.[idJogo]?.passa
+      if (!passa) continue
+      const { nextId, lado, perdedorId, perdedorLado } = info
+      equipas[nextId] = { ...equipas[nextId], [lado]: passa }
+      if (perdedorId) {
+        const eq = equipas[idJogo] || {}
+        const perdedor = passa === eq.casa ? eq.fora : eq.casa
+        if (perdedor) {
+          equipas[perdedorId] = { ...equipas[perdedorId], [perdedorLado]: perdedor }
+        }
+      }
+    }
+  }
+  return equipas
+}
+
 function AutocompleteInput({ value, onChange, placeholder, style }) {
   const [sugestoes, setSugestoes] = useState([])
   const [aberto, setAberto] = useState(false)
@@ -145,11 +174,14 @@ export default function Admin() {
 
       const eq2 = {}
       if (eq) eq.forEach(e => { eq2[e.id_jogo] = { casa: e.casa || '', fora: e.fora || '' } })
-      setEquipasElim(eq2)
 
       const re2 = {}
       if (resElim) resElim.forEach(r => { re2[r.id_jogo] = { casa: r.casa, fora: r.fora, passa: r.passa || null } })
       setResultadosElim(re2)
+
+      // Recalcular a propagação completa do bracket (16avos -> ... -> Final/3.º),
+      // para nunca depender do que ficou (ou não) gravado sessões anteriores.
+      setEquipasElim(propagarBracket(eq2, re2))
 
       const mp = {}
       if (palp) palp.forEach(r => {
@@ -187,29 +219,9 @@ export default function Admin() {
       const atual = prev[idJogo]?.passa
       const novoPassa = atual === equipaNome ? null : equipaNome
       const novoState = { ...prev, [idJogo]: { ...prev[idJogo], passa: novoPassa } }
-
-      // Propagar automaticamente para o próximo jogo do bracket
-      if (novoPassa && BRACKET[idJogo]) {
-        const { nextId, lado } = BRACKET[idJogo]
-        setEquipasElim(prevEq => ({
-          ...prevEq,
-          [nextId]: { ...prevEq[nextId], [lado]: novoPassa }
-        }))
-
-        // Se for meia-final, propagar também o perdedor para o 3.º lugar
-        if (BRACKET[idJogo].perdedorId) {
-          const equipasCasaFora = equipasElim[idJogo] || {}
-          const perdedor = novoPassa === equipasCasaFora.casa ? equipasCasaFora.fora : equipasCasaFora.casa
-          if (perdedor) {
-            const { perdedorId, perdedorLado } = BRACKET[idJogo]
-            setEquipasElim(prevEq => ({
-              ...prevEq,
-              [perdedorId]: { ...prevEq[perdedorId], [perdedorLado]: perdedor }
-            }))
-          }
-        }
-      }
-
+      // Recalcular a cascata inteira (Oitavos -> Quartos -> Meias -> Final/3.º)
+      // a partir do novo estado, em vez de propagar só uma camada.
+      setEquipasElim(prevEq => propagarBracket(prevEq, novoState))
       return novoState
     })
   }
@@ -233,7 +245,12 @@ export default function Admin() {
     }
     await supabase.from('config').update({ campeao_real: campeaoReal || null, marcador_real: marcadorReal || null }).eq('id', 1)
 
-    for (const [id, eq] of Object.entries(equipasElim)) {
+    // Recalcular a cascata completa (Oitavos -> Quartos -> Meias -> Final/3.º) a partir
+    // dos "passa" atuais, para nunca gravar um bracket a meio (ex.: só até aos Oitavos).
+    const equipasFinal = propagarBracket(equipasElim, resultadosElim)
+    setEquipasElim(equipasFinal)
+
+    for (const [id, eq] of Object.entries(equipasFinal)) {
       if (eq.casa || eq.fora) {
         await supabase.from('equipas_eliminacao').delete().eq('id_jogo', id)
         await supabase.from('equipas_eliminacao').insert({ id_jogo: id, casa: eq.casa || null, fora: eq.fora || null })
