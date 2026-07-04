@@ -7,15 +7,15 @@ import {
 import { Toast, useToast } from '../components/Toast.jsx'
 
 // Bracket fixo: quando X passa, vai para o slot Y como casa ou fora
-// Bracket FIFA oficial confirmado:
-// R16_1: W(R32_1) vs W(R32_4)  — Canadá vs Marrocos
-// R16_2: W(R32_3) vs W(R32_6)  — Paraguai vs W(França/Suécia)
-// R16_3: W(R32_2) vs W(R32_5)  — Brasil vs Noruega
-// R16_4: W(R32_7) vs W(R32_8)  — W(México/Equador) vs W(Inglaterra/RDCongo)
-// R16_5: W(R32_9) vs W(R32_12) — W(Bélgica/Senegal) vs W(Portugal/Croácia)
-// R16_6: W(R32_11) vs W(R32_10) — W(Espanha/Áustria) vs W(EUA/Bósnia)
-// R16_7: W(R32_13) vs W(R32_14) — W(Suíça/Argélia) vs W(Austrália/Egito)
-// R16_8: W(R32_15) vs W(R32_16) — W(Argentina/Cabo Verde) vs W(Colômbia/Gana)
+// Bracket FIFA oficial confirmado (Match 89-96):
+// R16_1 (Match 90): W(R32_1) vs W(R32_4)   — Canadá vs Marrocos
+// R16_2 (Match 89): W(R32_3) vs W(R32_6)   — Paraguai vs França
+// R16_3 (Match 91): W(R32_2) vs W(R32_5)   — Brasil vs Noruega
+// R16_4 (Match 92): W(R32_7) vs W(R32_8)   — México vs Inglaterra
+// R16_5 (Match 93): W(R32_12) vs W(R32_11) — Portugal vs Espanha
+// R16_6 (Match 94): W(R32_9) vs W(R32_10)  — Bélgica vs EUA
+// R16_7 (Match 95): W(R32_15) vs W(R32_14) — Argentina vs Egito
+// R16_8 (Match 96): W(R32_13) vs W(R32_16) — Suíça vs Colômbia
 const BRACKET = {
   // 16avos -> Oitavos
   R32_1:  { nextId: 'R16_1', lado: 'casa' },
@@ -26,13 +26,13 @@ const BRACKET = {
   R32_5:  { nextId: 'R16_3', lado: 'fora' },
   R32_7:  { nextId: 'R16_4', lado: 'casa' },
   R32_8:  { nextId: 'R16_4', lado: 'fora' },
-  R32_9:  { nextId: 'R16_5', lado: 'casa' },
-  R32_12: { nextId: 'R16_5', lado: 'fora' },
-  R32_11: { nextId: 'R16_6', lado: 'casa' },
+  R32_12: { nextId: 'R16_5', lado: 'casa' },
+  R32_11: { nextId: 'R16_5', lado: 'fora' },
+  R32_9:  { nextId: 'R16_6', lado: 'casa' },
   R32_10: { nextId: 'R16_6', lado: 'fora' },
-  R32_13: { nextId: 'R16_7', lado: 'casa' },
+  R32_15: { nextId: 'R16_7', lado: 'casa' },
   R32_14: { nextId: 'R16_7', lado: 'fora' },
-  R32_15: { nextId: 'R16_8', lado: 'casa' },
+  R32_13: { nextId: 'R16_8', lado: 'casa' },
   R32_16: { nextId: 'R16_8', lado: 'fora' },
   // Oitavos -> Quartos
   R16_1: { nextId: 'QF1', lado: 'casa' },
