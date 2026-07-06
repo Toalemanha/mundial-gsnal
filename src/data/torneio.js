@@ -195,15 +195,15 @@ export const CALENDARIO_ELIMINACAO = [
     { hora: "17:00", id: "R16_7", label: "Oitavos — Jogo 7" },
     { hora: "21:00", id: "R16_8", label: "Oitavos — Jogo 8" },
   ]},
-  // ── Quartos de Final (9 jul – 12 jul) ──
+  // ── Quartos de Final (9 – 12 jul, horas já em fuso de Lisboa) ──
   { data: "Qui., 09/07", jogos: [
     { hora: "21:00", id: "QF1", label: "Quartos — Jogo 1" },
   ]},
   { data: "Sex., 10/07", jogos: [
-    { hora: "20:00", id: "QF2", label: "Quartos — Jogo 2" },
+    { hora: "20:00", id: "QF3", label: "Quartos — Jogo 3" },
   ]},
   { data: "Sáb., 11/07", jogos: [
-    { hora: "22:00", id: "QF3", label: "Quartos — Jogo 3" },
+    { hora: "22:00", id: "QF2", label: "Quartos — Jogo 2" },
   ]},
   { data: "Dom., 12/07", jogos: [
     { hora: "02:00", id: "QF4", label: "Quartos — Jogo 4" },
