@@ -163,6 +163,38 @@ export default function Classificacao() {
           )
         })}
 
+        <div style={{ padding: '14px 8px 4px', borderTop: '1px solid #1a1a1a' }}>
+          <p style={{ textAlign: 'center', fontSize: 11, letterSpacing: 1.5, color: '#666', textTransform: 'uppercase', marginBottom: 10 }}>
+            🏆 Palpites de Campeão e Marcador
+          </p>
+
+          {['campeao', 'marcador'].map(campo => {
+            const grupos = {}
+            dados.forEach(j => {
+              if (!j[campo]) return
+              if (!grupos[j[campo]]) grupos[j[campo]] = []
+              grupos[j[campo]].push(j.nome)
+            })
+            const entradas = Object.entries(grupos)
+            if (entradas.length === 0) return null
+
+            return (
+              <div key={campo} style={{ marginBottom: 10 }}>
+                <p style={{ fontSize: 10, color: '#555', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4, textAlign: 'center' }}>
+                  {campo === 'campeao' ? '🏆 Campeão' : '👟 Melhor Marcador'}
+                </p>
+                {entradas.map(([escolha, nomes]) => (
+                  <div key={escolha} style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 6, padding: '3px 0', fontFamily: 'Barlow Condensed,sans-serif', fontSize: 13 }}>
+                    <span style={{ color: 'var(--gold)', fontWeight: 600 }}>{escolha}</span>
+                    <span style={{ color: '#555' }}>—</span>
+                    <span style={{ color: '#ccc' }}>{nomes.join(', ')}</span>
+                  </div>
+                ))}
+              </div>
+            )
+          })}
+        </div>
+
         <div className="premios-row">
           {[
             { emoji: '🥇', valor: '80€', cor: '#FFD700', lugar: '1.º lugar' },
